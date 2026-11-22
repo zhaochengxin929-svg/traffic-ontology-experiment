@@ -1,0 +1,854 @@
+[
+    {
+        "name": "entityID",
+        "type": "DatatypeProperty",
+        "label": "实体标识",
+        "comment": "用于时间实体、空间实体、状态实体、指标实体和事件实体的统一唯一标识。"
+    },
+    {
+        "name": "entityName",
+        "type": "DatatypeProperty",
+        "label": "实体名称",
+        "comment": "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的人可读名称。"
+    },
+    {
+        "name": "entityCode",
+        "type": "DatatypeProperty",
+        "label": "实体编码",
+        "comment": "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的业务编码或外部编号。"
+    },
+    {
+        "name": "TimeEntity",
+        "type": "Class",
+        "label": "时间实体父类",
+        "comment": "所有时间相关实体的基类。"
+    },
+    {
+        "name": "TimeInterval",
+        "type": "Class",
+        "label": "时间片",
+        "comment": "最小统计粒度（15min），动态数据的挂载锚点。"
+    },
+    {
+        "name": "TimePeriod",
+        "type": "Class",
+        "label": "语义时间段",
+        "comment": "具有业务含义的时间集合（如“早高峰”）。"
+    },
+    {
+        "name": "nextInterval",
+        "type": "ObjectProperty",
+        "label": "下一时间片",
+        "comment": "定义时间片的时序演化关系，支持拥堵演化的时序推理。"
+    },
+    {
+        "name": "belongsToPeriod",
+        "type": "ObjectProperty",
+        "label": "属于时段",
+        "comment": "定义微观时间片与宏观时段的从属关系。"
+    },
+    {
+        "name": "coversDate",
+        "type": "DatatypeProperty",
+        "label": "覆盖日期",
+        "comment": "表示语义时段的具体日期标签，支持跨日计算（如高峰速度日偏差）。"
+    },
+    {
+        "name": "startTime",
+        "type": "DatatypeProperty",
+        "label": "开始时刻",
+        "comment": "表示时间片的起始时间点。"
+    },
+    {
+        "name": "endTime",
+        "type": "DatatypeProperty",
+        "label": "结束时刻",
+        "comment": "表示时间片的结束时间点。"
+    },
+    {
+        "name": "dayType",
+        "type": "DatatypeProperty",
+        "label": "日期类型",
+        "comment": "枚举值：工作日/周末/节假日。"
+    },
+    {
+        "name": "SpatialEntity",
+        "type": "Class",
+        "label": "空间实体父类",
+        "comment": "所有空间相关实体的基类，承载静态属性与拓扑关系。"
+    },
+    {
+        "name": "Zone",
+        "type": "Class",
+        "label": "区域",
+        "comment": "宏观空间单元（如交通小区），L4态势评价主体。"
+    },
+    {
+        "name": "RoadSegment",
+        "type": "Class",
+        "label": "路段",
+        "comment": "微观空间单元，L3态势物理载体，交通流运行的载体。"
+    },
+    {
+        "name": "Intersection",
+        "type": "Class",
+        "label": "交叉口",
+        "comment": "路网拓扑节点。"
+    },
+    {
+        "name": "Road",
+        "type": "Class",
+        "label": "道路",
+        "comment": "路段的逻辑聚合（如“中山东路”）。"
+    },
+    {
+        "name": "zoneContainsSegment",
+        "type": "ObjectProperty",
+        "label": "区域包含路段",
+        "comment": "定义区域与路段之间的空间包含关系，用于表达路段所属的宏观空间单元。"
+    },
+    {
+        "name": "segmentLocatedInZone",
+        "type": "ObjectProperty",
+        "label": "路段位于区域内",
+        "comment": "定义路段与区域之间的空间归属关系，用于表达路段所属的交通分析区域。"
+    },
+    {
+        "name": "roadHasSegment",
+        "type": "ObjectProperty",
+        "label": "道路包含路段",
+        "comment": "定义道路与路段之间的组成关系，用于表达道路由若干路段构成。"
+    },
+    {
+        "name": "segmentBelongsToRoad",
+        "type": "ObjectProperty",
+        "label": "路段属于道路",
+        "comment": "定义路段与道路之间的从属关系，用于表达某一路段所属的逻辑道路对象。"
+    },
+    {
+        "name": "segmentStartsFromIntersection",
+        "type": "ObjectProperty",
+        "label": "路段起始于交叉口",
+        "comment": "定义路段的起点交叉口，用于表达路段在路网中的方向性连接结构。"
+    },
+    {
+        "name": "segmentEndsAtIntersection",
+        "type": "ObjectProperty",
+        "label": "路段终止于交叉口",
+        "comment": "定义路段的终点交叉口，用于表达路段在路网中的方向性连接结构。"
+    },
+    {
+        "name": "segmentUpstreamOf",
+        "type": "ObjectProperty",
+        "label": "路段上游是",
+        "comment": "定义路段间的上游关系，用于表达交通流传播过程中的前序路段关联。"
+    },
+    {
+        "name": "segmentDownstreamOf",
+        "type": "ObjectProperty",
+        "label": "路段下游是",
+        "comment": "定义路段间的下游关系，用于表达交通流传播过程中的后继路段关联。"
+    },
+    {
+        "name": "zoneAdjacentToZone",
+        "type": "ObjectProperty",
+        "label": "区域相邻于区域",
+        "comment": "定义区域之间的邻接关系，用于表达宏观空间单元之间的空间邻近性。"
+    },
+    {
+        "name": "segmentAdjacentToSegment",
+        "type": "ObjectProperty",
+        "label": "路段相邻于路段",
+        "comment": "定义路段之间的邻接关系，用于表达路段在空间或网络结构上的相邻性。"
+    },
+    {
+        "name": "zoneContainsIntersection",
+        "type": "ObjectProperty",
+        "label": "区域包含交叉口",
+        "comment": "定义区域与交叉口之间的空间包含关系，用于表达交叉口所属的宏观空间单元。"
+    },
+    {
+        "name": "intersectionLocatedInZone",
+        "type": "ObjectProperty",
+        "label": "交叉口位于区域内",
+        "comment": "定义交叉口与区域之间的空间归属关系，用于表达交叉口所属的交通分析区域。"
+    },
+    {
+        "name": "segmentLength",
+        "type": "DatatypeProperty",
+        "label": "路段长度",
+        "comment": "物理长度，计算拥堵里程比与路段权重的基础。"
+    },
+    {
+        "name": "freeFlowSpeed",
+        "type": "DatatypeProperty",
+        "label": "自由流速度",
+        "comment": "理论畅通速度，作为交通运行状态计算与分析的基准速度。"
+    },
+    {
+        "name": "roadGrade",
+        "type": "DatatypeProperty",
+        "label": "道路等级",
+        "comment": "表示路段所属道路的功能等级，如快速路、主干路、次干路和支路等。"
+    },
+    {
+        "name": "laneCount",
+        "type": "DatatypeProperty",
+        "label": "车道数",
+        "comment": "表示路段的车道数量，是刻画路段通行能力的重要基础属性。"
+    },
+    {
+        "name": "segmentDirection",
+        "type": "DatatypeProperty",
+        "label": "路段方向",
+        "comment": "表示路段的交通行驶方向属性，如南向北、北向南、上行、下行等。"
+    },
+    {
+        "name": "segmentStartLongitude",
+        "type": "DatatypeProperty",
+        "label": "路段起点经度",
+        "comment": "表示路段起点位置的经度信息。"
+    },
+    {
+        "name": "segmentStartLatitude",
+        "type": "DatatypeProperty",
+        "label": "路段起点纬度",
+        "comment": "表示路段起点位置的纬度信息。"
+    },
+    {
+        "name": "segmentEndLongitude",
+        "type": "DatatypeProperty",
+        "label": "路段终点经度",
+        "comment": "表示路段终点位置的经度信息。"
+    },
+    {
+        "name": "segmentEndLatitude",
+        "type": "DatatypeProperty",
+        "label": "路段终点纬度",
+        "comment": "表示路段终点位置的纬度信息。"
+    },
+    {
+        "name": "intersectionLongitude",
+        "type": "DatatypeProperty",
+        "label": "交叉口经度",
+        "comment": "表示交叉口位置的经度信息。"
+    },
+    {
+        "name": "intersectionLatitude",
+        "type": "DatatypeProperty",
+        "label": "交叉口纬度",
+        "comment": "表示交叉口位置的纬度信息。"
+    },
+    {
+        "name": "zoneCenterLongitude",
+        "type": "DatatypeProperty",
+        "label": "区域中心经度",
+        "comment": "表示区域中心位置的经度信息。"
+    },
+    {
+        "name": "zoneCenterLatitude",
+        "type": "DatatypeProperty",
+        "label": "区域中心纬度",
+        "comment": "表示区域中心位置的纬度信息。"
+    },
+    {
+        "name": "TrafficState",
+        "type": "Class",
+        "label": "交通态势状态父类",
+        "comment": "所有交通态势状态实体的总父类，用于统一组织不同空间尺度下的状态实体。"
+    },
+    {
+        "name": "TrafficIndicator",
+        "type": "Class",
+        "label": "交通态势指标父类",
+        "comment": "所有交通态势指标实体的总父类，用于统一组织不同层级、不同对象上的指标实体。"
+    },
+    {
+        "name": "describesSpatialEntity",
+        "type": "ObjectProperty",
+        "label": "描述空间实体",
+        "comment": "状态实体描述其所锚定空间实体的总父属性。"
+    },
+    {
+        "name": "hasTrafficState",
+        "type": "ObjectProperty",
+        "label": "拥有交通状态",
+        "comment": "空间实体关联状态实体的总父属性。"
+    },
+    {
+        "name": "hasTrafficIndicator",
+        "type": "ObjectProperty",
+        "label": "关联交通指标",
+        "comment": "状态实体关联指标实体的总父属性。"
+    },
+    {
+        "name": "aggregatedFromIndicator",
+        "type": "ObjectProperty",
+        "label": "聚合自指标",
+        "comment": "高层指标由下层指标聚合形成的总父属性。"
+    },
+    {
+        "name": "validForTime",
+        "type": "ObjectProperty",
+        "label": "有效时间",
+        "comment": "关联对象所属的时间范围（时间片或语义时段）。"
+    },
+    {
+        "name": "computedFrom",
+        "type": "ObjectProperty",
+        "label": "计算来源于",
+        "comment": "表示某一指标由其他指标计算得到。"
+    },
+    {
+        "name": "dependsOnSpatialEntity",
+        "type": "ObjectProperty",
+        "label": "依赖空间实体",
+        "comment": "表示某一指标在计算过程中依赖相关空间实体所承载的信息。"
+    },
+    {
+        "name": "indicatorValue",
+        "type": "DatatypeProperty",
+        "label": "指标数值",
+        "comment": "存储各类指标实体的具体数学计算结果值。"
+    },
+    {
+        "name": "indicatorUnit",
+        "type": "DatatypeProperty",
+        "label": "指标单位",
+        "comment": "表示指标数值的计量单位。"
+    },
+    {
+        "name": "calculationMethod",
+        "type": "DatatypeProperty",
+        "label": "计算方法",
+        "comment": "表示指标的计算方法或来源说明。"
+    },
+    {
+        "name": "RoadSegmentState",
+        "type": "Class",
+        "label": "路段交通状态",
+        "comment": "微观态势状态枢纽，连接具体路段、时间片与路段指标。"
+    },
+    {
+        "name": "IntersectionState",
+        "type": "Class",
+        "label": "交叉口交通状态",
+        "comment": "微观态势状态枢纽，连接具体交叉口、时间片与交叉口指标。"
+    },
+    {
+        "name": "SegmentIndicator",
+        "type": "Class",
+        "label": "路段级指标(父类)",
+        "comment": "所有路段层面的微观感知值与基础衍生指标的统称。"
+    },
+    {
+        "name": "SegmentFlow",
+        "type": "Class",
+        "label": "路段交通流量",
+        "comment": "路段层面的交通流运行规模指标。"
+    },
+    {
+        "name": "SegmentSpeed",
+        "type": "Class",
+        "label": "路段交通速度",
+        "comment": "路段层面的实际运行速度指标。"
+    },
+    {
+        "name": "SegmentDensity",
+        "type": "Class",
+        "label": "路段交通密度",
+        "comment": "路段层面的交通集聚程度指标。"
+    },
+    {
+        "name": "SegmentWeight",
+        "type": "Class",
+        "label": "路段权重",
+        "comment": "用于上层聚合计算的路段权重指标。"
+    },
+    {
+        "name": "SegmentTripTimeRatio",
+        "type": "Class",
+        "label": "路段行程时间比",
+        "comment": "反映路段实际行程时间与基准行程时间关系的指标。"
+    },
+    {
+        "name": "SegmentDelayTimeRatio",
+        "type": "Class",
+        "label": "路段延误时间比",
+        "comment": "反映路段延误水平的指标。"
+    },
+    {
+        "name": "SegmentCongestionCoeff",
+        "type": "Class",
+        "label": "路段拥堵判定系数",
+        "comment": "二值化拥堵状态 (c_ij)。当路段状态触发轻度及以上拥堵等级 (即路段交通速度 <= 0.5*自由流速度) 时，该系数取值为1，否则为0。"
+    },
+    {
+        "name": "SegmentDailyNonSmoothCoeff",
+        "type": "Class",
+        "label": "路段全天非畅通系数",
+        "comment": "反映路段全天非畅通水平的判定指标。"
+    },
+    {
+        "name": "TrafficOperatingLevel",
+        "type": "Class",
+        "label": "交通运行状况等级",
+        "comment": "静态受控字典类。依据 GB/T 33171 划分的定性评价等级，作为5个静态枚举实例的独立父类。"
+    },
+    {
+        "name": "IntersectionIndicator",
+        "type": "Class",
+        "label": "交叉口级指标(父类)",
+        "comment": "所有交叉口层面运行状态指标的统称。"
+    },
+    {
+        "name": "IntersectionFlow",
+        "type": "Class",
+        "label": "交叉口交通流量",
+        "comment": "反映交叉口交通流运行规模的指标。"
+    },
+    {
+        "name": "IntersectionDelay",
+        "type": "Class",
+        "label": "交叉口延误",
+        "comment": "反映交叉口通行延误程度的指标。"
+    },
+    {
+        "name": "IntersectionQueueLength",
+        "type": "Class",
+        "label": "交叉口排队长度",
+        "comment": "反映交叉口排队积聚程度的指标。"
+    },
+    {
+        "name": "IntersectionSaturation",
+        "type": "Class",
+        "label": "交叉口饱和度",
+        "comment": "反映交叉口交通负荷与通行能力关系的指标。"
+    },
+    {
+        "name": "describesSegment",
+        "type": "ObjectProperty",
+        "label": "描述路段",
+        "comment": "[主属性] 状态指向路段，用于建立路段状态与路段实体之间的描述关系。"
+    },
+    {
+        "name": "hasSegmentState",
+        "type": "ObjectProperty",
+        "label": "拥有路段状态",
+        "comment": "[互逆属性] 路段指向状态，支持逻辑层面的双向推理查询。"
+    },
+    {
+        "name": "hasSegmentIndicator",
+        "type": "ObjectProperty",
+        "label": "关联路段指标",
+        "comment": "状态节点挂载具体的路段指标实体。"
+    },
+    {
+        "name": "hasOperatingLevel",
+        "type": "ObjectProperty",
+        "label": "具有运行等级",
+        "comment": "将微观路段、中观道路或宏观区域的交通状态，精准锚定至国标规定的5种静态运行等级实体之一。"
+    },
+    {
+        "name": "derivedFromOperatingLevel",
+        "type": "ObjectProperty",
+        "label": "衍生自运行等级",
+        "comment": "显式表达微观二值化的拥堵判定系数(c_ij)是由定性的运行等级实体触发的（如关联到轻度拥堵及以上实体时，c_ij=1）。"
+    },
+    {
+        "name": "describesIntersection",
+        "type": "ObjectProperty",
+        "label": "描述交叉口",
+        "comment": "[主属性] 状态指向交叉口，用于建立交叉口状态与交叉口实体之间的描述关系。"
+    },
+    {
+        "name": "hasIntersectionState",
+        "type": "ObjectProperty",
+        "label": "拥有交叉口状态",
+        "comment": "[互逆属性] 交叉口指向状态，支持逻辑层面的双向推理查询。"
+    },
+    {
+        "name": "hasIntersectionIndicator",
+        "type": "ObjectProperty",
+        "label": "关联交叉口指标",
+        "comment": "状态节点挂载具体的交叉口指标实体。"
+    },
+    {
+        "name": "RoadState",
+        "type": "Class",
+        "label": "道路交通状态",
+        "comment": "聚合态势状态枢纽，连接道路对象、时间与道路级指标。"
+    },
+    {
+        "name": "ZoneState",
+        "type": "Class",
+        "label": "区域交通状态",
+        "comment": "聚合态势状态枢纽，连接宏观区域、时间与综合评价指标。"
+    },
+    {
+        "name": "RoadIndicator",
+        "type": "Class",
+        "label": "道路级指标(父类)",
+        "comment": "用于表征道路尺度下连续运行状态的指标父类。"
+    },
+    {
+        "name": "RoadTravelTime",
+        "type": "Class",
+        "label": "道路行程时间",
+        "comment": "反映道路尺度下连续通行时间水平的指标。"
+    },
+    {
+        "name": "RoadAverageSpeed",
+        "type": "Class",
+        "label": "道路平均速度",
+        "comment": "反映道路尺度下平均运行速度水平的指标。"
+    },
+    {
+        "name": "RoadDelay",
+        "type": "Class",
+        "label": "道路延误",
+        "comment": "反映道路尺度下整体延误水平的指标。"
+    },
+    {
+        "name": "RoadCongestionLengthRatio",
+        "type": "Class",
+        "label": "道路拥堵长度比",
+        "comment": "反映道路范围内拥堵长度占比的指标。"
+    },
+    {
+        "name": "ZoneIndicator",
+        "type": "Class",
+        "label": "区域级指标(父类)",
+        "comment": "依据 GA/T 2128-2024 标准计算得出的所有区域综合评价指标。"
+    },
+    {
+        "name": "TrafficPerformanceIndex",
+        "type": "Class",
+        "label": "城市交通运行指数(TPI)",
+        "comment": "反映道路网交通运行状况的无量纲数值，取值范围为0~10。依据 GB/T 33171 标准计算，是判定路网宏观拥堵等级的直接定量依据。"
+    },
+    {
+        "name": "TravelTimeRatio_I1",
+        "type": "Class",
+        "label": "I1_区域行程时间比",
+        "comment": "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段行程时间比与权重。"
+    },
+    {
+        "name": "DelayTimeRatio_I2",
+        "type": "Class",
+        "label": "I2_区域延误时间比",
+        "comment": "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段延误时间比。"
+    },
+    {
+        "name": "NetworkAverageSpeed_I3",
+        "type": "Class",
+        "label": "I3_区域平均速度",
+        "comment": "GA/T 2128 标准评估维度：运行效率。反映区域尺度下的平均运行速度水平。"
+    },
+    {
+        "name": "CongestionMileageRatio_I4",
+        "type": "Class",
+        "label": "I4_拥堵里程比",
+        "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 路段拥堵判定系数对应的路段长度。"
+    },
+    {
+        "name": "NonSmoothRoadRatio_I5",
+        "type": "Class",
+        "label": "I5_全天非畅通道路占比",
+        "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 的路段全天非畅通系数。"
+    },
+    {
+        "name": "NonSmoothTimeRatio_I6",
+        "type": "Class",
+        "label": "I6_全天非畅通时间占比",
+        "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：基于全天拥堵时间片统计。"
+    },
+    {
+        "name": "DailyCongestionRate_I7",
+        "type": "Class",
+        "label": "I7_全天拥堵比率",
+        "comment": "GA/T 2128 标准评估维度：拥堵分布。时空双重聚合特征。"
+    },
+    {
+        "name": "PeakHourCoeff_I8",
+        "type": "Class",
+        "label": "I8_拥堵高峰小时系数",
+        "comment": "GA/T 2128 标准评估维度：时间平衡。衍生自全天拥堵比率与高峰拥堵比率的对比。"
+    },
+    {
+        "name": "DissipationRate_I9",
+        "type": "Class",
+        "label": "I9_拥堵消散速率",
+        "comment": "GA/T 2128 标准评估维度：时间平衡。依赖 L5 层拥堵事件实体提取关键过程特征。"
+    },
+    {
+        "name": "PeakBalance_I10",
+        "type": "Class",
+        "label": "I10_早晚高峰平衡度",
+        "comment": "GA/T 2128 标准评估维度：时间平衡。衍生自早高峰与晚高峰相关指标。"
+    },
+    {
+        "name": "DailySpeedDeviation_I11",
+        "type": "Class",
+        "label": "I11_高峰速度日偏差系数",
+        "comment": "GA/T 2128 标准评估维度：时间平衡。跨日聚合特征。"
+    },
+    {
+        "name": "SpatialBalance_I12",
+        "type": "Class",
+        "label": "I12_空间均衡度",
+        "comment": "GA/T 2128 标准评估维度：空间均衡。基于 L3 路段行程时间比离散度计算。"
+    },
+    {
+        "name": "OperationDeviation_I13",
+        "type": "Class",
+        "label": "I13_运行偏离度",
+        "comment": "GA/T 2128 标准评估维度：空间均衡。分道路等级比较特征。"
+    },
+    {
+        "name": "CongestionLoadRatio_I14",
+        "type": "Class",
+        "label": "I14_全天拥堵负荷比",
+        "comment": "GA/T 2128 标准评估维度：空间均衡。依据路段等级聚合底层拥堵系数。"
+    },
+    {
+        "name": "describesRoad",
+        "type": "ObjectProperty",
+        "label": "描述道路",
+        "comment": "[主属性] 状态指向道路，用于建立道路状态与道路实体之间的描述关系。"
+    },
+    {
+        "name": "hasRoadState",
+        "type": "ObjectProperty",
+        "label": "拥有道路状态",
+        "comment": "[互逆属性] 道路指向状态，支持逻辑层面的双向推理查询。"
+    },
+    {
+        "name": "hasRoadIndicator",
+        "type": "ObjectProperty",
+        "label": "关联道路指标",
+        "comment": "状态节点挂载具体的道路指标实体。"
+    },
+    {
+        "name": "describesZone",
+        "type": "ObjectProperty",
+        "label": "描述区域",
+        "comment": "[主属性] 状态指向宏观区域。"
+    },
+    {
+        "name": "hasZoneState",
+        "type": "ObjectProperty",
+        "label": "拥有区域状态",
+        "comment": "[互逆属性] 区域指向状态。"
+    },
+    {
+        "name": "hasZoneIndicator",
+        "type": "ObjectProperty",
+        "label": "关联区域指标",
+        "comment": "状态节点挂载具体的区域综合评价指标实体。"
+    },
+    {
+        "name": "operatingLevelDependsOnTPI",
+        "type": "ObjectProperty",
+        "label": "等级依赖于运行指数",
+        "comment": "显式表达宏观路网的运行等级（如中度拥堵）是严格依赖于城市交通运行指数(TPI)数值推导而来的。"
+    },
+    {
+        "name": "aggregatedFromSegmentIndicator",
+        "type": "ObjectProperty",
+        "label": "聚合自路段指标",
+        "comment": "[核心] 道路指标或区域指标溯源至路段指标。"
+    },
+    {
+        "name": "aggregatedFromIntersectionIndicator",
+        "type": "ObjectProperty",
+        "label": "聚合自交叉口指标",
+        "comment": "[核心] 道路指标或区域指标溯源至交叉口指标。"
+    },
+    {
+        "name": "aggregatedFromRoadIndicator",
+        "type": "ObjectProperty",
+        "label": "聚合自道路指标",
+        "comment": "[核心] 区域指标溯源至道路指标。"
+    },
+    {
+        "name": "CongestionEvent",
+        "type": "Class",
+        "label": "交通拥堵事件",
+        "comment": "表示一次完整的拥堵事件，用于描述拥堵现象在整体层面的生命周期与总体特征。"
+    },
+    {
+        "name": "CongestionEvolution",
+        "type": "Class",
+        "label": "拥堵演化切片",
+        "comment": "表示某一拥堵事件在特定时间片上的整体演化切片，用于描述该时刻拥堵的空间范围、状态构成及演化特征。"
+    },
+    {
+        "name": "hasEvolutionState",
+        "type": "ObjectProperty",
+        "label": "包含演化切片",
+        "comment": "建立拥堵事件与其演化切片之间的从属关系，一个拥堵事件可包含多个演化切片。"
+    },
+    {
+        "name": "linkedToTrafficState",
+        "type": "ObjectProperty",
+        "label": "关联交通状态",
+        "comment": "将拥堵演化切片关联到构成该切片空间范围的微观交通状态实体，包括路段状态和交叉口状态。"
+    },
+    {
+        "name": "nextEvolutionState",
+        "type": "ObjectProperty",
+        "label": "下一个演化切片",
+        "comment": "表示当前拥堵演化切片在时间序列上的下一个演化切片，用于构建拥堵过程的显式演化链。"
+    },
+    {
+        "name": "dependsOnCongestionEvent",
+        "type": "ObjectProperty",
+        "label": "依赖拥堵事件",
+        "comment": "建立区域指标对交通拥堵事件的逻辑依赖关系，用于支撑过程性指标计算。"
+    },
+    {
+        "name": "supportsIndicator",
+        "type": "ObjectProperty",
+        "label": "支撑评价指标",
+        "comment": "[互逆属性] 拥堵事件实体指向它所参与计算的区域宏观指标（如拥堵消散速率）。"
+    },
+    {
+        "name": "triggeredByEvent",
+        "type": "ObjectProperty",
+        "label": "由事件触发",
+        "comment": "表示某一拥堵事件由一般交通事件触发。"
+    },
+    {
+        "name": "congestionStartTime",
+        "type": "DatatypeProperty",
+        "label": "拥堵开始时间",
+        "comment": "表示拥堵事件的开始时间。"
+    },
+    {
+        "name": "congestionEndTime",
+        "type": "DatatypeProperty",
+        "label": "拥堵结束时间",
+        "comment": "表示拥堵事件的结束时间。"
+    },
+    {
+        "name": "congestionDuration",
+        "type": "DatatypeProperty",
+        "label": "拥堵持续时长",
+        "comment": "表示拥堵事件的持续时长，单位为分钟。"
+    },
+    {
+        "name": "maxCongestionLength",
+        "type": "DatatypeProperty",
+        "label": "最大拥堵长度",
+        "comment": "表示拥堵事件生命周期内达到的最大拥堵空间长度，单位为米。"
+    },
+    {
+        "name": "congestionTrend",
+        "type": "DatatypeProperty",
+        "label": "拥堵演化趋势",
+        "comment": "表示拥堵演化切片的变化趋势。其取值采用受控枚举，限定为 'Spreading'（扩散）、'Maintaining'（维持）或 'Dissipating'（消散）。"
+    },
+    {
+        "name": "congestionLength",
+        "type": "DatatypeProperty",
+        "label": "拥堵长度",
+        "comment": "表示某一拥堵演化切片对应的拥堵空间长度，单位为米。"
+    },
+    {
+        "name": "congestionIntensity",
+        "type": "DatatypeProperty",
+        "label": "拥堵强度",
+        "comment": "表示某一演化切片下拥堵事件的整体强度水平。"
+    },
+    {
+        "name": "TrafficEvent",
+        "type": "Class",
+        "label": "一般交通事件",
+        "comment": "一般交通事件的抽象父类，用于统一承载对交通流造成影响的外部事件实例。"
+    },
+    {
+        "name": "Accident",
+        "type": "Class",
+        "label": "交通事故",
+        "comment": "表示交通事故类事件。"
+    },
+    {
+        "name": "Roadwork",
+        "type": "Class",
+        "label": "道路施工",
+        "comment": "表示道路施工类事件。"
+    },
+    {
+        "name": "TrafficControl",
+        "type": "Class",
+        "label": "交通管制",
+        "comment": "表示交通管制类事件。"
+    },
+    {
+        "name": "AdverseWeather",
+        "type": "Class",
+        "label": "恶劣天气",
+        "comment": "表示恶劣天气类事件。"
+    },
+    {
+        "name": "occursOnSpatialEntity",
+        "type": "ObjectProperty",
+        "label": "发生于空间实体",
+        "comment": "一般交通事件发生于某一空间实体的总父属性。"
+    },
+    {
+        "name": "hasTrafficEvent",
+        "type": "ObjectProperty",
+        "label": "发生过一般事件",
+        "comment": "[互逆属性] 空间实体指向其发生过的一般交通事件，支持从物理路段或交叉口反查历史事件。"
+    },
+    {
+        "name": "occursOnSegment",
+        "type": "ObjectProperty",
+        "label": "发生于路段",
+        "comment": "表示一般交通事件发生于某一路段。"
+    },
+    {
+        "name": "occursOnIntersection",
+        "type": "ObjectProperty",
+        "label": "发生于交叉口",
+        "comment": "表示一般交通事件发生于某一交叉口。"
+    },
+    {
+        "name": "severityLevel",
+        "type": "DatatypeProperty",
+        "label": "严重程度",
+        "comment": "表示一般交通事件的严重程度等级。"
+    },
+    {
+        "name": "eventStartTime",
+        "type": "DatatypeProperty",
+        "label": "事件开始时间",
+        "comment": "表示一般交通事件的开始时间，作为时间实体关系的辅助时间属性。"
+    },
+    {
+        "name": "eventEndTime",
+        "type": "DatatypeProperty",
+        "label": "事件结束时间",
+        "comment": "表示一般交通事件的结束时间，作为时间实体关系的辅助时间属性。"
+    },
+    {
+        "name": "eventDuration",
+        "type": "DatatypeProperty",
+        "label": "事件持续时长",
+        "comment": "表示一般交通事件的持续时长，作为时间实体关系的辅助时间属性。"
+    },
+    {
+        "name": "eventDescription",
+        "type": "DatatypeProperty",
+        "label": "事件描述",
+        "comment": "表示一般交通事件的文本描述信息。"
+    },
+    {
+        "name": "eventSource",
+        "type": "DatatypeProperty",
+        "label": "事件来源",
+        "comment": "表示一般交通事件的数据来源或信息来源。"
+    }
+]

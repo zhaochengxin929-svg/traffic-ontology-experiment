@@ -1,0 +1,121 @@
+﻿paper_id,round_id,title,article_url,url_status,class_C01,class_C02,class_C03,class_C04,class_C05,class_C06,class_C07,class_C08,class_C09,class_C10,class_C11,class_C12,class_C13,class_C14,class_C15,class_C16,class_C17,class_C18,class_C19,class_C20,object_property_OP01,object_property_OP02,object_property_OP03,object_property_OP04,object_property_OP05,datatype_property_DP01,datatype_property_DP02,datatype_property_DP03,datatype_property_DP04,datatype_property_DP05
+A001,R4,A Physics-Informed Deep learning framework for traffic state estimation in signalized arterial roads,https://doi.org/10.1016/j.trc.2025.105420,verified,1,1,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+A002,R2,Knowledge-data fusion oriented traffic state estimation: A stochastic physics-informed deep learning approach,https://doi.org/10.1016/j.trc.2025.105422,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A003,R4,Multi-reservoir traffic dynamics: Outflow network MFD and state estimation with sparse traffic data,https://doi.org/10.1016/j.trc.2025.105504,verified,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+A004,R2,Structure-inductive meta-learning empowers partial-to-global traffic state forecasting in dynamic sensor networks,https://doi.org/10.1016/j.trc.2026.105564,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A005,R4,Urban traffic health assessment based on multi-state semi-Markov process,https://doi.org/10.1016/j.ress.2025.111586,verified_metadata_differs,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A006,R2,A parsimonious model for classifying the traffic state of urban road networks: A two-stage regression approach,https://doi.org/10.1016/j.commtr.2025.100185,verified,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A007,R3,"A systematic review of generative adversarial networks for traffic state prediction: Overview, taxonomy, and future prospects",https://doi.org/10.1016/j.inffus.2024.102915,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A008,R2,An Actor–Critic-based adapted Deep Reinforcement Learning model for multi-step traffic state prediction,https://doi.org/10.1016/j.asoc.2025.113783,verified,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A009,R3,Bayesian optimization for traffic sensor deployment: Integrating network flow estimation into location planning,https://doi.org/10.1016/j.tre.2025.104593,verified_metadata_differs,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A010,R2,Capturing traffic state variation process: An analytical modeling approach,https://doi.org/10.1016/j.tre.2025.104119,verified,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A011,R3,Estimating real-time traffic state of holding vehicles at signalized intersections using partial connected vehicle trajectory data,https://doi.org/10.1016/j.trc.2025.105251,verified,1,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A012,R3,Evaluation of macroscopic traffic network state using ALPR data based on two-fluid model theory,https://doi.org/10.1080/23249935.2025.2525291,verified,0,0,0,1,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
+A013,R2,Link-based traffic state estimation and prediction for arterial networks using license-plate recognition data,https://doi.org/10.1016/j.trc.2020.102660,verified_metadata_differs,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+A014,R1,Behaviour based on decision matrices for a coordination between agents in a urban traffic simulation,https://doi.org/10.1007/s10489-007-0045-3,verified_metadata_differs,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A015,R1,Physics-informed deep learning with Kalman filter mixture for traffic state prediction,https://doi.org/10.1016/j.ijtst.2024.04.002,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+A016,R1,Predicting real-time traffic restoration time based on the estimated traffic state,https://doi.org/10.1016/j.trip.2025.101565,verified,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,0,0,1,0,0,1,0
+A017,R4,Prediction of traffic state variability with an integrated model-based and data-driven Bayesian framework,https://doi.org/10.1016/j.trc.2024.104953,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A018,R3,State Space Guided Spatio-Temporal Network for Efficient Long-Term Traffic Prediction,https://doi.org/10.32604/cmc.2025.072147,verified_metadata_differs,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A019,R1,Filter for Traffic Congestion Prediction: Leveraging Traffic Control Signal Actions for Dynamic State Estimation,https://doi.org/10.1109/access.2024.3525119,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A020,R4,TSGDiff: Traffic state generative diffusion model using multi-source information fusion,https://www.sciencedirect.com/science/article/pii/S0968090X25000853,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A021,R1,Uncertainty quantification in Bayesian physics‐informed deep learning‐based traffic state prediction,https://doi.org/10.1111/mice.70078,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+A022,R3,A conditional diffusion model for probabilistic estimation of traffic states at sensor-free locations,https://doi.org/10.1016/j.trc.2024.104798,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A023,R2,A traffic state prediction method based on spatial–temporal data mining of floating car data by using autoformer architecture,https://doi.org/10.1111/mice.13179,verified,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+A024,R1,Analytical formulation for explaining the variations in traffic states: A fundamental diagram modeling perspective with stochastic parameters,https://doi.org/10.1016/j.ejor.2023.07.005,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A025,R2,Digital traffic state analysis for urban regions considering complex multi-directional flow changes,https://doi.org/10.1016/j.asej.2024.103124,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+A026,R4,Dynamic capacity drop propagation in incident-affected networks: Traffic state modeling with SIS-CTM,https://doi.org/10.1016/j.physa.2024.129536,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0
+A027,R4,Redefining Urban Traffic Dynamics With TCN-FL Driven Traffic Prediction and Control Strategies,https://doi.org/10.1109/access.2024.3443298,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A028,R1,A Macro-Micro Integrated Modeling Approach for Urban Day-to-Day Travel Based on Complex System Dynamics in Information Environment,https://doi.org/10.1109/access.2024.3437787,verified,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A029,R4,Network-level short-term traffic state prediction incorporating critical nodes: A knowledge-based deep fusion approach,https://doi.org/10.1016/j.ins.2024.120215,verified,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A030,R1,Network macroscopic fundamental diagram-informed graph learning for traffic state imputation,https://doi.org/10.1016/j.trb.2024.102996,verified,1,0,1,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+A031,R4,Traffic state estimation from vehicle trajectories with anisotropic Gaussian processes,https://doi.org/10.1016/j.trc.2024.104646,verified,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+A032,R4,Variable-length traffic state prediction and applications for urban network with adaptive signal timing plan,https://doi.org/10.1016/j.physa.2024.129566,verified,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A033,R3,Network-wide traffic state reconstruction: An integrated generative adversarial network framework with structural deep network embedding,https://doi.org/10.1016/j.chaos.2023.113830,verified_metadata_differs,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A034,R1,Physics-informed neural networks for integrated traffic state and queue profile estimation: A differentiable programming approach on layered computational graphs,https://doi.org/10.1016/j.trc.2023.104224,verified,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A035,R3,Road section traffic flow prediction method based on the traffic factor state network,https://doi.org/10.1016/j.physa.2023.128712,verified,1,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A036,R2,Short-term traffic flow prediction based on secondary hybrid decomposition and deep echo state networks,https://doi.org/10.1016/j.physa.2023.129313,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A037,R4,State estimation in urban traffic networks: A two-layer approach,https://doi.org/10.1016/j.trc.2020.102616,verified_metadata_differs,1,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0
+A038,R4,Structured prediction of sparse dependent variables for traffic state estimation in large-scale networks,https://doi.org/10.1016/j.asoc.2022.109893,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A039,R3,A traffic state recognition model based on feature map and deep learning,https://doi.org/10.1016/j.physa.2022.128198,verified,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A040,R3,Traffic state estimation of urban road networks by multi-source data fusion: Review and new insights,https://doi.org/10.1016/j.physa.2022.127079,verified,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0
+A041,R2,Problems of Structural and Parametric Traffic Control for an Urban Road Network Fragment,https://doi.org/10.1109/synchroinfo55067.2022.9840979,verified,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
+A042,R3,Traffic Efficiency Models for Urban Traffic Management Using Mobile Crowd Sensing: A Survey,https://doi.org/10.3390/su132313068,verified,1,1,1,1,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+A043,R1,Graph-Based Dynamic Modeling and Traffic Prediction of Urban Road Network,https://doi.org/10.1109/jsen.2021.3124818,verified,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A044,R2,Intelligent Planning and Research on Urban Traffic Congestion,https://doi.org/10.3390/fi13110284,verified,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A045,R3,Traffic Data Imputation Using Deep Convolutional Neural Networks,https://doi.org/10.1109/access.2020.2999662,verified,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A046,R2,The impact of autonomous vehicles on urban traffic network capacity: an experimental analysis by microscopic traffic simulation,https://doi.org/10.1080/19427867.2019.1662561,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,1,0,0,1,0,0,0,0
+A047,R4,A MILP-based MPC Method for Traffic Signal Control of Urban Road Networks,https://doi.org/10.1109/cac48633.2019.8997474,verified_metadata_differs,1,1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,1
+A048,R1,Traffic state estimation on a two-dimensional network by a state-space model,https://doi.org/10.1016/j.trc.2019.03.016,verified,1,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A049,R2,Exploring the Impact of Meteorological Conditions on Urban Traffic Dynamics: A Case Study of Prague,https://doi.org/10.1109/scsp61506.2024.10552719,verified,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A050,R2,Prediction and Management of Traffic Congestion in Urban Environments,https://doi.org/10.1109/icccnt61001.2024.10724090,verified,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+A051,R4,Assessment of the Current Local Transport Situation via Online Processing of Monitoring Data and its Application for Traffic Regulation,https://doi.org/10.1109/mlsd61779.2024.10739631,verified,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A052,R3,Generalized adaptive smoothing based neural network architecture for traffic state estimation,https://doi.org/10.1016/j.ifacol.2023.10.1502,verified,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A053,R3,Moving Boundary Observer for Traffic State Estimation with Shock Waves,https://doi.org/10.1016/j.ifacol.2023.10.998,verified,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A054,R1,Network Traffic Dynamics Prediction with a Hybrid Approach: Autoencoder-VAR,https://doi.org/10.1109/mt-its49943.2021.9529299,verified,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A055,R2,Urban network traffic state estimation using a data-based approach,https://doi.org/10.1016/j.ifacol.2021.06.033,verified,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A056,R1,Recognizing Massive Mobile Traffic Patterns to Understand Urban Dynamics,https://doi.org/10.1109/confluence51648.2021.9377107,verified_metadata_differs,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A057,R3,Urban Traffic Prediction using Congestion Diffusion Model,https://doi.org/10.1109/icce-asia49877.2020.9276823,verified,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A058,R1,Continuous Time Markov Chain Traffic Model for Urban Environments,https://doi.org/10.1109/globecom42002.2020.9348256,verified,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A059,R1,Real-time multiple model joint estimation for an urban traffic junction subject to jump dynamics,https://doi.org/10.1016/j.ifacol.2020.12.1995,verified,1,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A060,R4,Development of Artificial Intelligence Systems for Megacities Transport Infrastructure Management,https://ieeexplore.ieee.org/document/9039420,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A061,R2,基于跟驰模型和交通波理论的混合交通流拥堵蔓延机理分析,https://doi.org/10.13986/j.cnki.jote.2026.02.016,verified,1,1,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0
+A062,R4,基于移动定位数据和群智感知的城市交通态势预测方法,https://www.fx361.com/page/2025/0312/25950735.shtml,verified,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A063,R2,考虑天气因素的交通状态预测模型,,pending,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A064,R1,城市快速路交通运行态势识别与评估方法研究,,pending,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,0
+A065,R1,基于交通态势数据的道路拥堵情况分析,https://m.fx361.com/news/2024/1231/25502931.html,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0
+A066,R1,基于集对分析评价模型的城市交通态势判别,,pending,1,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+A067,R3,多源数据驱动的深度学习在城市主干道交通态势研究中的应用,https://m.fx361.com/news/2024/1211/24744542.html,verified_metadata_differs,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A068,R2,城市道路交通拥堵态势评估建模技术及优化方法研究,,pending,0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+A069,R3,基于实时交通态势数据和地理加权回归的城市道路通畅性影响因素分析——以武汉市中心区工作日早高峰为例,,pending,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+A070,R4,基于大数据的昆明市交通拥堵时空特征及路网结构影响分析,https://kmyzxb.magtech.com.cn/CN/10.3969/j.issn.1009-0479.2022.04.005,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+A071,R4,多模态信息联动的交通态势感知平台解决方案,https://doi.org/10.19301/j.cnki.zncs.2022.10.004,verified,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A072,R3,城市道路交通态势演化研究现状及展望,https://m.fx361.com/news/2021/0510/20130259.html,verified,1,1,1,1,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A073,R4,基于图神经网络和高德交通态势数据的道路短时速度预测,,pending,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A074,R3,基于大数据的城市交通态势推演与综合评估关键技术及应用,https://jskjzz.cbpt.cnki.net/portal/journal/portal/client/paper/9b556cf09b3f3743cd15f10cee4b8f25,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A075,R2,基于机器学习的城市交通态势评估与预测方法研究,https://doi.org/10.13484/j.nmgdxxbzk.20210212,verified,1,1,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+A076,R1,基于高德开放数据的西安市道路交通分析,,pending,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
+A077,R3,城市功能区高密度路网交通态势运行规律与建模,,pending,1,0,1,0,1,0,0,0,0,0,0,0,0,1,0,1,1,0,0,1,0,0,1,0,0,1,1,0,0,0
+A078,R4,面向交通枢纽区域干线道路的交通态势预测模型研究,,pending,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0
+A079,R2,城市道路交通状态识别及预测研究,,pending,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+A080,R1,数据驱动的城市交通态势分析与数字孪生建模,,pending,1,1,0,1,1,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0
+A081,R4,城市道路交通拥堵态势表征指标体系与方法研究,,pending,1,1,1,1,1,1,1,1,0,0,1,0,1,0,1,0,0,1,0,0,0,0,0,1,0,1,1,0,0,1
+A082,R2,基于态势地图的城市道路运行状态时空演变特性分析,,pending,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0
+A083,R1,城市道路异质交通流拥堵传播规律研究,,pending,1,1,1,1,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+A084,R3,数据驱动的城市路网交通状态分析及应用研究,,pending,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,0,1,0
+B001,R4,A mixed-methods examination of the effect of responsibility and social intelligence on driving behavior of young drivers,https://doi.org/10.1016/j.trf.2025.103449,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B002,R1,Do micromobility systems promote public transit usage? Evidence from U.S. Cities,https://doi.org/10.1016/j.trd.2026.105256,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B003,R2,Driving under time pressure: Driver state and behavior changes with limited time savings in complex road networks - A naturalistic time-incentive study with young male drivers,https://doi.org/10.1016/j.trf.2025.103483,verified,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B004,R3,Modelling young distracted driver's collision avoidance behaviour in a connected environment,https://doi.org/10.1016/j.trf.2025.103495,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B005,R2,Personalizing ADAS through driver segmentation: A latent class and multistage Behavioral Modeling approach in China,https://doi.org/10.1016/j.trf.2026.103523,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B006,R3,Real-time monitoring of driver cognitive states: linking driving behavior to neural oscillations,https://doi.org/10.1016/j.trf.2025.103423,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B007,R1,Evaluating the impact of managed lane separation lines on driver behavior and safety: A human factors study,https://doi.org/10.1016/j.trf.2025.103357,verified,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+B008,R4,"Examining the effects of road safety advertising that encourages positive, prosocial driving behaviours",https://doi.org/10.1016/j.trf.2025.103366,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B009,R2,Integrated operation of ride-hailing and shared micromobility services in multimodal transportation networks with public transit: The unintended consequences of regulations,https://doi.org/10.1016/j.trc.2025.105340,verified,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B010,R4,Investigating nighttime driver behaviors and interactions at Pedestrian Hybrid Beacons,https://doi.org/10.1016/j.trf.2025.07.011,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+B011,R3,A Rolling-Horizon Approach for Mitigation of Exhaust Emissions in Urban Traffic Networks,https://doi.org/10.1109/cac59555.2023.10450401,verified_metadata_differs,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0
+B012,R4,Multiobjective Model Predictive Control Based on Urban and Emission Macroscopic Fundamental Diagrams,https://doi.org/10.1109/access.2024.3387664,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+B013,R1,Computational method for feedback perimeter control of multiregion urban traffic networks with state-dependent delays,https://doi.org/10.1016/j.trc.2023.104231,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
+B014,R3,Distributed Control for an Urban Traffic Network,https://doi.org/10.1109/tits.2022.3208565,verified,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B015,R3,Noticeability Versus Impact in Traffic Signal Tampering,https://doi.org/10.1109/access.2020.2992536,verified,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
+B016,R1,Countermeasure Study of Urban Traffic Improvement Based on the Internet of Things,https://doi.org/10.1109/access.2020.2989083,verified,1,1,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0
+B017,R4,Optimizing Smart Cities Traffic Flow for the Carbon Emission Control Through Modern Technologies,https://doi.org/10.1109/sparc61891.2024.10828884,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B018,R2,Enhancing Traffic Control Strategies through Dynamic Simulation and Reinforcement Learning,https://doi.org/10.1109/icaaic60222.2024.10575522,verified,0,1,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0
+B019,R1,A Dynamic Traffic Orchestration for Seamless Urban Mobility using Nexus Flow,https://doi.org/10.1109/iceca63461.2024.10800890,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
+B020,R2,Deep Reinforcement Learning (DRL) for Real-Time Traffic Management in Smart Cities,https://doi.org/10.1109/iccsai59793.2023.10421359,verified,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B021,R4,基于物联网的城市交通控制系统架构,https://doi.org/10.16667/j.issn.2095-1302.2025.01.021,verified,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+B022,R3,道路重要度与交通状态耦合协调关系的影响机理研究,https://www.sciopen.com/article/10.12141/j.issn.1000-565X.240388?issn=1000-565X,verified,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0
+B023,R2,基于交通态势可视化分析的公交专用道布局,,pending,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0
+B024,R1,融合异构交通态势的事故预测模型,https://www.joca.cn/CN/abstract/abstract25960.shtml,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C001,R4,"A reinforcement learning approach for the dynamic vehicle routing and scheduling problem with stochastic request times and time-dependent, stochastic travel times",https://doi.org/10.1016/j.trc.2025.105387,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C002,R2,A stochastic electric vehicle routing problem under uncertain energy consumption,https://doi.org/10.1016/j.trc.2025.105480,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C003,R3,Consolidation of urban freight transportation and public transit systems: a generic strategic framework using Continuum Approximation,https://doi.org/10.1016/j.trc.2025.105490,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C004,R3,Social pandemic? The effect of COVID-19 on familiar stranger encounters in a public transit network,https://doi.org/10.1016/j.tra.2025.104793,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C005,R1,Socio-spatial equity in public transit system accessibility for slum and non-slum population in a developing mega city,https://doi.org/10.1016/j.tra.2025.104738,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C006,R2,Urban life matters: The heterogeneous effects of on-demand bike-sharing platforms on urban public transit,https://doi.org/10.1016/j.tra.2025.104740,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C007,R1,A data-driven preference learning approach for multi-objective vehicle routing problems in last-mile delivery,https://www.sciencedirect.com/science/article/pii/S0968090X25001056,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C008,R4,Electric vehicle routing problem considering traffic conditions and real-time loads,https://doi.org/10.1016/j.trc.2025.105150,verified,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C009,R3,低空立体交通跨模式协同与智能调度研究综述,https://www.aas.net.cn/cn/article/doi/10.16383/j.aas.c250369,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C010,R4,低空经济政策与城市空中交通创新生态系统产业发展演变及作用机制研究,https://coaa.istic.ac.cn/openjournal/periodicalArticle/0120260200221286,verified,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C011,R2,交通运输行业绿色低碳政策现状调研与分析研究,,pending,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+C012,R1,基于WOS数据库的文献计量分析的城市交通事故态势研究,,pending,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0

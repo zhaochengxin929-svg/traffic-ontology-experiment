@@ -1,0 +1,306 @@
+@prefix : <http://kb.traffic.seu.edu.cn/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://kb.traffic.seu.edu.cn/ontology> .
+
+<http://kb.traffic.seu.edu.cn/ontology> rdf:type owl:Ontology ;
+    rdfs:comment "城市路网交通态势知识图谱本体模型"@zh .
+
+#################################################################
+#    通用属性
+#################################################################
+
+#################################################################
+#    L1: 时间信息层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TimeEntity rdf:type owl:Class ;
+    rdfs:label "时间实体父类"@zh ;
+    rdfs:comment "所有时间相关实体的基类。"@zh .
+
+:TimeInterval rdf:type owl:Class ;
+    rdfs:subClassOf :TimeEntity ;
+    rdfs:label "时间片"@zh ;
+    rdfs:comment "最小统计粒度（15min），动态数据的挂载锚点。"@zh .
+
+:TimePeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimeEntity ;
+    rdfs:label "语义时间段"@zh ;
+    rdfs:comment "具有业务含义的时间集合（如“早高峰”）。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+
+:belongsToPeriod rdf:type owl:ObjectProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range :TimePeriod ;
+    rdfs:label "属于时段"@zh ;
+    rdfs:comment "定义微观时间片与宏观时段的从属关系。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+
+:startTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "开始时刻"@zh ;
+    rdfs:comment "表示时间片的起始时间点。"@zh .
+
+:endTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "结束时刻"@zh ;
+    rdfs:comment "表示时间片的结束时间点。"@zh .
+
+#################################################################
+#    L2: 空间信息层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:SpatialEntity rdf:type owl:Class ;
+    rdfs:label "空间实体父类"@zh ;
+    rdfs:comment "所有空间相关实体的基类，承载静态属性与拓扑关系。"@zh .
+
+:Zone rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "区域"@zh ;
+    rdfs:comment "宏观空间单元（如交通小区），L4态势评价主体。"@zh .
+
+:RoadSegment rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "路段"@zh ;
+    rdfs:comment "微观空间单元，L3态势物理载体，交通流运行的载体。"@zh .
+
+:Intersection rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "交叉口"@zh ;
+    rdfs:comment "路网拓扑节点。"@zh .
+
+:Road rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "道路"@zh ;
+    rdfs:comment "路段的逻辑聚合（如“中山东路”）。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+
+	
+# --- 3. 属性定义 (DatatypeProperty) ---
+
+#################################################################
+#    交通态势总纲层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TrafficState rdf:type owl:Class ;
+    rdfs:label "交通态势状态父类"@zh ;
+    rdfs:comment "所有交通态势状态实体的总父类，用于统一组织不同空间尺度下的状态实体。"@zh .
+
+:TrafficIndicator rdf:type owl:Class ;
+    rdfs:label "交通态势指标父类"@zh ;
+    rdfs:comment "所有交通态势指标实体的总父类，用于统一组织不同层级、不同对象上的指标实体。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:describesSpatialEntity rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficState ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "描述空间实体"@zh ;
+    rdfs:comment "状态实体描述其所锚定空间实体的总父属性。"@zh .
+
+:hasTrafficState rdf:type owl:ObjectProperty ;
+    rdfs:domain :SpatialEntity ;
+    rdfs:range :TrafficState ;
+    rdfs:label "拥有交通状态"@zh ;
+    rdfs:comment "空间实体关联状态实体的总父属性。"@zh .
+
+:hasTrafficIndicator rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficState ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "关联交通指标"@zh ;
+    rdfs:comment "状态实体关联指标实体的总父属性。"@zh .
+
+:aggregatedFromIndicator rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "聚合自指标"@zh ;
+    rdfs:comment "高层指标由下层指标聚合形成的总父属性。"@zh .
+
+:validForTime rdf:type owl:ObjectProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( :TrafficState
+                                :CongestionEvent
+                                :CongestionEvolution
+                                :TrafficEvent ) ] ;
+    rdfs:range :TimeEntity ;
+    rdfs:label "有效时间"@zh ;
+    rdfs:comment "关联对象所属的时间范围（时间片或语义时段）。"@zh .
+
+:computedFrom rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "计算来源于"@zh ;
+    rdfs:comment "表示某一指标由其他指标计算得到。"@zh .
+
+:dependsOnSpatialEntity rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "依赖空间实体"@zh ;
+    rdfs:comment "表示某一指标在计算过程中依赖相关空间实体所承载的信息。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:indicatorValue rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range xsd:double ;
+    rdfs:label "指标数值"@zh ;
+    rdfs:comment "存储各类指标实体的具体数学计算结果值。"@zh .
+
+#################################################################
+#    L3: 微观交通态势层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:SegmentIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "路段级指标(父类)"@zh ;
+    rdfs:comment "所有路段层面的微观感知值与基础衍生指标的统称。"@zh .
+
+:IntersectionIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "交叉口级指标(父类)"@zh ;
+    rdfs:comment "所有交叉口层面运行状态指标的统称。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+# (本层无独立的数据属性定义)
+
+#################################################################
+#    L4: 聚合交通态势层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:RoadIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "道路级指标(父类)"@zh ;
+    rdfs:comment "用于表征道路尺度下连续运行状态的指标父类。"@zh .
+
+:ZoneIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "区域级指标(父类)"@zh ;
+    rdfs:comment "依据 GA/T 2128-2024 标准计算得出的所有区域综合评价指标。"@zh .
+	
+
+# --- 2. 关系定义 (ObjectProperty) ---
+
+	
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+# (本层无独立的数据属性定义)
+
+#################################################################
+#    L5: 交通拥堵事件层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:CongestionEvent rdf:type owl:Class ;
+    rdfs:label "交通拥堵事件"@zh ;
+    rdfs:comment "表示一次完整的拥堵事件，用于描述拥堵现象在整体层面的生命周期与总体特征。"@zh .
+
+:CongestionEvolution rdf:type owl:Class ;
+    rdfs:label "拥堵演化切片"@zh ;
+    rdfs:comment "表示某一拥堵事件在特定时间片上的整体演化切片，用于描述该时刻拥堵的空间范围、状态构成及演化特征。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:hasEvolutionState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :CongestionEvolution ;
+    rdfs:label "包含演化切片"@zh ;
+    rdfs:comment "建立拥堵事件与其演化切片之间的从属关系，一个拥堵事件可包含多个演化切片。"@zh .
+
+:linkedToTrafficState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range [ rdf:type owl:Class ;
+                 owl:unionOf ( :RoadSegmentState :IntersectionState ) ] ;
+    rdfs:label "关联交通状态"@zh ;
+    rdfs:comment "将拥堵演化切片关联到构成该切片空间范围的微观交通状态实体，包括路段状态和交叉口状态。"@zh .
+
+:nextEvolutionState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range :CongestionEvolution ;
+    rdfs:label "下一个演化切片"@zh ;
+    rdfs:comment "表示当前拥堵演化切片在时间序列上的下一个演化切片，用于构建拥堵过程的显式演化链。"@zh .
+
+:dependsOnCongestionEvent rdf:type owl:ObjectProperty ;
+    owl:inverseOf :supportsIndicator ;
+	rdfs:domain :ZoneIndicator ;
+    rdfs:range :CongestionEvent ;
+    rdfs:label "依赖拥堵事件"@zh ;
+    rdfs:comment "建立区域指标对交通拥堵事件的逻辑依赖关系，用于支撑过程性指标计算。"@zh .
+
+:triggeredByEvent rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :TrafficEvent ;
+    rdfs:label "由事件触发"@zh ;
+    rdfs:comment "表示某一拥堵事件由一般交通事件触发。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+
+:congestionDuration rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:double ;
+    rdfs:label "拥堵持续时长"@zh ;
+    rdfs:comment "表示拥堵事件的持续时长，单位为分钟。"@zh .
+
+:congestionTrend rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range xsd:string ;
+    rdfs:label "拥堵演化趋势"@zh ;
+    rdfs:comment "表示拥堵演化切片的变化趋势。其取值采用受控枚举，限定为 'Spreading'（扩散）、'Maintaining'（维持）或 'Dissipating'（消散）。"@zh .
+
+#################################################################
+#    L6: 一般交通事件层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TrafficEvent rdf:type owl:Class ;
+    rdfs:label "一般交通事件"@zh ;
+    rdfs:comment "一般交通事件的抽象父类，用于统一承载对交通流造成影响的外部事件实例。"@zh .
+
+:Accident rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "交通事故"@zh ;
+    rdfs:comment "表示交通事故类事件。"@zh .
+
+:Roadwork rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "道路施工"@zh ;
+    rdfs:comment "表示道路施工类事件。"@zh .
+
+:AdverseWeather rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "恶劣天气"@zh ;
+    rdfs:comment "表示恶劣天气类事件。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:occursOnSpatialEntity rdf:type owl:ObjectProperty ;
+    owl:inverseOf :hasTrafficEvent ;
+	rdfs:domain :TrafficEvent ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "发生于空间实体"@zh ;
+    rdfs:comment "一般交通事件发生于某一空间实体的总父属性。"@zh .
+
+:hasTrafficEvent rdf:type owl:ObjectProperty ;
+    owl:inverseOf :occursOnSpatialEntity ;
+    rdfs:domain :SpatialEntity ;
+    rdfs:range :TrafficEvent ;
+    rdfs:label "发生过一般事件"@zh ;
+    rdfs:comment "[互逆属性] 空间实体指向其发生过的一般交通事件，支持从物理路段或交叉口反查历史事件。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:severityLevel rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:integer ;
+    rdfs:label "严重程度"@zh ;
+    rdfs:comment "表示一般交通事件的严重程度等级。"@zh .
+

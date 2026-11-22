@@ -1,0 +1,5 @@
+﻿entity_type,sample_total,gold_positive_total,gold_negative_total,pred_positive_total_loose,tp_loose,fp_loose,fn_loose,tn_loose,precision_loose,recall_loose,f1_loose,pred_positive_total_strict,tp_strict,fp_strict,fn_strict,tn_strict,precision_strict,recall_strict,f1_strict
+class,2400,288,2112,229,209,20,79,2092,0.912664,0.725694,0.808510,214,196,18,92,2094,0.915888,0.680556,0.780877
+object_property,600,14,586,9,8,1,6,585,0.888889,0.571429,0.695653,9,8,1,6,585,0.888889,0.571429,0.695653
+datatype_property,600,50,550,33,31,2,19,548,0.939394,0.620000,0.746988,33,31,2,19,548,0.939394,0.620000,0.746988
+all_types_micro,3600,352,3248,271,248,23,104,3225,0.915129,0.704545,0.796147,256,235,21,117,3227,0.917969,0.667614,0.773027

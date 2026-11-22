@@ -1,0 +1,21 @@
+﻿target_id,标准名称,英文标准名,空间层级,核心判定口径,常见中文表达,常见英文表达,重点排除
+C01,路段交通流量,Segment Traffic Flow,路段,表示路段/断面单位时间内通过的车辆数量,交通流量、流量、路段流量、交通量、道路交通流量,"TrafficFlow, SectionFlow, FlowRate, TrafficVolume, SegmentFlow",路网流量、交叉口流量、总流量、输入/输出/转移流量
+C02,路段运行速度,Segment Operating Speed,路段,表示车辆在路段上的运行速度,速度、平均速度、平均行程速度、交通流速度、车辆速度、空间平均速度、路段速度,"Speed, AverageSpeed, AverageTravelSpeed, TrafficFlowSpeed, VehicleSpeed, SpaceMeanSpeed",路网平均速度、自由流速度、激波速度
+C03,路段交通密度,Segment Traffic Density,路段,表示单位长度路段上的车辆数量,交通密度、密度、平均交通密度、区间密度、路段密度,"TrafficDensity, Density, AverageTrafficDensity, SectionDensity, SegmentDensity",临界密度、阻塞密度、路网平均密度、道路结构密度
+C04,路段行程时间,Segment Travel Time,路段,表示车辆通过某一路段所需时间,行程时间、路段行程时间、平均行程时间、旅行时间,"TravelTime, LinkTravelTime, SegmentTravelTime, AverageTravelTime",行程时间比、行程时间指数、自由流行程时间、路径行程时间
+C05,路段占有率,Segment Occupancy,路段,表示路段检测器被车辆占用的比例,占有率、路段占有率、平均占有率、道路占有率,"Occupancy, SegmentOccupancy, AverageOccupancy, RoadOccupancy",路网占有率、时间占有率、空间占有率
+C06,路段饱和度,Segment Saturation Degree,路段,表示路段运行负荷相对承载能力的饱和程度,路段饱和度、饱和度、平均饱和度,"SegmentSaturationDegree, SegmentSaturation, AverageSaturation",交叉口饱和度、路网饱和度、饱和流率
+C07,路段车头间距,Segment Space Headway,路段,表示相邻车辆在空间上的距离间隔,车头间距、平均车头间距,"SpaceHeadway, AverageHeadway",稳态车头间距、非路段排队概念
+C08,路段车头时距,Segment Time Headway,路段,表示相邻车辆连续通过断面的时间间隔,车头时距,"TimeHeadway, Headway",交叉口车头时距、饱和车头时距、期望车头时距
+C09,交叉口排队长度,Intersection Queue Length,交叉口,表示交叉口进口道/车道组上的排队长度,排队长度、平均排队长度、周期最大排队长度,"QueueLength, AverageQueueLength, CycleMaximumQueueLength",路段排队长度、路段缓行队列长度
+C10,交叉口平均等待时间,Intersection Average Waiting Time,交叉口,表示车辆在交叉口控制条件下的平均等待时间,平均等待时间、等待时间,"AverageWaitingTime, WaitingTime",路段等待时间、公交平均等待时间
+C11,交叉口平均延误,Intersection Average Delay,交叉口,表示车辆在交叉口运行中相对理想状态的平均延误,平均延误时间、延误,"AverageDelayTime, IntersectionDelay, Delay",路段延误、路网拥堵延误、延误指数
+C12,交叉口转向比例,Intersection Turning Rate,交叉口,表示交叉口流量的转向分配比例,转向比例、转向比,"TurningRate, TurningRatio",单独左转/右转流量本身
+C13,路段服务水平,Segment Level of Service,路段,表示路段运行服务状况的等级划分,服务水平、服务水平等级、道路服务水平,LevelOfService,路网服务水平、泛服务水平
+C14,路网平均交通流量,Network Average Traffic Flow,路网,表示路网尺度聚合后的平均流量水平,路网平均流量、路网流量、路网交通流量,"NetworkAverageFlow, NetworkFlow, NetworkTrafficFlow",路段交通流量、总流量、吞吐量、加权流量
+C15,路网平均运行速度,Network Average Operating Speed,路网,表示路网尺度聚合后的平均运行速度,路网平均行程速度、平均行车速度、路网平均瞬时速度,"NetworkAverageTravelSpeed, AverageTrafficSpeed, NetworkAverageInstantaneousSpeed",路段运行速度、自由流速度
+C16,路网交通密度,Network Traffic Density,路网,表示路网尺度下的平均交通密度，**不包括道路基础设施密度**,路网平均密度、路网交通密度,"NetworkAverageDensity, AverageNetworkDensity",道路密度、节点密度、路网结构密度
+C17,路网车辆积聚量,Network Vehicle Accumulation,路网,表示某时刻路网内累计存在的车辆总量,路网车辆积聚量、在网车辆数、路网车辆数、路网累计车辆数,"NetworkVehicleAccumulation, InNetworkVehicleCount, NetworkVehicleCount",路段车辆数、占有率
+C18,路网拥堵里程比,Network Congested Miles Ratio,路网,表示拥堵路段里程占总里程的比例,拥堵里程比、拥堵里程比例,"CongestionMileageRatio, CongestedMilesProportion",拥堵里程绝对量、严重拥堵里程、变化率
+C19,二次事故,Secondary Crash,事件,由前序事故诱发或相关联的后续事故,二次事故,"SecondaryCrash, SecondaryIncident",一般交通事故
+C20,道路禁行,Road Closure,事件/管制,道路或路段因事故、施工、管制等原因禁止通行,道路禁行、道路封闭,RoadClosure,进口道封闭、局部封控

@@ -1,0 +1,3458 @@
+[
+  {
+    "name": "entityID",
+    "type": "DatatypeProperty",
+    "label": "实体标识",
+    "comment": "用于时间实体、空间实体、状态实体、指标实体和事件实体的统一唯一标识。"
+  },
+  {
+    "name": "entityName",
+    "type": "DatatypeProperty",
+    "label": "实体名称",
+    "comment": "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的人可读名称。"
+  },
+  {
+    "name": "entityCode",
+    "type": "DatatypeProperty",
+    "label": "实体编码",
+    "comment": "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的业务编码或外部编号。"
+  },
+  {
+    "name": "TimeEntity",
+    "type": "Class",
+    "label": "时间实体父类",
+    "comment": "所有时间相关实体的基类。"
+  },
+  {
+    "name": "TimeInterval",
+    "type": "Class",
+    "label": "时间片",
+    "comment": "最小统计粒度（15min），动态数据的挂载锚点。"
+  },
+  {
+    "name": "TimePeriod",
+    "type": "Class",
+    "label": "语义时间段",
+    "comment": "具有业务含义的时间集合（如“早高峰”）。"
+  },
+  {
+    "name": "PeakPeriod",
+    "type": "Class",
+    "label": "高峰时段",
+    "comment": "交通流量达到一天中最高水平的语义时间段，如早高峰、晚高峰。"
+  },
+  {
+    "name": "OffPeakPeriod",
+    "type": "Class",
+    "label": "低谷时段",
+    "comment": "交通流量处于一天中最低水平的语义时间段，如凌晨低谷期。"
+  },
+  {
+    "name": "MorningPeakPeriod",
+    "type": "Class",
+    "label": "早高峰",
+    "comment": "工作日早间交通出行集中的语义时间段，通常对应通勤早高峰时段。"
+  },
+  {
+    "name": "EveningPeakPeriod",
+    "type": "Class",
+    "label": "晚高峰",
+    "comment": "工作日晚间交通出行集中的语义时间段，通常对应通勤晚高峰时段。"
+  },
+  {
+    "name": "Workday",
+    "type": "Class",
+    "label": "工作日",
+    "comment": "一周中周一至周五的正常工作日，居民出行具有通勤特征，交通流呈现明显的早晚高峰规律。"
+  },
+  {
+    "name": "RestDay",
+    "type": "Class",
+    "label": "休息日",
+    "comment": "一周中周六和周日的非工作日，居民出行以休闲娱乐为主，出行时间和目的地具有不确定性和随机性，路网行程速度变化特征与工作日存在显著差异。"
+  },
+  {
+    "name": "nextInterval",
+    "type": "ObjectProperty",
+    "label": "下一时间片",
+    "comment": "定义时间片的时序演化关系，支持拥堵演化的时序推理。"
+  },
+  {
+    "name": "belongsToPeriod",
+    "type": "ObjectProperty",
+    "label": "属于时段",
+    "comment": "定义微观时间片与宏观时段的从属关系。"
+  },
+  {
+    "name": "coversDate",
+    "type": "DatatypeProperty",
+    "label": "覆盖日期",
+    "comment": "表示语义时段的具体日期标签，支持跨日计算（如高峰速度日偏差）。"
+  },
+  {
+    "name": "startTime",
+    "type": "DatatypeProperty",
+    "label": "开始时刻",
+    "comment": "表示时间片的起始时间点。"
+  },
+  {
+    "name": "endTime",
+    "type": "DatatypeProperty",
+    "label": "结束时刻",
+    "comment": "表示时间片的结束时间点。"
+  },
+  {
+    "name": "dayType",
+    "type": "DatatypeProperty",
+    "label": "日期类型",
+    "comment": "枚举值：工作日/周末/节假日。"
+  },
+  {
+    "name": "SpatialEntity",
+    "type": "Class",
+    "label": "空间实体父类",
+    "comment": "所有空间相关实体的基类，承载静态属性与拓扑关系。"
+  },
+  {
+    "name": "Zone",
+    "type": "Class",
+    "label": "区域",
+    "comment": "宏观空间单元（如交通小区），L4态势评价主体。"
+  },
+  {
+    "name": "RoadSegment",
+    "type": "Class",
+    "label": "路段",
+    "comment": "微观空间单元，L3态势物理载体，交通流运行的载体。"
+  },
+  {
+    "name": "Intersection",
+    "type": "Class",
+    "label": "交叉口",
+    "comment": "路网拓扑节点。"
+  },
+  {
+    "name": "Road",
+    "type": "Class",
+    "label": "道路",
+    "comment": "路段的逻辑聚合（如“中山东路”）。"
+  },
+  {
+    "name": "TrafficBottleneck",
+    "type": "Class",
+    "label": "交通瓶颈",
+    "comment": "过饱和条件下产生排队的交通瓶颈位置，是拥堵形成和排队演化的关键空间实体。"
+  },
+  {
+    "name": "SignalizedJunction",
+    "type": "Class",
+    "label": "信号交叉口",
+    "comment": "设置有交通信号灯进行交通控制的交叉口，是城市路网中的关键拓扑节点。"
+  },
+  {
+    "name": "CongestionCell",
+    "type": "Class",
+    "label": "拥堵元胞",
+    "comment": "路网中用于表征拥堵空间分布的最小空间单元，其数目随时间变化可反映拥堵的形成、传播与消散过程。"
+  },
+  {
+    "name": "Lane",
+    "type": "Class",
+    "label": "车道",
+    "comment": "道路横断面中按功能或车辆类型划分的纵向通行带，是路段的组成部分。"
+  },
+  {
+    "name": "SegmentTrafficBottleneck",
+    "type": "Class",
+    "label": "路段级交通瓶颈",
+    "comment": "路段层级上被识别的交通瓶颈现象，表示该路段成为交通流运行的制约点。"
+  },
+  {
+    "name": "Ramp",
+    "type": "Class",
+    "label": "匝道",
+    "comment": "连接快速路主线与地面道路的过渡路段，具有与主线不同的驾驶特征。"
+  },
+  {
+    "name": "ConflictPoint",
+    "type": "Class",
+    "label": "冲突点",
+    "comment": "交叉口内部车道之间发生交叉、合流或分流的空间节点，是交通组织与相位划分的基本依据。"
+  },
+  {
+    "name": "StopLine",
+    "type": "Class",
+    "label": "停车线",
+    "comment": "路段或交叉口内部车道上的边界标线，车辆在此处停车等待信号放行，是交通组织的基本空间要素。"
+  },
+  {
+    "name": "ComplexIntersection",
+    "type": "Class",
+    "label": "复杂交叉口",
+    "comment": "由内部停车线划分为多个子段的交叉口，其内部存在环形或自交叉路径，需要中间停车以保证安全通行。"
+  },
+  {
+    "name": "Overpass",
+    "type": "Class",
+    "label": "立交桥",
+    "comment": "城市交通系统中的立体交通设施，作为现代化的三维交通系统，通过合理分流车辆、避免同一平面上的交叉冲突来实现车辆分流功能，其通行能力直接影响干道上的交通流和交通拥堵。"
+  },
+  {
+    "name": "ElevatedOverpass",
+    "type": "Class",
+    "label": "高架桥",
+    "comment": "城市路网中的高架道路设施，作为独立的空间实体承载交通流运行，与地面道路存在交通交互关系。"
+  },
+  {
+    "name": "TrafficConflictPoint",
+    "type": "Class",
+    "label": "交通冲突点",
+    "comment": "交叉口匝道处车辆交织、汇入或分流产生的交通冲突位置，是影响交通运行效率和安全的空间节点。"
+  },
+  {
+    "name": "CongestionPoint",
+    "type": "Class",
+    "label": "拥堵点",
+    "comment": "路网中发生交通拥堵的空间位置，是拥堵事件在空间上的具体表现点。"
+  },
+  {
+    "name": "CongestionCorePoint",
+    "type": "Class",
+    "label": "拥堵核心点",
+    "comment": "当某点位的车辆无法依靠自我调整疏散时所形成的拥堵起源点，是拥堵态势蔓延的起始位置，可在交通疏导过程中发生转移。"
+  },
+  {
+    "name": "RoadDiscretePoint",
+    "type": "Class",
+    "label": "道路点",
+    "comment": "将道路网按照一定长度间隔（如50米）打断后离散化得到的点状要素，保留道路实时路况数据的时空多维数据特性及有向线状要素的拓扑关系。"
+  },
+  {
+    "name": "Interchange",
+    "type": "Class",
+    "label": "立交",
+    "comment": "城市路网中实现不同道路之间立体交叉连接的交通节点设施。"
+  },
+  {
+    "name": "CongestionSegmentSet",
+    "type": "Class",
+    "label": "拥堵路段集合",
+    "comment": "路网内在特定时段中满足拥堵判定条件的所有路段的集合，由传播性路段集合与非传播性路段集合的并集构成。"
+  },
+  {
+    "name": "RemoteArea",
+    "type": "Class",
+    "label": "远郊区域",
+    "comment": "城市路网中低密度、拥堵极少发生的远郊空间分区，交通流通常低于临界密度，车辆以自由流速度行驶。"
+  },
+  {
+    "name": "ArterialRoad",
+    "type": "Class",
+    "label": "主干道",
+    "comment": "城市路网中等级最高的干线道路，承担城市主要交通流的通行功能。"
+  },
+  {
+    "name": "HighDensityNetworkZone",
+    "type": "Class",
+    "label": "城市高密度路网区域",
+    "comment": "城市人口高度聚集、用地属性与区域功能划分明显背景下形成的高路网密度区域对象，具有出行需求大、流量多、频率高的特性，是城市交通管控的重点关注对象。"
+  },
+  {
+    "name": "UrbanFunctionalZone",
+    "type": "Class",
+    "label": "城市功能区",
+    "comment": "城市中具有特定用地特征和功能属性的区域空间单元，其空间分布和功能属性决定了居民出行空间特征和路网交通特性。"
+  },
+  {
+    "name": "BusDedicatedLane",
+    "type": "Class",
+    "label": "公交专用道",
+    "comment": "城市路网中专门供公交车辆通行的车道，其设置比例会影响路网通行能力和宏观基本图（MFD）特征。"
+  },
+  {
+    "name": "ResidentialZone",
+    "type": "Class",
+    "label": "住宅区",
+    "comment": "以居住用地为主要功能的城市功能区，路网密度高但道路等级偏低，以次干路与支路为主。"
+  },
+  {
+    "name": "IndustrialZone",
+    "type": "Class",
+    "label": "工业区",
+    "comment": "以工业用地为主要功能的城市功能区，路网相对稀疏但毗邻城市主干道与快速路，基于MFD定义的通行能力最高。"
+  },
+  {
+    "name": "CommercialZone",
+    "type": "Class",
+    "label": "商业区",
+    "comment": "以商业用地为主要功能的城市功能区，多等级道路混杂，通行能力居中。"
+  },
+  {
+    "name": "SubNetwork",
+    "type": "Class",
+    "label": "子路网",
+    "comment": "基于路段相似性对城市路网进行分割后得到的空间紧凑分布的路段集合，不同交通状态下子路网的划分结果可能不同。"
+  },
+  {
+    "name": "Cell",
+    "type": "Class",
+    "label": "元胞",
+    "comment": "将路段划分为若干离散空间单元，用于描述元胞内部及元胞之间的交通流状态。"
+  },
+  {
+    "name": "DivergingNode",
+    "type": "Class",
+    "label": "分流节点",
+    "comment": "路网中具有一个入流连接和一个或多个出流连接的转运节点，用于表示交叉口处车流分流的拓扑结构。"
+  },
+  {
+    "name": "MergingNode",
+    "type": "Class",
+    "label": "合流节点",
+    "comment": "路网中具有一个或多个入流连接和仅一个出流连接的转运节点，用于表示交叉口处车流汇合的拓扑结构。"
+  },
+  {
+    "name": "SinkSegment",
+    "type": "Class",
+    "label": "汇路段",
+    "comment": "位于路网边界的路段，作为交通流离开路网的出口，承担交通流消散功能。"
+  },
+  {
+    "name": "zoneContainsSegment",
+    "type": "ObjectProperty",
+    "label": "区域包含路段",
+    "comment": "定义区域与路段之间的空间包含关系，用于表达路段所属的宏观空间单元。"
+  },
+  {
+    "name": "segmentLocatedInZone",
+    "type": "ObjectProperty",
+    "label": "路段位于区域内",
+    "comment": "定义路段与区域之间的空间归属关系，用于表达路段所属的交通分析区域。"
+  },
+  {
+    "name": "roadHasSegment",
+    "type": "ObjectProperty",
+    "label": "道路包含路段",
+    "comment": "定义道路与路段之间的组成关系，用于表达道路由若干路段构成。"
+  },
+  {
+    "name": "segmentBelongsToRoad",
+    "type": "ObjectProperty",
+    "label": "路段属于道路",
+    "comment": "定义路段与道路之间的从属关系，用于表达某一路段所属的逻辑道路对象。"
+  },
+  {
+    "name": "segmentStartsFromIntersection",
+    "type": "ObjectProperty",
+    "label": "路段起始于交叉口",
+    "comment": "定义路段的起点交叉口，用于表达路段在路网中的方向性连接结构。"
+  },
+  {
+    "name": "segmentEndsAtIntersection",
+    "type": "ObjectProperty",
+    "label": "路段终止于交叉口",
+    "comment": "定义路段的终点交叉口，用于表达路段在路网中的方向性连接结构。"
+  },
+  {
+    "name": "segmentUpstreamOf",
+    "type": "ObjectProperty",
+    "label": "路段上游是",
+    "comment": "定义路段间的上游关系，用于表达交通流传播过程中的前序路段关联。"
+  },
+  {
+    "name": "segmentDownstreamOf",
+    "type": "ObjectProperty",
+    "label": "路段下游是",
+    "comment": "定义路段间的下游关系，用于表达交通流传播过程中的后继路段关联。"
+  },
+  {
+    "name": "zoneAdjacentToZone",
+    "type": "ObjectProperty",
+    "label": "区域相邻于区域",
+    "comment": "定义区域之间的邻接关系，用于表达宏观空间单元之间的空间邻近性。"
+  },
+  {
+    "name": "segmentAdjacentToSegment",
+    "type": "ObjectProperty",
+    "label": "路段相邻于路段",
+    "comment": "定义路段之间的邻接关系，用于表达路段在空间或网络结构上的相邻性。"
+  },
+  {
+    "name": "zoneContainsIntersection",
+    "type": "ObjectProperty",
+    "label": "区域包含交叉口",
+    "comment": "定义区域与交叉口之间的空间包含关系，用于表达交叉口所属的宏观空间单元。"
+  },
+  {
+    "name": "intersectionLocatedInZone",
+    "type": "ObjectProperty",
+    "label": "交叉口位于区域内",
+    "comment": "定义交叉口与区域之间的空间归属关系，用于表达交叉口所属的交通分析区域。"
+  },
+  {
+    "name": "triggeredByCrashIncident",
+    "type": "ObjectProperty",
+    "label": "由事故触发恢复时间计算",
+    "comment": "表示交通恢复时间指标的计算依赖于某一具体碰撞事故事件的发生。"
+  },
+  {
+    "name": "spatialReachability",
+    "type": "ObjectProperty",
+    "label": "空间可达关系",
+    "comment": "基于拓扑关系判断路段之间是否具有空间可达性，即路段之间具有共同节点从而可以相互到达的关系。"
+  },
+  {
+    "name": "hasLane",
+    "type": "ObjectProperty",
+    "label": "包含车道",
+    "comment": "表示路段包含车道的空间组成关系。"
+  },
+  {
+    "name": "belongsToRoadSegment",
+    "type": "ObjectProperty",
+    "label": "属于路段",
+    "comment": "表示元胞属于某一路段的空间从属关系，路段被离散化为多个元胞。"
+  },
+  {
+    "name": "segmentLength",
+    "type": "DatatypeProperty",
+    "label": "路段长度",
+    "comment": "物理长度，计算拥堵里程比与路段权重的基础。"
+  },
+  {
+    "name": "freeFlowSpeed",
+    "type": "DatatypeProperty",
+    "label": "自由流速度",
+    "comment": "理论畅通速度，作为交通运行状态计算与分析的基准速度。"
+  },
+  {
+    "name": "roadGrade",
+    "type": "DatatypeProperty",
+    "label": "道路等级",
+    "comment": "表示路段所属道路的功能等级，如快速路、主干路、次干路和支路等。"
+  },
+  {
+    "name": "laneCount",
+    "type": "DatatypeProperty",
+    "label": "车道数",
+    "comment": "表示路段的车道数量，是刻画路段通行能力的重要基础属性。"
+  },
+  {
+    "name": "segmentDirection",
+    "type": "DatatypeProperty",
+    "label": "路段方向",
+    "comment": "表示路段的交通行驶方向属性，如南向北、北向南、上行、下行等。"
+  },
+  {
+    "name": "segmentStartLongitude",
+    "type": "DatatypeProperty",
+    "label": "路段起点经度",
+    "comment": "表示路段起点位置的经度信息。"
+  },
+  {
+    "name": "segmentStartLatitude",
+    "type": "DatatypeProperty",
+    "label": "路段起点纬度",
+    "comment": "表示路段起点位置的纬度信息。"
+  },
+  {
+    "name": "segmentEndLongitude",
+    "type": "DatatypeProperty",
+    "label": "路段终点经度",
+    "comment": "表示路段终点位置的经度信息。"
+  },
+  {
+    "name": "segmentEndLatitude",
+    "type": "DatatypeProperty",
+    "label": "路段终点纬度",
+    "comment": "表示路段终点位置的纬度信息。"
+  },
+  {
+    "name": "intersectionLongitude",
+    "type": "DatatypeProperty",
+    "label": "交叉口经度",
+    "comment": "表示交叉口位置的经度信息。"
+  },
+  {
+    "name": "intersectionLatitude",
+    "type": "DatatypeProperty",
+    "label": "交叉口纬度",
+    "comment": "表示交叉口位置的纬度信息。"
+  },
+  {
+    "name": "zoneCenterLongitude",
+    "type": "DatatypeProperty",
+    "label": "区域中心经度",
+    "comment": "表示区域中心位置的经度信息。"
+  },
+  {
+    "name": "zoneCenterLatitude",
+    "type": "DatatypeProperty",
+    "label": "区域中心纬度",
+    "comment": "表示区域中心位置的纬度信息。"
+  },
+  {
+    "name": "TrafficState",
+    "type": "Class",
+    "label": "交通态势状态父类",
+    "comment": "所有交通态势状态实体的总父类，用于统一组织不同空间尺度下的状态实体。"
+  },
+  {
+    "name": "TrafficIndicator",
+    "type": "Class",
+    "label": "交通态势指标父类",
+    "comment": "所有交通态势指标实体的总父类，用于统一组织不同层级、不同对象上的指标实体。"
+  },
+  {
+    "name": "describesSpatialEntity",
+    "type": "ObjectProperty",
+    "label": "描述空间实体",
+    "comment": "状态实体描述其所锚定空间实体的总父属性。"
+  },
+  {
+    "name": "hasTrafficState",
+    "type": "ObjectProperty",
+    "label": "拥有交通状态",
+    "comment": "空间实体关联状态实体的总父属性。"
+  },
+  {
+    "name": "hasTrafficIndicator",
+    "type": "ObjectProperty",
+    "label": "关联交通指标",
+    "comment": "状态实体关联指标实体的总父属性。"
+  },
+  {
+    "name": "aggregatedFromIndicator",
+    "type": "ObjectProperty",
+    "label": "聚合自指标",
+    "comment": "高层指标由下层指标聚合形成的总父属性。"
+  },
+  {
+    "name": "validForTime",
+    "type": "ObjectProperty",
+    "label": "有效时间",
+    "comment": "关联对象所属的时间范围（时间片或语义时段）。"
+  },
+  {
+    "name": "computedFrom",
+    "type": "ObjectProperty",
+    "label": "计算来源于",
+    "comment": "表示某一指标由其他指标计算得到。"
+  },
+  {
+    "name": "dependsOnSpatialEntity",
+    "type": "ObjectProperty",
+    "label": "依赖空间实体",
+    "comment": "表示某一指标在计算过程中依赖相关空间实体所承载的信息。"
+  },
+  {
+    "name": "indicatorValue",
+    "type": "DatatypeProperty",
+    "label": "指标数值",
+    "comment": "存储各类指标实体的具体数学计算结果值。"
+  },
+  {
+    "name": "indicatorUnit",
+    "type": "DatatypeProperty",
+    "label": "指标单位",
+    "comment": "表示指标数值的计量单位。"
+  },
+  {
+    "name": "calculationMethod",
+    "type": "DatatypeProperty",
+    "label": "计算方法",
+    "comment": "表示指标的计算方法或来源说明。"
+  },
+  {
+    "name": "capacity",
+    "type": "DatatypeProperty",
+    "label": "通行能力",
+    "comment": "路段的设计通行能力，单位为每车道每小时车辆数（vphpl），是计算服务水平的基础参数。"
+  },
+  {
+    "name": "maximumPermissibleSpeed",
+    "type": "DatatypeProperty",
+    "label": "最大允许速度",
+    "comment": "路段的最大允许行驶速度，是计算速度性能指数（SPI）的基础参数。"
+  },
+  {
+    "name": "freeFlowTravelTime",
+    "type": "DatatypeProperty",
+    "label": "自由流行程时间",
+    "comment": "路段在自由流条件下的行程时间，是路段的静态基准属性。"
+  },
+  {
+    "name": "vehicleType",
+    "type": "DatatypeProperty",
+    "label": "车辆类型",
+    "comment": "描述交通流中车辆的分类属性，如小客车、大货车等，作为影响交通运行态势指标计算的因素。"
+  },
+  {
+    "name": "crossSectionType",
+    "type": "DatatypeProperty",
+    "label": "断面形式",
+    "comment": "道路横断面的组织形式，如一块板、三块板、四块板等，描述车行道的分隔方式。"
+  },
+  {
+    "name": "roadRedLineWidth",
+    "type": "DatatypeProperty",
+    "label": "道路红线宽度",
+    "comment": "道路规划红线之间的宽度，是道路的静态规划控制属性，反映道路可用空间的上限。"
+  },
+  {
+    "name": "segmentImportance",
+    "type": "DatatypeProperty",
+    "label": "路段重要度",
+    "comment": "路段在路网中的重要程度，用于在区域交通状态评价中赋予不同路段差异化权重。"
+  },
+  {
+    "name": "stopLineDivisionRatio",
+    "type": "DatatypeProperty",
+    "label": "停止线划分比例",
+    "comment": "表示道路渠化区中停止线的划分比例参数，用于描述交叉口进口道的渠化设计特征。"
+  },
+  {
+    "name": "numberOfValidLanes",
+    "type": "DatatypeProperty",
+    "label": "有效车道数",
+    "comment": "交叉口进口道每小时可通行的有效车道数量，属于交叉口或进口道的静态配置属性。"
+  },
+  {
+    "name": "roadWidth",
+    "type": "DatatypeProperty",
+    "label": "道路宽度",
+    "comment": "道路在某一方向上的横断面宽度，用于信号控制中最低绿灯时间的计算。"
+  },
+  {
+    "name": "speedLimit",
+    "type": "DatatypeProperty",
+    "label": "限速值",
+    "comment": "车道或路段所规定的允许最高行驶速度值。"
+  },
+  {
+    "name": "classificationThreshold",
+    "type": "DatatypeProperty",
+    "label": "分级阈值",
+    "comment": "用于划分不同交通状态等级的相对速度临界值。"
+  },
+  {
+    "name": "laneVehicleCount",
+    "type": "DatatypeProperty",
+    "label": "车道记录车辆数",
+    "comment": "在一个信号周期内，某车道上记录到的车辆数量。"
+  },
+  {
+    "name": "passageDirectionMatrix",
+    "type": "DatatypeProperty",
+    "label": "通行方向矩阵",
+    "comment": "交叉口节点处允许的通行方向矩阵，定义了连接进入道路和驶出道路的所有允许转向方向。"
+  },
+  {
+    "name": "penetrationRate",
+    "type": "DatatypeProperty",
+    "label": "渗透率",
+    "comment": "混合交通流中自动驾驶车辆所占比例，是影响混合交通流运行特性的关键配置参数。"
+  },
+  {
+    "name": "expectedTimeHeadway",
+    "type": "DatatypeProperty",
+    "label": "期望车头时距",
+    "comment": "车辆跟驰过程中前后车通过同一断面的期望时间间隔，是影响交通流容量和拥堵传播特性的关键参数。"
+  },
+  {
+    "name": "minimumSpacing",
+    "type": "DatatypeProperty",
+    "label": "最小间距",
+    "comment": "车辆跟驰状态下允许的最小车头间距，是影响交通流效率和拥堵空间传播的关键参数。"
+  },
+  {
+    "name": "segmentMaxCapacity",
+    "type": "DatatypeProperty",
+    "label": "路段最大承载流量",
+    "comment": "路段j的最大承载流量，用于机动性参数U的计算。"
+  },
+  {
+    "name": "reachabilityOrder",
+    "type": "DatatypeProperty",
+    "label": "可达阶数",
+    "comment": "表示两个路段之间空间可达关系的阶数，即从一个路段到达另一个路段至少需要经过的中间路段数加1。"
+  },
+  {
+    "name": "roadDiscretePointId",
+    "type": "DatatypeProperty",
+    "label": "道路点编号",
+    "comment": "道路离散点的唯一编号标识。"
+  },
+  {
+    "name": "discretizedPointCount",
+    "type": "DatatypeProperty",
+    "label": "道路点总个数",
+    "comment": "路段离散化后的道路点总个数，是路段离散化表达的静态配置属性。"
+  },
+  {
+    "name": "trafficLightDensity",
+    "type": "DatatypeProperty",
+    "label": "交通信号灯密度",
+    "comment": "路段上交通信号灯的空间分布密度，是路段的静态配置属性，用于区分信号灯密集路段与非密集路段。"
+  },
+  {
+    "name": "laneWidthCorrectionFactor",
+    "type": "DatatypeProperty",
+    "label": "车道宽度修正系数",
+    "comment": "用于修正路段理论通行能力的车道宽度影响系数。"
+  },
+  {
+    "name": "segmentLengthCorrectionFactor",
+    "type": "DatatypeProperty",
+    "label": "路段长度修正系数",
+    "comment": "用于修正路段行程时间中路段长度影响的系数。"
+  },
+  {
+    "name": "areaCharacteristic",
+    "type": "DatatypeProperty",
+    "label": "区域特征",
+    "comment": "区域的功能特征属性，如商业区、居住区等，影响出行和停车需求。"
+  },
+  {
+    "name": "terrain",
+    "type": "DatatypeProperty",
+    "label": "地形",
+    "comment": "空间实体所处的地形特征，如丘陵或平坦地形，影响交通速度。"
+  },
+  {
+    "name": "totalRoadLength",
+    "type": "DatatypeProperty",
+    "label": "路网总长度",
+    "comment": "路网中所有道路的总长度，是路网的静态配置属性，用于路网指标计算。"
+  },
+  {
+    "name": "networkEdgeCount",
+    "type": "DatatypeProperty",
+    "label": "路网边数量",
+    "comment": "路网复杂网络抽象后的边（路段）数量，是路网几何拓扑结构参数之一。"
+  },
+  {
+    "name": "bottleneckCarryingCapacity",
+    "type": "DatatypeProperty",
+    "label": "瓶颈承载能力",
+    "comment": "交通瓶颈位置的最大通行承载能力值。"
+  },
+  {
+    "name": "networkDiameter",
+    "type": "DatatypeProperty",
+    "label": "路网直径",
+    "comment": "路网复杂网络抽象后的直径参数，表示网络中任意两节点间最短路径的最大值，是路网几何拓扑的静态特征属性。"
+  },
+  {
+    "name": "networkSparsityIndex",
+    "type": "DatatypeProperty",
+    "label": "路网稀疏性指数",
+    "comment": "路网复杂网络抽象后的稀疏程度指标，反映路网拓扑结构的疏密特征。"
+  },
+  {
+    "name": "networkDensity",
+    "type": "DatatypeProperty",
+    "label": "路网密度",
+    "comment": "表示功能区内道路网络的空间密度，属于区域的静态配置型属性。"
+  },
+  {
+    "name": "functionalZoneType",
+    "type": "DatatypeProperty",
+    "label": "功能区属性",
+    "comment": "城市功能区的功能类型属性，取值如住宅区、商业区、工业区等。"
+  },
+  {
+    "name": "busDedicatedLaneRatio",
+    "type": "DatatypeProperty",
+    "label": "公交专用道比例",
+    "comment": "路网中公交专用道占全部车道的比例，影响路网通行能力和MFD特征。"
+  },
+  {
+    "name": "networkNodeCount",
+    "type": "DatatypeProperty",
+    "label": "路网节点数",
+    "comment": "路网中所有节点的数量，是城市路网拓扑属性的基本指标。"
+  },
+  {
+    "name": "networkClusteringCoefficient",
+    "type": "DatatypeProperty",
+    "label": "路网聚类系数",
+    "comment": "表示路网中节点与其相邻节点的连接紧密程度，由相邻节点之间边数与可能存在边数之比表示。"
+  },
+  {
+    "name": "networkSparsity",
+    "type": "DatatypeProperty",
+    "label": "网络稀疏性",
+    "comment": "路网中实际存在的边数与最大可能边数之间的比值，反映路网的稀疏程度。"
+  },
+  {
+    "name": "networkTransitivity",
+    "type": "DatatypeProperty",
+    "label": "网络传递性",
+    "comment": "道路网络中节点间传递连接关系的程度，是路网拓扑属性之一。"
+  },
+  {
+    "name": "networkAveragePathLength",
+    "type": "DatatypeProperty",
+    "label": "网络平均路径长度",
+    "comment": "道路网络内所有可能存在的节点对距离的平均值，表示两节点间最有可能的典型距离，决定道路网络的有效尺寸。"
+  },
+  {
+    "name": "networkLengthPerArea",
+    "type": "DatatypeProperty",
+    "label": "单位面积路网长度",
+    "comment": "表示区域内单位面积所包含的路网总长度，用于衡量区域路网的空间覆盖密度。"
+  },
+  {
+    "name": "networkAverageClusteringCoefficient",
+    "type": "DatatypeProperty",
+    "label": "路网平均聚类系数",
+    "comment": "路网图论中衡量网络节点聚集程度的平均聚类系数，对路网事故频次有显著负向影响。"
+  },
+  {
+    "name": "spatialInteractionWeight",
+    "type": "DatatypeProperty",
+    "label": "空间交互权重",
+    "comment": "路段i和路段j之间的空间交互权重值，用于莫兰指数计算中衡量路段间的空间关联强度。"
+  },
+  {
+    "name": "interSegmentDistance",
+    "type": "DatatypeProperty",
+    "label": "路段间空间距离",
+    "comment": "表示两个相邻路段之间的空间距离，定义为两路段中点之间的距离，计算方式为两路段长度之和的一半。"
+  },
+  {
+    "name": "greenTimeDuration",
+    "type": "DatatypeProperty",
+    "label": "绿灯时长",
+    "comment": "交叉口信号灯分配给某一方向的绿灯持续时间，直接影响下游交通流量。"
+  },
+  {
+    "name": "cellLength",
+    "type": "DatatypeProperty",
+    "label": "元胞长度",
+    "comment": "元胞的空间长度，由自由流速度与时间步长决定。"
+  },
+  {
+    "name": "roadSeparationType",
+    "type": "DatatypeProperty",
+    "label": "道路分隔型式",
+    "comment": "道路的物理分隔形式，如中央分隔带、机非分隔带等，是道路的静态配置属性。"
+  },
+  {
+    "name": "numberOfIntersections",
+    "type": "DatatypeProperty",
+    "label": "交叉口数量",
+    "comment": "某道路或区域内包含的交叉口数量，是影响交通状态与道路重要度耦合关系的空间结构属性。"
+  },
+  {
+    "name": "intersectionCount",
+    "type": "DatatypeProperty",
+    "label": "交叉口数量",
+    "comment": "某空间实体（如道路或区域）范围内包含的交叉口数量，作为交通环境的静态配置属性。"
+  },
+  {
+    "name": "busStopCount",
+    "type": "DatatypeProperty",
+    "label": "公交站点数量",
+    "comment": "某空间实体（如道路或区域）范围内包含的公交站点数量，作为交通环境的静态配置属性。"
+  },
+  {
+    "name": "roadLength",
+    "type": "DatatypeProperty",
+    "label": "道路长度",
+    "comment": "道路的物理长度，作为道路空间实体的静态几何属性。"
+  },
+  {
+    "name": "numberOfBusStops",
+    "type": "DatatypeProperty",
+    "label": "公交站点数量",
+    "comment": "某一道路或区域范围内包含的公交站点数量，是描述公共交通设施配置的静态属性。"
+  },
+  {
+    "name": "RoadSegmentState",
+    "type": "Class",
+    "label": "路段交通状态",
+    "comment": "微观态势状态枢纽，连接具体路段、时间片与路段指标。"
+  },
+  {
+    "name": "IntersectionState",
+    "type": "Class",
+    "label": "交叉口交通状态",
+    "comment": "微观态势状态枢纽，连接具体交叉口、时间片与交叉口指标。"
+  },
+  {
+    "name": "SegmentIndicator",
+    "type": "Class",
+    "label": "路段级指标(父类)",
+    "comment": "所有路段层面的微观感知值与基础衍生指标的统称。"
+  },
+  {
+    "name": "SegmentFlow",
+    "type": "Class",
+    "label": "路段交通流量",
+    "comment": "路段层面的交通流运行规模指标。"
+  },
+  {
+    "name": "SegmentSpeed",
+    "type": "Class",
+    "label": "路段交通速度",
+    "comment": "路段层面的实际运行速度指标。"
+  },
+  {
+    "name": "SegmentDensity",
+    "type": "Class",
+    "label": "路段交通密度",
+    "comment": "路段层面的交通集聚程度指标。"
+  },
+  {
+    "name": "SegmentWeight",
+    "type": "Class",
+    "label": "路段权重",
+    "comment": "用于上层聚合计算的路段权重指标。"
+  },
+  {
+    "name": "SegmentTripTimeRatio",
+    "type": "Class",
+    "label": "路段行程时间比",
+    "comment": "反映路段实际行程时间与基准行程时间关系的指标。"
+  },
+  {
+    "name": "SegmentDelayTimeRatio",
+    "type": "Class",
+    "label": "路段延误时间比",
+    "comment": "反映路段延误水平的指标。"
+  },
+  {
+    "name": "SegmentCongestionCoeff",
+    "type": "Class",
+    "label": "路段拥堵判定系数",
+    "comment": "二值化拥堵状态 (c_ij)。当路段状态触发轻度及以上拥堵等级 (即路段交通速度 <= 0.5*自由流速度) 时，该系数取值为1，否则为0。"
+  },
+  {
+    "name": "SegmentDailyNonSmoothCoeff",
+    "type": "Class",
+    "label": "路段全天非畅通系数",
+    "comment": "反映路段全天非畅通水平的判定指标。"
+  },
+  {
+    "name": "TrafficOperatingLevel",
+    "type": "Class",
+    "label": "交通运行状况等级",
+    "comment": "静态受控字典类。依据 GB/T 33171 划分的定性评价等级，作为5个静态枚举实例的独立父类。"
+  },
+  {
+    "name": "IntersectionIndicator",
+    "type": "Class",
+    "label": "交叉口级指标(父类)",
+    "comment": "所有交叉口层面运行状态指标的统称。"
+  },
+  {
+    "name": "IntersectionFlow",
+    "type": "Class",
+    "label": "交叉口交通流量",
+    "comment": "反映交叉口交通流运行规模的指标。"
+  },
+  {
+    "name": "IntersectionDelay",
+    "type": "Class",
+    "label": "交叉口延误",
+    "comment": "反映交叉口通行延误程度的指标。"
+  },
+  {
+    "name": "IntersectionQueueLength",
+    "type": "Class",
+    "label": "交叉口排队长度",
+    "comment": "反映交叉口排队积聚程度的指标。"
+  },
+  {
+    "name": "IntersectionSaturation",
+    "type": "Class",
+    "label": "交叉口饱和度",
+    "comment": "反映交叉口交通负荷与通行能力关系的指标。"
+  },
+  {
+    "name": "TrafficRestorationTime",
+    "type": "Class",
+    "label": "交通恢复时间",
+    "comment": "交通事故发生后，交通状态从受影响状态恢复到正常运行状态所需的时间，是衡量事故对交通流影响持续程度的关键指标。"
+  },
+  {
+    "name": "LevelOfService",
+    "type": "Class",
+    "label": "服务水平等级",
+    "comment": "通过交通量与通行能力之比（V/C比）计算得到的路段服务水平指标，用于反映道路的交通负荷程度。"
+  },
+  {
+    "name": "SpeedPerformanceIndex",
+    "type": "Class",
+    "label": "速度性能指数",
+    "comment": "通过平均行驶速度与最大允许速度之比计算得到的速度性能指标，用于反映路段实际运行速度相对于允许速度的表现水平。"
+  },
+  {
+    "name": "VolumeCapacityRatio",
+    "type": "Class",
+    "label": "V/C比",
+    "comment": "交通量与道路通行能力之比（V/C），用于衡量路段交通负荷程度，是计算服务水平等级（LOS）的基础指标。"
+  },
+  {
+    "name": "CompositeTrafficDynamicsIndicator",
+    "type": "Class",
+    "label": "复合交通动态指标",
+    "comment": "通过交通流量和速度的变异系数加权线性组合定义的复合交通动态指标，用于综合评估特定位置的交通行为动态特征。D = w_q*(σ_q/μ_q) + w_v*(σ_v/μ_v)。"
+  },
+  {
+    "name": "FlowCoefficientOfVariation",
+    "type": "Class",
+    "label": "流量变异系数",
+    "comment": "交通流量时间序列数据的标准差与均值之比（σ_q/μ_q），用于衡量流量的离散程度和不确定性。"
+  },
+  {
+    "name": "SpeedCoefficientOfVariation",
+    "type": "Class",
+    "label": "速度变异系数",
+    "comment": "交通速度时间序列数据的标准差与均值之比（σ_v/μ_v），用于衡量速度的离散程度和不确定性。"
+  },
+  {
+    "name": "TrafficFlowFluctuationRate",
+    "type": "Class",
+    "label": "交通流波动率",
+    "comment": "衡量交通流在多个离散时间段内变化幅度的指标，其标准差随时间增量n按n^(1/μ)σ比例增长，μ由城市发展状况和信息渗透等因素决定。"
+  },
+  {
+    "name": "TrafficFlowChangeRate",
+    "type": "Class",
+    "label": "交通流变化率",
+    "comment": "交通流在相邻时间步之间的相对变化量，定义为交通流变化量与前一时刻交通流量之比，用于区分出行时间成本的相对重要性。"
+  },
+  {
+    "name": "LinearTrafficFlowVariation",
+    "type": "Class",
+    "label": "交通流线性变化量",
+    "comment": "交通流在相邻时间步之间的绝对变化量，定义为当前时刻交通流量与前一时刻交通流量之差，用于考察交通流波动。"
+  },
+  {
+    "name": "ShockwaveSpeed",
+    "type": "Class",
+    "label": "激波速度",
+    "comment": "交通流中密度波（激波）的传播速度，是交通流基本图中描述拥堵波向上游传播特征的关键参数。"
+  },
+  {
+    "name": "QueueLength",
+    "type": "Class",
+    "label": "排队长度",
+    "comment": "表示交通走廊或路段上因拥堵或信号控制等原因形成的车辆排队的空间长度，是一种随时间动态变化的交通运行指标。"
+  },
+  {
+    "name": "TimeDependentDelay",
+    "type": "Class",
+    "label": "时变延误",
+    "comment": "表示交通系统中随时间变化的车辆延误，是反映交通运行效率的动态指标。"
+  },
+  {
+    "name": "ArrivalRate",
+    "type": "Class",
+    "label": "到达率",
+    "comment": "表示单位时间内到达某一路段或排队系统的车辆数量，是描述交通需求的动态指标。"
+  },
+  {
+    "name": "DepartureRate",
+    "type": "Class",
+    "label": "驶离率",
+    "comment": "表示单位时间内从某一路段或排队系统驶离的车辆数量，是描述交通供给能力的动态指标。"
+  },
+  {
+    "name": "TravelDelay",
+    "type": "Class",
+    "label": "行程延误",
+    "comment": "表示车辆实际行程时间与自由流行程时间之差，是衡量交通拥堵程度的动态指标。"
+  },
+  {
+    "name": "CapacityDrop",
+    "type": "Class",
+    "label": "通行能力下降",
+    "comment": "指在拥堵期间路段或瓶颈处的实际通行能力（放行率）相对于自由流条件下的通行能力发生下降的交通现象。"
+  },
+  {
+    "name": "CumulativeArrivalCount",
+    "type": "Class",
+    "label": "累计到达量",
+    "comment": "表示截至某一时刻到达下游瓶颈的车辆累计数量，是排队分析中的基础动态指标。"
+  },
+  {
+    "name": "CumulativeDepartureCount",
+    "type": "Class",
+    "label": "累计驶离量",
+    "comment": "表示截至某一时刻从下游瓶颈驶离的车辆累计数量，是排队分析中的基础动态指标。"
+  },
+  {
+    "name": "DischargeRate",
+    "type": "Class",
+    "label": "放行率",
+    "comment": "单位时间内从排队中离开或通过瓶颈的车辆数，是描述通行能力供给的动态时变指标，可表示为关于时间的函数μ(t)。"
+  },
+  {
+    "name": "NetFlowRate",
+    "type": "Class",
+    "label": "净流率",
+    "comment": "到达率与放行率之差，表示单位时间内排队车辆的净增减速率，是描述排队动态变化的时变指标，π(t)=λ(t)-μ(t)。"
+  },
+  {
+    "name": "TimeDependentTravelTime",
+    "type": "Class",
+    "label": "时变行程时间",
+    "comment": "车辆在特定时刻进入路段上游后，经过该路段所需的总行程时间，由自由流行程时间与行程延误共同决定，随时间动态变化。"
+  },
+  {
+    "name": "BackwardWaveSpeed",
+    "type": "Class",
+    "label": "拥堵波反向传播速度",
+    "comment": "交通流中拥堵波向上游传播的速度，是三角基本图模型中描述拥堵传播特性的关键参数。"
+  },
+  {
+    "name": "TrafficFlowGenerationRate",
+    "type": "Class",
+    "label": "交通流生成率",
+    "comment": "在特定时空点上交通流的产生速率，反映路段入口/出口处车辆的汇入或汇出强度。"
+  },
+  {
+    "name": "TimeOccupancy",
+    "type": "Class",
+    "label": "时间占有率",
+    "comment": "表示道路检测器在一定时间内被车辆占用的时间比例，是交通态势感知的基础指标之一。"
+  },
+  {
+    "name": "SteadyStateProbability",
+    "type": "Class",
+    "label": "稳态概率",
+    "comment": "交叉口交通状态在马尔可夫链模型下达到平衡时各状态的稳态概率，用于表征交叉口长期运行状态分布。"
+  },
+  {
+    "name": "CongestionRate",
+    "type": "Class",
+    "label": "拥堵率",
+    "comment": "表征交叉口层面拥堵程度的性能指标，反映交叉口车辆排队系统中处于拥堵状态的比率。"
+  },
+  {
+    "name": "AverageSojournTime",
+    "type": "Class",
+    "label": "平均逗留时间",
+    "comment": "车辆在交叉口排队系统中从进入到离开的平均总耗时，包括等待时间和服务时间。"
+  },
+  {
+    "name": "AverageWaitingTime",
+    "type": "Class",
+    "label": "平均等待时间",
+    "comment": "车辆在交叉口排队系统中等待被服务的平均时间，是衡量交叉口延误的关键指标。"
+  },
+  {
+    "name": "WaitingTime",
+    "type": "Class",
+    "label": "等待时间",
+    "comment": "交叉口层级的交通运行指标，表示车辆在交叉口处等待通过的时间，是衡量交叉口拥堵程度的关键性能指标。"
+  },
+  {
+    "name": "SojournTime",
+    "type": "Class",
+    "label": "逗留时间",
+    "comment": "交叉口层级的交通运行指标，表示车辆在交叉口区域内从进入到离开的总停留时间，包含等待时间和服务时间。"
+  },
+  {
+    "name": "TurningRatio",
+    "type": "Class",
+    "label": "转向比",
+    "comment": "交叉口各进口道车辆选择不同转向方向（左转、直行、右转）的比例，是交叉口交通流分配的关键指标。"
+  },
+  {
+    "name": "SaturationFlow",
+    "type": "Class",
+    "label": "饱和流率",
+    "comment": "信号交叉口绿灯期间某一车道或进口道能够通过的最大车辆流率，是交叉口通行能力评估的基础指标。"
+  },
+  {
+    "name": "AverageDelayTime",
+    "type": "Class",
+    "label": "平均延误时间",
+    "comment": "表示车辆通过某一设施时实际花费时间与理想时间之差的平均值，用于评估交通运行效率的指标。"
+  },
+  {
+    "name": "SegmentSaturation",
+    "type": "Class",
+    "label": "路段饱和度",
+    "comment": "路段层面的交通运行指标，表示路段实际交通量与通行能力之比，用于反映路段交通负荷程度。"
+  },
+  {
+    "name": "CongestionDegree",
+    "type": "Class",
+    "label": "拥挤度",
+    "comment": "用于衡量道路交通拥堵程度的综合指标，作为交通状态判别的标准。"
+  },
+  {
+    "name": "CongestionDelayIndex",
+    "type": "Class",
+    "label": "拥堵延时指数",
+    "comment": "反映道路拥堵程度的运行指标，表示因拥堵导致的延迟程度，属于路段级交通运行指标。"
+  },
+  {
+    "name": "DelayTime",
+    "type": "Class",
+    "label": "延误时间",
+    "comment": "车辆在路段上因拥堵等因素导致的额外出行时间，是路段级交通运行指标。"
+  },
+  {
+    "name": "TimeHeadway",
+    "type": "Class",
+    "label": "车头时距",
+    "comment": "同一车道上先后通过停车线的两辆车的时间差，是交叉口信号配时的重要参数。"
+  },
+  {
+    "name": "AverageTravelTime",
+    "type": "Class",
+    "label": "平均行程时间",
+    "comment": "检测时段内通过检测区域内的所有车辆的行程时间的平均值。"
+  },
+  {
+    "name": "SegmentOccupancy",
+    "type": "Class",
+    "label": "路段占有率",
+    "comment": "路段上车辆占用道路空间的比率，作为路段交通态势评价的特征参数之一。"
+  },
+  {
+    "name": "AverageInstantaneousSpeed",
+    "type": "Class",
+    "label": "平均瞬时速度",
+    "comment": "某一时刻路段或区域内所有车辆瞬时速度的平均值，用于反映交通流的实时运行状态。"
+  },
+  {
+    "name": "InstantaneousSpeed",
+    "type": "Class",
+    "label": "瞬时速度",
+    "comment": "在某一时刻对路段或路网中车辆速度的即时度量，基于能流出车辆以最大速度转移、滞留车辆速度为零的二值速度分布特性计算得到的平均瞬时速度指标。"
+  },
+  {
+    "name": "WaveVelocity",
+    "type": "Class",
+    "label": "波速",
+    "comment": "交通流波动沿道路移动的速度，由流量差除以密度差计算得到。"
+  },
+  {
+    "name": "LeftTurnVolume",
+    "type": "Class",
+    "label": "左转交通量",
+    "comment": "交叉口处驶向左转方向的交通流量，用于评估交叉口交通流运行状况。"
+  },
+  {
+    "name": "EquivalentTrafficVolume",
+    "type": "Class",
+    "label": "当量交通量",
+    "comment": "将实际交叉口交通量按车型（公交车、货车）和转向（左转）进行折算后得到的等效交通量，用于统一衡量交叉口在等效时间段内的交通负荷。"
+  },
+  {
+    "name": "TrafficTurbulence",
+    "type": "Class",
+    "label": "交通紊流",
+    "comment": "由于车辆速度不一致导致的低速车辆阻碍高速车辆及车辆相互超车所引起的交通流扰动现象。"
+  },
+  {
+    "name": "QueueDischargeRate",
+    "type": "Class",
+    "label": "排队消散率",
+    "comment": "表示信号交叉口排队车辆在绿灯期间通过停车线的消散速率，是衡量交叉口通行效率的关键指标。"
+  },
+  {
+    "name": "SpeedVariance",
+    "type": "Class",
+    "label": "速度方差",
+    "comment": "在给定密度区间内车辆速度的离散程度，反映交通流速度的随机波动特征；在低密度时较小，在临界密度附近达到峰值。"
+  },
+  {
+    "name": "AverageTravelSpeed",
+    "type": "Class",
+    "label": "平均行程速度",
+    "comment": "在给定密度区间内车辆速度的均值，是速度-密度均衡关系中的核心观测量。"
+  },
+  {
+    "name": "FreeFlow",
+    "type": "Class",
+    "label": "自由流",
+    "comment": "交通流的一种运行相态，车辆可以自由行驶，不受其他车辆显著影响，属于交通流三相理论中的基本交通相态之一。"
+  },
+  {
+    "name": "SynchronizedFlow",
+    "type": "Class",
+    "label": "同步流",
+    "comment": "交通流的一种中间运行相态，车辆速度受邻近车辆影响而趋于同步，流量与密度之间不存在唯一确定关系，属于三相交通流理论的核心概念。"
+  },
+  {
+    "name": "QueueDischarge",
+    "type": "Class",
+    "label": "排队消散",
+    "comment": "交通流的一种运行状态，表示排队车辆开始消散并恢复正常通行的过渡阶段，介于拥堵与非拥堵之间。"
+  },
+  {
+    "name": "FreeFlowState",
+    "type": "Class",
+    "label": "自由流状态",
+    "comment": "道路上交通流处于自由流动状态，车辆运行基本不受其他车辆干扰，对应服务水平最优等级。"
+  },
+  {
+    "name": "RelativeSpeed",
+    "type": "Class",
+    "label": "相对速度",
+    "comment": "以路段自由流速度为基准归一化后的速度比值，用作交通状态分级的聚类指标。"
+  },
+  {
+    "name": "StablePhase",
+    "type": "Class",
+    "label": "稳定相",
+    "comment": "交通流运行中的稳定阶段，交通状态保持相对不变，不易受扰动影响发生状态转换。"
+  },
+  {
+    "name": "MetastablePhase",
+    "type": "Class",
+    "label": "亚稳定相",
+    "comment": "交通流运行中的亚稳定阶段，交通状态暂时维持但在较大扰动下容易发生崩溃或状态转变。"
+  },
+  {
+    "name": "SynchronousFlow",
+    "type": "Class",
+    "label": "同步流",
+    "comment": "交通流的一种相态，由Kerner三相交通流理论提出，表示车辆速度与上游来车速度同步、流量与密度之间不存在唯一函数关系的中间拥堵状态。"
+  },
+  {
+    "name": "NearStationaryTrafficState",
+    "type": "Class",
+    "label": "近稳态交通状态",
+    "comment": "在真正的稳态交通状态不存在的情况下，近似稳态的交通状态，用于基础交通模型校正、运行拥堵场景识别及通行能力下降程度评估。"
+  },
+  {
+    "name": "TangentDensity",
+    "type": "Class",
+    "label": "切线密度",
+    "comment": "在流量-密度基本图中，由阻塞密度点所作切线与曲线切点对应的密度值，是交通状态变化分析的参考点之一。"
+  },
+  {
+    "name": "StableTrafficState",
+    "type": "Class",
+    "label": "稳定态",
+    "comment": "交通流基本图中对应于稳定运行区间的交通流状态，包括低密度端和高密度端的稳定状态（状态I和状态V）。"
+  },
+  {
+    "name": "MetastableTrafficState",
+    "type": "Class",
+    "label": "亚稳态",
+    "comment": "交通流基本图中处于稳定态与不稳定态之间的过渡交通流状态（状态II和状态IV），交通流在此区间内可能发生状态跃迁。"
+  },
+  {
+    "name": "UnstableTrafficState",
+    "type": "Class",
+    "label": "不稳定态",
+    "comment": "交通流基本图中对应于不稳定运行区间的交通流状态（状态III），交通流在此区间内易发生扰动传播和拥堵形成。"
+  },
+  {
+    "name": "LinkAverageCycleMaxQueueLength",
+    "type": "Class",
+    "label": "路段级平均周期最大排队长度",
+    "comment": "在信号控制交叉口的一个信号周期内，某车道或某进口道上车辆排队达到的最大长度，是反映交叉口运行状态的关键指标。"
+  },
+  {
+    "name": "LinkTravelTime",
+    "type": "Class",
+    "label": "路段行程时间",
+    "comment": "城市路网中某一路段上车辆通过所需的短期行程时间，是衡量路段交通运行状态的核心指标。"
+  },
+  {
+    "name": "LaneBasedQueueLength",
+    "type": "Class",
+    "label": "车道级排队长度",
+    "comment": "基于单条车道粒度估计的排队长度，用于更精细地刻画交叉口进口道各车道的排队状况。"
+  },
+  {
+    "name": "LaneQueueLength",
+    "type": "Class",
+    "label": "车道级排队长度估计值",
+    "comment": "在单个信号周期内，针对某一车道估计得到的最大排队长度，是路段级排队长度指标的基础组成单元。"
+  },
+  {
+    "name": "TravelTime",
+    "type": "Class",
+    "label": "行程时间",
+    "comment": "车辆通过某一路段或路径所需的时间，是反映交通运行状态的核心指标之一，可基于浮动车数据等进行实时估计。"
+  },
+  {
+    "name": "IncomingFlowIntensity",
+    "type": "Class",
+    "label": "进口流量强度",
+    "comment": "交叉口进口道路上交通流的到达强度，表征交通需求在该入口方向上的流量水平。"
+  },
+  {
+    "name": "IntersectionThroughput",
+    "type": "Class",
+    "label": "交叉口通行能力",
+    "comment": "交叉口的通行能力，表征在特定路线上通过一定数量车辆所需时间的客观特征，是交叉口层级的交通运行指标。"
+  },
+  {
+    "name": "StopLineCrossingTime",
+    "type": "Class",
+    "label": "停车线通过时间",
+    "comment": "从绿灯相位开始，一定数量车辆通过停车线所需的平均时间，是交叉口通行效率的度量指标。"
+  },
+  {
+    "name": "SpaceMeanSpeed",
+    "type": "Class",
+    "label": "空间平均速度",
+    "comment": "在给定路段或路网上的宏观平均速度，通过对空间范围内车辆速度取平均得到，是交通流基本参数之一。"
+  },
+  {
+    "name": "OccupancyLevel",
+    "type": "Class",
+    "label": "占有率",
+    "comment": "表示道路或检测断面上车辆占用时间或空间的比例，是反映交通流密度和拥堵程度的动态运行指标。"
+  },
+  {
+    "name": "CongestionSpreadSpeed",
+    "type": "Class",
+    "label": "拥堵蔓延速度",
+    "comment": "描述拥堵波在路网空间中传播扩散的速度，反映拥堵在空间维度上的蔓延快慢程度。"
+  },
+  {
+    "name": "SpaceHeadway",
+    "type": "Class",
+    "label": "车头间距",
+    "comment": "同一车道上前后相邻两车车头之间的空间距离，在稳态条件下由跟驰模型推导得到。"
+  },
+  {
+    "name": "CriticalFlow",
+    "type": "Class",
+    "label": "临界流量",
+    "comment": "交通流从自由流状态转变为拥堵状态的临界交通流量值，是判断拥堵是否发生的关键阈值指标。"
+  },
+  {
+    "name": "SteadyStateHeadwaySpacing",
+    "type": "Class",
+    "label": "稳态车头间距",
+    "comment": "当交通流处于稳态时，车辆保持恒定速度运行，加速度和与前车的相对速度为零条件下的车头间距，是速度的函数。"
+  },
+  {
+    "name": "AverageHeadway",
+    "type": "Class",
+    "label": "平均车头间距",
+    "comment": "交通流中相邻车辆车头之间的平均距离，是微观交通流参数，与宏观密度互为反比关系，直接影响拥堵蔓延速度。"
+  },
+  {
+    "name": "CongestionFlowSpeed",
+    "type": "Class",
+    "label": "拥堵速度",
+    "comment": "拥堵状态下交通流的平均行驶速度，通常为由道路条件决定的较低常数值，对应车辆缓慢移动或停止—启动状态。"
+  },
+  {
+    "name": "CriticalSpeed",
+    "type": "Class",
+    "label": "临界速度",
+    "comment": "通行能力所对应的交通流速度，是区分自由流与拥挤流的速度阈值。"
+  },
+  {
+    "name": "CongestionSpreadCriticalSpeed",
+    "type": "Class",
+    "label": "拥堵蔓延临界速度",
+    "comment": "交通流速度的临界值，当交通流速度低于该值时拥堵开始向上游蔓延，是判定拥堵是否发生蔓延的阈值指标。"
+  },
+  {
+    "name": "AverageTrafficVolume",
+    "type": "Class",
+    "label": "平均车流量",
+    "comment": "路段在一定时间粒度内通过的车辆数的平均值，是反映交通需求与运行负荷的核心微观指标。"
+  },
+  {
+    "name": "ShortTermAverageSpeed",
+    "type": "Class",
+    "label": "短时平均速度",
+    "comment": "短时间粒度内道路上车辆的平均行驶速度，用于反映路段交通流的即时运行状态。"
+  },
+  {
+    "name": "DelayRateIndex",
+    "type": "Class",
+    "label": "延误率指数",
+    "comment": "用车辆行进速率和期望行程速率差值计算的延误率指数，反映延误时间占总出行时间的比例，值越大说明拥堵程度越高，一般取值在0~10之间。参考美国Lomax评价指标体系。"
+  },
+  {
+    "name": "AverageStoppedDelay",
+    "type": "Class",
+    "label": "平均停车延误",
+    "comment": "交叉口层面的交通运行评价指标，表示车辆在交叉口的平均停车延误时间（单位：秒），用于划分交叉口交通运行态势等级。"
+  },
+  {
+    "name": "IntersectionPassingEfficiencyIndex",
+    "type": "Class",
+    "label": "交叉口通行效率指数",
+    "comment": "交叉口层面的交通运行评价指标，表示交叉口的通行效率水平，用于划分交叉口交通运行态势等级。"
+  },
+  {
+    "name": "TimeMeanSpeed",
+    "type": "Class",
+    "label": "时间平均速度",
+    "comment": "固定时间段内通过路段的车辆瞬时速度的算术平均值，计算公式为所有车辆瞬时速度之和除以车辆总数。"
+  },
+  {
+    "name": "SlowMovingQueueLengthRatio",
+    "type": "Class",
+    "label": "缓行队列长度比例",
+    "comment": "路段层面的缓行队列长度指标，用于衡量路段上车辆排队缓行的空间范围。"
+  },
+  {
+    "name": "InfluenceRelationshipIndex",
+    "type": "Class",
+    "label": "影响关系指数",
+    "comment": "用于表征不同路段之间动态影响关系的方向及大小的指标，基于信息传递量构建。"
+  },
+  {
+    "name": "SlowQueueLength",
+    "type": "Class",
+    "label": "慢行排队长度",
+    "comment": "路段层面的交通运行指标，表示路段上慢行排队的长度，用于评价交通运行状态。"
+  },
+  {
+    "name": "NodeImbalanceDegree",
+    "type": "Class",
+    "label": "节点不平衡度",
+    "comment": "用于识别路网中关键路段的指标，通过分析交通状态变化与信息传递量之间的关系提出。"
+  },
+  {
+    "name": "InformationTransferQuantity",
+    "type": "Class",
+    "label": "信息传递量",
+    "comment": "基于传递熵算法构建的指标，表征不同路段之间交通状态的信息传递量大小。"
+  },
+  {
+    "name": "SegmentSlowMovingQueueLength",
+    "type": "Class",
+    "label": "路段缓行队长",
+    "comment": "路段层面的缓行排队长度指标，用于刻画路段交通运行状态，反映车辆在路段上的排队拥堵程度。"
+  },
+  {
+    "name": "TrafficStateTransferEntropy",
+    "type": "Class",
+    "label": "交通状态转移熵",
+    "comment": "基于条件概率的转移概率定义的熵指标，用于衡量路段间或路段自身历史状态转移对当前时刻交通状态的影响程度。"
+  },
+  {
+    "name": "TrafficFlowPropagationDelay",
+    "type": "Class",
+    "label": "交通流传播延迟",
+    "comment": "交通流在空间维度上从上游路段向下游路段传播时所产生的时间延迟现象，是上下游路段间状态影响关系存在时效性的物理基础。"
+  },
+  {
+    "name": "CongestionIndex",
+    "type": "Class",
+    "label": "交通拥堵指数",
+    "comment": "用于量化表征路段交通状态拥堵程度的离散指标，取值集合为{1,3,5,7,9}，由低到高表明路段交通状态拥堵程度越大。"
+  },
+  {
+    "name": "SegmentStateInfluenceIndex",
+    "type": "Class",
+    "label": "路段状态影响关系指数",
+    "comment": "基于双向转移熵差值定义的路段间交通状态影响关系度量指标，反映两条路段状态序列之间的影响程度与方向。单时刻定义为ρ_{[au]}^t = te_{[a,u]}^t - te_{[u,a]}^t，时间段定义为归一化的累计转移熵差值。正值表示路段a影响路段u，负值表示路段u影响路段a，零表示无影响。"
+  },
+  {
+    "name": "InformationFlowImbalance",
+    "type": "Class",
+    "label": "信息流动不平衡度",
+    "comment": "衡量单条路段在不同时间段内影响其他路段与被其他路段影响的综合信息流动程度的指标。正值表示该路段主要影响其他路段，负值表示主要受其他路段影响，绝对值越大表示信息流动越不平衡。"
+  },
+  {
+    "name": "InboundTransferEntropySum",
+    "type": "Class",
+    "label": "转移熵流入总和",
+    "comment": "在特定时间段内，某路段对其三阶内可达路段的转移熵总和，反映该路段对周围路段的状态传播影响能力。"
+  },
+  {
+    "name": "SegmentStateInfluenceDegree",
+    "type": "Class",
+    "label": "路段状态影响程度",
+    "comment": "在路段交通状态转移过程中，相邻路段之间拥堵状态传播的影响方向与影响强度的量化度量。"
+  },
+  {
+    "name": "StateIndex",
+    "type": "Class",
+    "label": "状态指数",
+    "comment": "路段在某一时刻的交通运行状态量化值，用于表征路段的拥堵程度，是计算传播性和非传播性拥堵程度的基础指标。"
+  },
+  {
+    "name": "CongestionPropagationWeight",
+    "type": "Class",
+    "label": "拥堵传播权重",
+    "comment": "拥堵传播树中路段对之间的拥堵程度权重，以下游路段对上游路段的转移熵值占所有路段对转移熵值的比重来确定，反映路段间拥堵传播的影响程度。"
+  },
+  {
+    "name": "TransferEntropy",
+    "type": "Class",
+    "label": "转移熵",
+    "comment": "在某一时刻下游路段对上游路段的转移熵值，用于量化路段间拥堵状态的影响程度，是计算拥堵传播权重的基础指标。"
+  },
+  {
+    "name": "SegmentCongestionIndex",
+    "type": "Class",
+    "label": "路段拥堵指数",
+    "comment": "基于路段层面计算的拥堵程度量化指标，用于反映单个路段的拥堵水平，是路网拥堵分类与传播分析的基础数据。"
+  },
+  {
+    "name": "CongestionFrequency",
+    "type": "Class",
+    "label": "拥堵发生频数",
+    "comment": "路段在一定时间范围内发生拥堵的次数，用于界定非传播性拥堵。"
+  },
+  {
+    "name": "SegmentTrafficOperationIndex",
+    "type": "Class",
+    "label": "路段交通运行状态指数",
+    "comment": "基于不同颜色属性权重分析，对路段实时交通运行状态进行量化表征的综合指标，反映路段在某一时刻的交通运行状况。"
+  },
+  {
+    "name": "VehicleFlowRate",
+    "type": "Class",
+    "label": "机动车流量",
+    "comment": "路段上单位时间内通过的机动车数量，是反映路段交通负荷的核心动态指标。"
+  },
+  {
+    "name": "FlowRate",
+    "type": "Class",
+    "label": "流量",
+    "comment": "路段上单位时间内通过的车辆数，是最基本的宏观交通参数之一，也是关键的交通运行指标。"
+  },
+  {
+    "name": "HoldingVehicleCount",
+    "type": "Class",
+    "label": "滞留车辆数",
+    "comment": "基于巡航速度的预计轨迹本应在某一时刻已通过放行但实际受阻而未能放行的车辆，反映交叉口交通流的运行效率。"
+  },
+  {
+    "name": "TotalTrafficFlow",
+    "type": "Class",
+    "label": "总交通流量",
+    "comment": "路段上所有车辆的交通流量总和，是路段层级的基础交通运行指标。"
+  },
+  {
+    "name": "CVFlow",
+    "type": "Class",
+    "label": "网联车流量",
+    "comment": "路段上网联车辆（Connected Vehicle）的交通流量，是路段层级的基础交通运行指标。"
+  },
+  {
+    "name": "ArrivalProfile",
+    "type": "Class",
+    "label": "到达表（到达率）",
+    "comment": "表示车辆到达交叉口进口道的时间分布特征，是交叉口层级的交通运行指标，用于信号配时优化等应用。"
+  },
+  {
+    "name": "ResidualQueue",
+    "type": "Class",
+    "label": "残余排队",
+    "comment": "指在绿灯相位结束时，按照巡航速度投影轨迹本应已被放行但仍未离开系统的滞留车辆所形成的排队现象。"
+  },
+  {
+    "name": "UndischargedVehicleCount",
+    "type": "Class",
+    "label": "未放行车辆",
+    "comment": "在任意给定时刻，按照巡航速度投影轨迹本应已离开系统但实际仍未被放行的车辆数量，是对经典残余排队概念在时间维度上的泛化。"
+  },
+  {
+    "name": "NewlyArrivingVehicleCount",
+    "type": "Class",
+    "label": "新到达车辆",
+    "comment": "在给定时刻，按照投影轨迹预计尚未被放行的新到达车辆数量，与未放行车辆共同构成交叉口各进口道的总车辆数。"
+  },
+  {
+    "name": "VehicleSpeed",
+    "type": "Class",
+    "label": "车辆速度",
+    "comment": "车辆在路网中的行驶速度，是判断路网拥堵状况的基础交通运行指标。"
+  },
+  {
+    "name": "StateTransitionProbability",
+    "type": "Class",
+    "label": "状态转移概率",
+    "comment": "微观交通系统中不同交通状态之间的转移过程，具有转移概率，相邻状态之间的转移概率较大，突发事件可导致非相邻状态间的转移。"
+  },
+  {
+    "name": "TrafficParameterVariation",
+    "type": "Class",
+    "label": "交通参数变化量",
+    "comment": "相邻时间步之间交通参数的变化量ΔQ(t+Δt)=Q(t+Δt)-Q(t)，用于判断系统状态是否发生转移。"
+  },
+  {
+    "name": "OffPeakFlowStability",
+    "type": "Class",
+    "label": "非高峰流量稳定性",
+    "comment": "路段在高峰时段交通流量的稳定程度，用于衡量高峰期间交通流波动特征，是路段交通模式划分的特征指标之一。"
+  },
+  {
+    "name": "VehicleCongestionDensity",
+    "type": "Class",
+    "label": "车辆拥堵密度",
+    "comment": "用于衡量交通密度的指标，通过车辆拥堵密度函数（VCD）计算得出，基于该指标可定义拥堵状态。"
+  },
+  {
+    "name": "CongestedState",
+    "type": "Class",
+    "label": "拥堵状态",
+    "comment": "交通流处于拥堵条件下的运行状态，车辆速度显著低于自由流速度，通行能力受到严重制约。"
+  },
+  {
+    "name": "StopAndGoTraffic",
+    "type": "Class",
+    "label": "走走停停交通流",
+    "comment": "一种交通流运行状态，车辆在路段上反复加速和减速，呈现走走停停的不稳定运行模式，通常出现在拥堵条件下。"
+  },
+  {
+    "name": "CongestedRegime",
+    "type": "Class",
+    "label": "拥堵态",
+    "comment": "交通流处于拥堵运行状态的交通运行态势，车辆速度显著降低，路段通行能力受限。"
+  },
+  {
+    "name": "TransientState",
+    "type": "Class",
+    "label": "过渡状态",
+    "comment": "交通流在自由流与拥堵之间的过渡运行状态，表征交通态势的动态转换过程，是交通态势的基本离散状态之一。"
+  },
+  {
+    "name": "SegmentAverageTravelSpeed",
+    "type": "Class",
+    "label": "路段平均行程速度",
+    "comment": "路段上车辆的平均行程速度，是路段交通运行状况等级划分的基础指标，记为V_bj。"
+  },
+  {
+    "name": "TimeVaryingSpeed",
+    "type": "Class",
+    "label": "时变速度",
+    "comment": "随时间动态变化的路段行驶速度，是路段交通状态的核心时变指标。"
+  },
+  {
+    "name": "TrafficTrendSpeed",
+    "type": "Class",
+    "label": "交通趋势速度",
+    "comment": "反映交通运行速度变化趋势的指标，用于表征交通状态的演变方向和速率。"
+  },
+  {
+    "name": "TrafficLoad",
+    "type": "Class",
+    "label": "交通负载",
+    "comment": "表示路段承载的交通流量负荷，用于衡量路段的交通承载状态，是级联失效分析中的基础指标。"
+  },
+  {
+    "name": "CumulativeFlow",
+    "type": "Class",
+    "label": "累积流量",
+    "comment": "描述交通状态的参数之一，表示在一定时间段内通过某检测断面的累积车辆数。"
+  },
+  {
+    "name": "MaxQueueLength",
+    "type": "Class",
+    "label": "最大排队长度",
+    "comment": "评价指标之一，表示交叉口或路段上排队车辆达到的最大空间长度。"
+  },
+  {
+    "name": "BottleneckCapacity",
+    "type": "Class",
+    "label": "瓶颈通行能力",
+    "comment": "路网中瓶颈处的最大通行能力，当上游交通需求超过该值时将导致拥堵和通行能力breakdown。"
+  },
+  {
+    "name": "TemporalCorrelation",
+    "type": "Class",
+    "label": "时序相关性",
+    "comment": "描述相邻或连续路段之间交通状态（如速度）在时间维度上的关联程度，反映交通流在时间序列上的传播与延迟特征。"
+  },
+  {
+    "name": "TrafficStateCorrelation",
+    "type": "Class",
+    "label": "交通状态相关性",
+    "comment": "用于描述连续路段之间交通流状态（如速度）的相关程度，反映相邻路段交通状态的关联强度，是衡量路段间交通态势空间关联的指标。"
+  },
+  {
+    "name": "LocalMoranIndex",
+    "type": "Class",
+    "label": "局部莫兰指数",
+    "comment": "用于衡量路网中某个节点与其邻近节点之间空间相关程度的指标，取值范围为(-∞,+∞)，正值表示局部正相关，负值表示局部负相关，零表示随机性。还可用于确定观测指标中的异常值或集聚出现的范围和位置。"
+  },
+  {
+    "name": "DirectionalSpeedDifference",
+    "type": "Class",
+    "label": "路段上下行速度差值",
+    "comment": "同一路段上行方向与下行方向交通速度之间的差值，用于反映路段的潮汐特征程度。"
+  },
+  {
+    "name": "UndersaturatedState",
+    "type": "Class",
+    "label": "欠饱和状态",
+    "comment": "路网或交叉口交通流量低于通行能力的运行状态，表示交通需求尚未达到饱和水平。"
+  },
+  {
+    "name": "DownstreamTrafficFlow",
+    "type": "Class",
+    "label": "下游交通流",
+    "comment": "一个信号周期内从某条道路驶出并进入相邻道路的车辆数，即该道路的下游交通流量。"
+  },
+  {
+    "name": "ConnectorFlow",
+    "type": "Class",
+    "label": "连接器流量",
+    "comment": "在某一时间步内通过连接器（即从一个元胞驶入相邻元胞）的车辆数量，是微观交通流的基础动态指标。"
+  },
+  {
+    "name": "PeakToFreeFlowSpeedRatio",
+    "type": "Class",
+    "label": "高峰速度与自由流速度之比",
+    "comment": "早高峰时段路段平均行驶速度与夜间自由流速度的比值，用于表征路段在高峰时段的交通拥堵程度。"
+  },
+  {
+    "name": "DegreeCentrality",
+    "type": "Class",
+    "label": "度中心性",
+    "comment": "基于有向加权网络计算的节点度中心性指标，用于衡量交叉口或节点在路网拓扑中的连接重要程度。"
+  },
+  {
+    "name": "CompositeCentrality",
+    "type": "Class",
+    "label": "综合中心性",
+    "comment": "将度中心性、介数中心性、接近中心性和PageRank中心性加权计算得到的综合指标，用于综合评价节点在路网中的重要程度。"
+  },
+  {
+    "name": "CouplingCoordinationDegree",
+    "type": "Class",
+    "label": "耦合协调度",
+    "comment": "表征路段实际交通状态与道路重要度之间匹配程度的综合评价指标，由耦合关系C与综合评价协调指数T计算得到，取值范围[0,1]。"
+  },
+  {
+    "name": "CouplingRelationValue",
+    "type": "Class",
+    "label": "耦合关系值",
+    "comment": "表示交通状态与道路重要度两个系统间相互作用程度的指标，取值范围[0,1]，是计算耦合协调度的中间指标。"
+  },
+  {
+    "name": "ComprehensiveCoordinationIndex",
+    "type": "Class",
+    "label": "综合评价协调指数",
+    "comment": "对交通状态和道路重要度各子系统评价值进行加权综合后得到的协调指数T，是计算耦合协调度的中间指标。"
+  },
+  {
+    "name": "describesSegment",
+    "type": "ObjectProperty",
+    "label": "描述路段",
+    "comment": "[主属性] 状态指向路段，用于建立路段状态与路段实体之间的描述关系。"
+  },
+  {
+    "name": "hasSegmentState",
+    "type": "ObjectProperty",
+    "label": "拥有路段状态",
+    "comment": "[互逆属性] 路段指向状态，支持逻辑层面的双向推理查询。"
+  },
+  {
+    "name": "hasSegmentIndicator",
+    "type": "ObjectProperty",
+    "label": "关联路段指标",
+    "comment": "状态节点挂载具体的路段指标实体。"
+  },
+  {
+    "name": "hasOperatingLevel",
+    "type": "ObjectProperty",
+    "label": "具有运行等级",
+    "comment": "将微观路段、中观道路或宏观区域的交通状态，精准锚定至国标规定的5种静态运行等级实体之一。"
+  },
+  {
+    "name": "derivedFromOperatingLevel",
+    "type": "ObjectProperty",
+    "label": "衍生自运行等级",
+    "comment": "显式表达微观二值化的拥堵判定系数(c_ij)是由定性的运行等级实体触发的（如关联到轻度拥堵及以上实体时，c_ij=1）。"
+  },
+  {
+    "name": "describesIntersection",
+    "type": "ObjectProperty",
+    "label": "描述交叉口",
+    "comment": "[主属性] 状态指向交叉口，用于建立交叉口状态与交叉口实体之间的描述关系。"
+  },
+  {
+    "name": "hasIntersectionState",
+    "type": "ObjectProperty",
+    "label": "拥有交叉口状态",
+    "comment": "[互逆属性] 交叉口指向状态，支持逻辑层面的双向推理查询。"
+  },
+  {
+    "name": "hasIntersectionIndicator",
+    "type": "ObjectProperty",
+    "label": "关联交叉口指标",
+    "comment": "状态节点挂载具体的交叉口指标实体。"
+  },
+  {
+    "name": "computedFromVariationCoefficients",
+    "type": "ObjectProperty",
+    "label": "由流量和速度变异系数计算而来",
+    "comment": "表示复合交通动态指标D由流量变异系数和速度变异系数加权组合计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromTravelDelay",
+    "type": "ObjectProperty",
+    "label": "由行程延误计算而来",
+    "comment": "表示时变行程时间由自由流行程时间与行程延误共同计算得到的关系。"
+  },
+  {
+    "name": "computedFromTravelTime",
+    "type": "ObjectProperty",
+    "label": "由行程时间计算得到",
+    "comment": "表示行程速度由路段长度和行程时间计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromTrafficVolume",
+    "type": "ObjectProperty",
+    "label": "由交通流量计算得到",
+    "comment": "表示路段饱和度由交通流量计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromFlowAndDensity",
+    "type": "ObjectProperty",
+    "label": "由流量与密度计算得到",
+    "comment": "表示波速指标由交通流量差与交通密度差计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromQueueLengthRatio",
+    "type": "ObjectProperty",
+    "label": "由缓行队列长度比例计算得到",
+    "comment": "表示缓行队列长度由缓行队列长度比例与路段长度计算得到的派生关系。"
+  },
+  {
+    "name": "influencedByUpstreamStateTransition",
+    "type": "ObjectProperty",
+    "label": "受上游历史状态转移影响",
+    "comment": "表示下游路段当前时刻的交通状态受到上游路段历史状态转移的影响关系，体现交通流传播延迟条件下的时空关联。"
+  },
+  {
+    "name": "influencesSegment",
+    "type": "ObjectProperty",
+    "label": "影响方向",
+    "comment": "表示在特定时间段内，一条路段的交通状态对另一条路段的交通状态产生影响的方向性关系。影响方向由影响源路段指向影响目标路段，基于路段状态影响关系指数的正负判定。"
+  },
+  {
+    "name": "computedFromTransferEntropySum",
+    "type": "ObjectProperty",
+    "label": "由转移熵总和计算得到",
+    "comment": "表示信息流动不平衡度指标由转移熵流出总和与转移熵流入总和计算得到的关系。"
+  },
+  {
+    "name": "propagatesTo",
+    "type": "ObjectProperty",
+    "label": "传播影响关系",
+    "comment": "表示一个拥堵路段的拥堵状态沿时空维度传播到另一个路段的关系。"
+  },
+  {
+    "name": "computedFromCVFlow",
+    "type": "ObjectProperty",
+    "label": "由网联车流量计算而来",
+    "comment": "表示网联车渗透率由网联车流量计算得到的指标派生关系。"
+  },
+  {
+    "name": "computedFromAverageTravelSpeed",
+    "type": "ObjectProperty",
+    "label": "由平均行程速度计算而来",
+    "comment": "表示路段交通运行状况等级的判定依赖于路段平均行程速度的实际观测值。"
+  },
+  {
+    "name": "computedFromCentralityIndicators",
+    "type": "ObjectProperty",
+    "label": "由基础中心性指标计算而来",
+    "comment": "表示综合中心性指标由度中心性、介数中心性、接近中心性和PageRank中心性加权计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromRoadImportance",
+    "type": "ObjectProperty",
+    "label": "由道路重要度计算而来",
+    "comment": "表示耦合协调度的计算依赖于道路重要度指标。"
+  },
+  {
+    "name": "flowWeight",
+    "type": "DatatypeProperty",
+    "label": "流量权重",
+    "comment": "复合交通动态指标中分配给流量变异系数分量的权重值w_q，反映流量在分析中的相对重要性。"
+  },
+  {
+    "name": "speedWeight",
+    "type": "DatatypeProperty",
+    "label": "速度权重",
+    "comment": "复合交通动态指标中分配给速度变异系数分量的权重值w_v，反映速度在分析中的相对重要性。"
+  },
+  {
+    "name": "congestionDensityThreshold",
+    "type": "DatatypeProperty",
+    "label": "拥堵密度阈值",
+    "comment": "用于判定元胞是否处于拥堵状态的车流密度临界值，取值为最大拥挤密度的0.9倍。"
+  },
+  {
+    "name": "reliabilityFactor",
+    "type": "DatatypeProperty",
+    "label": "可靠性因子",
+    "comment": "公共交通线路实际到站相对于计划时刻的平均延误值，作为修正计划等待时间的参数，单位为分钟。"
+  },
+  {
+    "name": "stateThreshold",
+    "type": "DatatypeProperty",
+    "label": "状态阈值",
+    "comment": "用于将不同交通状态等级彼此分隔的分界值（分类标准），即区分相邻交通状态级别的速度临界值。"
+  },
+  {
+    "name": "dataEffectiveness",
+    "type": "DatatypeProperty",
+    "label": "数据有效性",
+    "comment": "浮动车数据提取后的有效数据占比，用于评价数据质量。"
+  },
+  {
+    "name": "speedLevel",
+    "type": "DatatypeProperty",
+    "label": "速度等级",
+    "comment": "表示路段通行速度所属的等级分类标签，取值为低、较低、一般、较高、高等受控枚举值。"
+  },
+  {
+    "name": "correlationCoefficient",
+    "type": "DatatypeProperty",
+    "label": "皮尔逊相关系数",
+    "comment": "用于度量两个路段交通状态时间序列之间线性相关程度的数值，取值范围为[-1,1]，绝对值越大相关性越强。"
+  },
+  {
+    "name": "RoadState",
+    "type": "Class",
+    "label": "道路交通状态",
+    "comment": "聚合态势状态枢纽，连接道路对象、时间与道路级指标。"
+  },
+  {
+    "name": "ZoneState",
+    "type": "Class",
+    "label": "区域交通状态",
+    "comment": "聚合态势状态枢纽，连接宏观区域、时间与综合评价指标。"
+  },
+  {
+    "name": "RoadIndicator",
+    "type": "Class",
+    "label": "道路级指标(父类)",
+    "comment": "用于表征道路尺度下连续运行状态的指标父类。"
+  },
+  {
+    "name": "RoadTravelTime",
+    "type": "Class",
+    "label": "道路行程时间",
+    "comment": "反映道路尺度下连续通行时间水平的指标。"
+  },
+  {
+    "name": "RoadAverageSpeed",
+    "type": "Class",
+    "label": "道路平均速度",
+    "comment": "反映道路尺度下平均运行速度水平的指标。"
+  },
+  {
+    "name": "RoadDelay",
+    "type": "Class",
+    "label": "道路延误",
+    "comment": "反映道路尺度下整体延误水平的指标。"
+  },
+  {
+    "name": "RoadCongestionLengthRatio",
+    "type": "Class",
+    "label": "道路拥堵长度比",
+    "comment": "反映道路范围内拥堵长度占比的指标。"
+  },
+  {
+    "name": "ZoneIndicator",
+    "type": "Class",
+    "label": "区域级指标(父类)",
+    "comment": "依据 GA/T 2128-2024 标准计算得出的所有区域综合评价指标。"
+  },
+  {
+    "name": "TrafficPerformanceIndex",
+    "type": "Class",
+    "label": "城市交通运行指数(TPI)",
+    "comment": "反映道路网交通运行状况的无量纲数值，取值范围为0~10。依据 GB/T 33171 标准计算，是判定路网宏观拥堵等级的直接定量依据。"
+  },
+  {
+    "name": "TravelTimeRatio_I1",
+    "type": "Class",
+    "label": "I1_区域行程时间比",
+    "comment": "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段行程时间比与权重。"
+  },
+  {
+    "name": "DelayTimeRatio_I2",
+    "type": "Class",
+    "label": "I2_区域延误时间比",
+    "comment": "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段延误时间比。"
+  },
+  {
+    "name": "NetworkAverageSpeed_I3",
+    "type": "Class",
+    "label": "I3_区域平均速度",
+    "comment": "GA/T 2128 标准评估维度：运行效率。反映区域尺度下的平均运行速度水平。"
+  },
+  {
+    "name": "CongestionMileageRatio_I4",
+    "type": "Class",
+    "label": "I4_拥堵里程比",
+    "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 路段拥堵判定系数对应的路段长度。"
+  },
+  {
+    "name": "NonSmoothRoadRatio_I5",
+    "type": "Class",
+    "label": "I5_全天非畅通道路占比",
+    "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 的路段全天非畅通系数。"
+  },
+  {
+    "name": "NonSmoothTimeRatio_I6",
+    "type": "Class",
+    "label": "I6_全天非畅通时间占比",
+    "comment": "GA/T 2128 标准评估维度：拥堵分布。聚合路径：基于全天拥堵时间片统计。"
+  },
+  {
+    "name": "DailyCongestionRate_I7",
+    "type": "Class",
+    "label": "I7_全天拥堵比率",
+    "comment": "GA/T 2128 标准评估维度：拥堵分布。时空双重聚合特征。"
+  },
+  {
+    "name": "PeakHourCoeff_I8",
+    "type": "Class",
+    "label": "I8_拥堵高峰小时系数",
+    "comment": "GA/T 2128 标准评估维度：时间平衡。衍生自全天拥堵比率与高峰拥堵比率的对比。"
+  },
+  {
+    "name": "DissipationRate_I9",
+    "type": "Class",
+    "label": "I9_拥堵消散速率",
+    "comment": "GA/T 2128 标准评估维度：时间平衡。依赖 L5 层拥堵事件实体提取关键过程特征。"
+  },
+  {
+    "name": "PeakBalance_I10",
+    "type": "Class",
+    "label": "I10_早晚高峰平衡度",
+    "comment": "GA/T 2128 标准评估维度：时间平衡。衍生自早高峰与晚高峰相关指标。"
+  },
+  {
+    "name": "DailySpeedDeviation_I11",
+    "type": "Class",
+    "label": "I11_高峰速度日偏差系数",
+    "comment": "GA/T 2128 标准评估维度：时间平衡。跨日聚合特征。"
+  },
+  {
+    "name": "SpatialBalance_I12",
+    "type": "Class",
+    "label": "I12_空间均衡度",
+    "comment": "GA/T 2128 标准评估维度：空间均衡。基于 L3 路段行程时间比离散度计算。"
+  },
+  {
+    "name": "OperationDeviation_I13",
+    "type": "Class",
+    "label": "I13_运行偏离度",
+    "comment": "GA/T 2128 标准评估维度：空间均衡。分道路等级比较特征。"
+  },
+  {
+    "name": "CongestionLoadRatio_I14",
+    "type": "Class",
+    "label": "I14_全天拥堵负荷比",
+    "comment": "GA/T 2128 标准评估维度：空间均衡。依据路段等级聚合底层拥堵系数。"
+  },
+  {
+    "name": "SecondaryCrash",
+    "type": "Class",
+    "label": "二次事故",
+    "comment": "由初始交通事故引发的后续交通事故，是交通事故管理中需要避免的连锁事件。"
+  },
+  {
+    "name": "Crash",
+    "type": "Class",
+    "label": "交通碰撞事故",
+    "comment": "一种具体的交通事故类型，指车辆碰撞事件，会导致车道封闭、交通流中断，需要响应团队到场处置。"
+  },
+  {
+    "name": "TrafficOscillation",
+    "type": "Class",
+    "label": "交通振荡",
+    "comment": "交通流中速度和密度呈现周期性波动的动态运行现象，是交通状态不稳定性的典型表征。"
+  },
+  {
+    "name": "CityTripSpeedPerformanceIndex",
+    "type": "Class",
+    "label": "城市出行速度性能指数",
+    "comment": "用于捕捉宏观交通运行表现的量化指标，可提供不同道路上宏观拥堵水平的定量评价。"
+  },
+  {
+    "name": "AverageFlowRate",
+    "type": "Class",
+    "label": "平均流量",
+    "comment": "路网中路段在某一时间段内的平均交通流量，记为q(t)，是网络宏观基本图（NMFD）的核心变量之一。"
+  },
+  {
+    "name": "AverageTrafficDensity",
+    "type": "Class",
+    "label": "平均交通密度",
+    "comment": "路网中路段在某一时间段内的平均交通密度，记为k(t)，是网络宏观基本图（NMFD）的核心变量之一。"
+  },
+  {
+    "name": "NetworkDensity",
+    "type": "Class",
+    "label": "路网密度",
+    "comment": "路网宏观基本图（NMFD）中表征路网整体交通密度水平的聚合指标，反映路网尺度下的平均车辆密度。"
+  },
+  {
+    "name": "AverageOccupancy",
+    "type": "Class",
+    "label": "平均占有率",
+    "comment": "区域内多个检测器加权平均后的占有率值，是构建网络宏观基本图（NMFD）的核心指标之一。"
+  },
+  {
+    "name": "MaximumAverageFlowRate",
+    "type": "Class",
+    "label": "最大平均流量",
+    "comment": "在NMFD曲线上观测到的平均流量的最大值，用于定量比较不同日期的路网运行容量特征。"
+  },
+  {
+    "name": "MaximumAverageOccupancy",
+    "type": "Class",
+    "label": "最大平均占有率",
+    "comment": "在NMFD曲线上观测到的平均占有率的最大值，用于定量比较不同日期的路网运行状态特征。"
+  },
+  {
+    "name": "ArmClosure",
+    "type": "Class",
+    "label": "进口道封闭",
+    "comment": "交叉口某一进口道因交通事件等原因被封闭，导致该方向交通中断的事件。"
+  },
+  {
+    "name": "RoadClosure",
+    "type": "Class",
+    "label": "道路封闭",
+    "comment": "因特定原因导致道路被封闭、禁止通行的交通事件，属于影响交通流的突发事件类型。"
+  },
+  {
+    "name": "CongestionSegmentCount",
+    "type": "Class",
+    "label": "拥堵路段总数",
+    "comment": "在特定时间片内，道路网中处于拥堵状态的路段数量，用于反映路网整体拥堵程度的区域级指标。"
+  },
+  {
+    "name": "CongestionRoadRatio",
+    "type": "Class",
+    "label": "拥堵道路占比",
+    "comment": "在特定时间片内，道路网中拥堵路段数占总路段数的比例，用于衡量路网整体拥堵覆盖范围。"
+  },
+  {
+    "name": "CumulativeCongestionDuration",
+    "type": "Class",
+    "label": "拥堵时间累计",
+    "comment": "对某条道路在一定统计周期内（如一周）所有拥堵时间片的累加值，用于衡量道路拥堵的总体严重程度。"
+  },
+  {
+    "name": "MotorNonMotorConflict",
+    "type": "Class",
+    "label": "机非冲突",
+    "comment": "机动车与非机动车在同一车行道上行驶时产生的交通冲突现象，是影响道路运行状态的一种交通事件。"
+  },
+  {
+    "name": "CongestionSituationIndex",
+    "type": "Class",
+    "label": "交通拥堵态势指数",
+    "comment": "通过时间序列分析法得到的综合指数，用于表征交通拥堵态势的程度。"
+  },
+  {
+    "name": "SmoothPercentage",
+    "type": "Class",
+    "label": "畅通百分比",
+    "comment": "区域或路网中处于畅通状态的道路里程占总里程的百分比，是区域级交通态势评价指标。"
+  },
+  {
+    "name": "SlowMovingPercentage",
+    "type": "Class",
+    "label": "缓行百分比",
+    "comment": "区域或路网中处于缓行状态的道路里程占总里程的百分比，是区域级交通态势评价指标。"
+  },
+  {
+    "name": "TrafficHealthIndex",
+    "type": "Class",
+    "label": "交通健康指数",
+    "comment": "综合反映城市路网交通运行健康程度的区域级评价指标，由道路实时运行数据和交通态势数据计算得出。"
+  },
+  {
+    "name": "RecurrentCongestion",
+    "type": "Class",
+    "label": "常发性拥堵",
+    "comment": "路段反复出现的拥堵现象，属于拥堵事件的一种类型分类，表示拥堵具有时空规律性和常态化特征。"
+  },
+  {
+    "name": "NonRecurrentCongestion",
+    "type": "Class",
+    "label": "偶发性拥堵",
+    "comment": "路段偶尔出现的拥堵现象，属于拥堵事件的一种类型分类，表示拥堵不具有规律性，由偶然因素引发。"
+  },
+  {
+    "name": "CongestionScale",
+    "type": "Class",
+    "label": "拥堵规模",
+    "comment": "用于衡量拥堵事件在空间范围或影响程度上的大小的评价指标，可反映拥堵的严重程度和波及范围。"
+  },
+  {
+    "name": "CongestionDelay",
+    "type": "Class",
+    "label": "拥堵延迟",
+    "comment": "因拥堵导致的车辆额外行程时间，是衡量拥堵对出行效率影响程度的评价指标。"
+  },
+  {
+    "name": "CongestionTime",
+    "type": "Class",
+    "label": "拥堵时间",
+    "comment": "用于反映路网中交通拥堵在时间维度上的持续影响时长，可通过分析路网运行状态恢复到事故发生之前所用的时间得到。"
+  },
+  {
+    "name": "TotalQueueLength",
+    "type": "Class",
+    "label": "总排队长度",
+    "comment": "路网中所有车辆在网络上排队长度之和，用于定义拥堵规模指标。"
+  },
+  {
+    "name": "CongestionCellCount",
+    "type": "Class",
+    "label": "拥堵元胞数目",
+    "comment": "当前路网中被判定为拥堵状态的元胞数量，作为拥堵规模的评价指标。"
+  },
+  {
+    "name": "NetworkCongestionDelay",
+    "type": "Class",
+    "label": "路网拥堵延误",
+    "comment": "将各元胞各路段的拥堵延误在整个交通路网范围内进行空间聚合后得到的路网级拥堵延误指标，表示某一时刻整个路网的拥堵延误总量。"
+  },
+  {
+    "name": "CumulativeCongestionDelay",
+    "type": "Class",
+    "label": "累计拥堵延误",
+    "comment": "在整个仿真研究时间段内，对路网中所有元胞、所有路段、所有时间步的拥堵延误进行时空累计求和得到的总延误指标。"
+  },
+  {
+    "name": "NetworkAverageInstantaneousSpeed",
+    "type": "Class",
+    "label": "路网平均瞬时速度",
+    "comment": "在某一时刻对整个交通路网中所有路段、所有元胞的车辆速度进行加权平均得到的路网尺度瞬时速度指标。"
+  },
+  {
+    "name": "CongestionDissipationTime",
+    "type": "Class",
+    "label": "拥堵消散时间",
+    "comment": "表示拥堵事件从开始消散到完全恢复正常交通状态所经历的时间长度，是衡量拥堵恢复速度的动态指标。"
+  },
+  {
+    "name": "NetworkTotalFlowVolume",
+    "type": "Class",
+    "label": "路网总流动量",
+    "comment": "路网范围内在一定时间内通过的总车辆流量或总行驶量，用于衡量路网整体通行效率的区域级动态指标。"
+  },
+  {
+    "name": "CongestionCellClearanceRate",
+    "type": "Class",
+    "label": "拥堵元胞消除速率",
+    "comment": "表示拥堵消散过程中拥堵元胞数量减少的速率，反映路网拥堵消散的效率。"
+  },
+  {
+    "name": "NetworkVehicleAccumulation",
+    "type": "Class",
+    "label": "路网车辆积聚量",
+    "comment": "表示某一区域或路网范围内在特定时间内的车辆总积聚数量，是宏观基本图（MFD）的核心自变量之一，用于反映区域交通负荷水平。"
+  },
+  {
+    "name": "TripCompletionFlow",
+    "type": "Class",
+    "label": "出行完成流量",
+    "comment": "表示单位时间内在某一区域或路网中完成出行的车辆流量，是宏观基本图（MFD）的核心因变量之一，用于衡量路网的出行服务效率。"
+  },
+  {
+    "name": "SpaceMeanFlow",
+    "type": "Class",
+    "label": "空间平均流量",
+    "comment": "表示某一区域内所有路段在空间维度上的平均交通流量，是宏观基本图中与路网车辆积聚量相关联的核心指标。"
+  },
+  {
+    "name": "TransitSupply",
+    "type": "Class",
+    "label": "公交供给",
+    "comment": "表示某交通小区内公共交通服务的供给水平，是计算公交供需缺口的基础指标之一。"
+  },
+  {
+    "name": "TransitDemand",
+    "type": "Class",
+    "label": "公交需求",
+    "comment": "表示某交通小区内公共交通服务的需求水平，是计算公交供需缺口的基础指标之一。"
+  },
+  {
+    "name": "ShockWave",
+    "type": "Class",
+    "label": "激波",
+    "comment": "交通流中由于密度或速度突变形成的波动现象，表现为拥堵在时空上的传播边界，可向上游反向传播。"
+  },
+  {
+    "name": "TrafficCongestion",
+    "type": "Class",
+    "label": "交通拥堵",
+    "comment": "城市路网中由于机动车增长等原因导致的交通拥堵现象，尤其在高峰时段表现严重，对社会经济发展产生负面影响。"
+  },
+  {
+    "name": "TrafficFlowBreakdown",
+    "type": "Class",
+    "label": "交通流崩溃",
+    "comment": "交通流从自由流状态向拥堵状态急剧转变的现象，是交通状态变化过程中的关键事件。"
+  },
+  {
+    "name": "WideMovingCongestion",
+    "type": "Class",
+    "label": "宽幅移动拥堵",
+    "comment": "交通流的一种相态，由Kerner三相交通流理论提出，表示拥堵波在路段上大范围向上游传播的严重拥堵状态。"
+  },
+  {
+    "name": "TravelTimeReliability",
+    "type": "Class",
+    "label": "出行时间可靠性",
+    "comment": "衡量出行时间在不同条件下稳定性和可预测程度的交通运行指标，反映路网服务质量。"
+  },
+  {
+    "name": "PathTravelTime",
+    "type": "Class",
+    "label": "路径行程时间",
+    "comment": "车辆在多个交叉口之间沿路径行驶所经历的总时间，可通过在多个交叉口追踪同一车辆获得。"
+  },
+  {
+    "name": "Queuing",
+    "type": "Class",
+    "label": "排队",
+    "comment": "路段末端（交叉口进口道）由于信号控制或拥堵等原因导致车辆排队等待的交通动态现象，可通过激波分析进行估计。"
+  },
+  {
+    "name": "StableTrafficFlowEquilibriumState",
+    "type": "Class",
+    "label": "稳定交通流均衡状态",
+    "comment": "区域交通流在特定条件下达到的稳定运行均衡状态，表征区域路网交通流量与密度趋于稳定的动态平衡点。"
+  },
+  {
+    "name": "AttractionArea",
+    "type": "Class",
+    "label": "吸引域",
+    "comment": "在区域交通流状态空间中，能够收敛到稳态均衡点的初始状态集合范围，反映系统趋向均衡的稳定性区域。"
+  },
+  {
+    "name": "MaximumPeakTrafficFlow",
+    "type": "Class",
+    "label": "最大峰值交通流量",
+    "comment": "路网区域所能承受的最大峰值交通流量，表示该区域在极限负荷条件下的交通流量上限。"
+  },
+  {
+    "name": "TransportDemand",
+    "type": "Class",
+    "label": "交通需求",
+    "comment": "城市路网中由社会出行需求产生的、随时间变化的交通运输需求，是车辆运动的来源，影响交通流运行状态。"
+  },
+  {
+    "name": "RoadCongestionIndex",
+    "type": "Class",
+    "label": "道路拥堵指数",
+    "comment": "用于衡量道路拥堵程度的综合评价指标，可在调整前后进行对比以评估改善效果。"
+  },
+  {
+    "name": "ExternalInflow",
+    "type": "Class",
+    "label": "外部流入量",
+    "comment": "进入交通路网的外部交通流量，表示从路网边界流入的车辆数或流率。"
+  },
+  {
+    "name": "NetworkAccessibilityIndex",
+    "type": "Class",
+    "label": "路网可达性参数",
+    "comment": "表示实际出行时间小于标准出行时间的出行频次比率，用于评价路网可达性。"
+  },
+  {
+    "name": "MobilityIndex",
+    "type": "Class",
+    "label": "机动性参数",
+    "comment": "基于人流量、车辆平均速度与路段最大承载流量及理想速度的比值，反映城市人员出行的机动性。参数值大则说明路段拥堵影响范围小、持续时间短。"
+  },
+  {
+    "name": "NetworkUtilizationRate",
+    "type": "Class",
+    "label": "路网利用率",
+    "comment": "用于衡量路网资源被利用程度的区域级指标，反映路网整体运行效率。"
+  },
+  {
+    "name": "LicensePlateRestriction",
+    "type": "Class",
+    "label": "车牌号限行",
+    "comment": "城市采取的基于车牌号的交通限行管制措施，可能导致交通流量数据的周期性规律发生变化。"
+  },
+  {
+    "name": "PropagatingNetworkCongestion",
+    "type": "Class",
+    "label": "传播性路网拥堵",
+    "comment": "具有空间传播特性的拥堵现象，拥堵从一个路段向相邻路段扩散蔓延。"
+  },
+  {
+    "name": "NonPropagatingCongestion",
+    "type": "Class",
+    "label": "非传播性拥堵",
+    "comment": "不具有空间传播特性的拥堵现象，拥堵局限于局部路段而不向相邻路段扩散。"
+  },
+  {
+    "name": "OverallNetworkCongestionDegree",
+    "type": "Class",
+    "label": "路网整体拥堵程度",
+    "comment": "对路网整体拥堵水平的量化评价指标，基于拥堵路段集合构建的路网尺度综合指标。"
+  },
+  {
+    "name": "NoncommunicableCongestion",
+    "type": "Class",
+    "label": "不可传播拥堵",
+    "comment": "路网拥堵的一种类型，指可以在路段之间传播扩散的拥堵现象。"
+  },
+  {
+    "name": "NetworkAverageTravelSpeed",
+    "type": "Class",
+    "label": "路网平均行程速度",
+    "comment": "某时间间隔内研究区域所有路段的行程速度之和的平均值，用于表征路网整体运行水平的宏观指标。"
+  },
+  {
+    "name": "NetworkMaxCongestionDegree",
+    "type": "Class",
+    "label": "路网最大拥堵程度",
+    "comment": "路网交通拥堵状态程度的最大值，作为路网交通运行状态实时判别的比较基准。"
+  },
+  {
+    "name": "LinearCongestion",
+    "type": "Class",
+    "label": "线拥堵",
+    "comment": "当路段发生拥堵时，其拥堵状态随时间推移向相邻上游路段传播，形成沿线性方向扩展的拥堵形态。"
+  },
+  {
+    "name": "AreaCongestion",
+    "type": "Class",
+    "label": "面拥堵",
+    "comment": "相隔较远的路段发生拥堵时，随着时间推移传播路段发生重合，形成面状扩展的拥堵形态。"
+  },
+  {
+    "name": "NonPropagatingCongestionDegree",
+    "type": "Class",
+    "label": "非传播性路段拥堵程度",
+    "comment": "在某一时刻路网中不具有传播特性的拥堵路段集合的拥堵程度，仅考虑各拥堵路段状态指数的平均值。"
+  },
+  {
+    "name": "NetworkRealtimeCongestionSimilarity",
+    "type": "Class",
+    "label": "路网实时拥堵近似度",
+    "comment": "表示路网实时拥堵程度与最大拥堵程度之间的近似程度，综合考虑拥堵程度比值和拥堵路段数量比值，近似度越大表示实时路网拥堵程度越接近最大拥堵程度。"
+  },
+  {
+    "name": "TidalTrafficPhenomenon",
+    "type": "Class",
+    "label": "潮汐现象",
+    "comment": "城市交通在时间维度上呈现的方向性不对称流量分布特征，表现为早晚高峰时段交通流在不同方向上的显著差异。"
+  },
+  {
+    "name": "TrafficConflict",
+    "type": "Class",
+    "label": "交通冲突",
+    "comment": "在信号交叉口等场景中，多辆车辆共享同一道路空间时产生的不同程度的交通冲突现象，是一种可观测的交通安全事件。"
+  },
+  {
+    "name": "TransitWaitingTime",
+    "type": "Class",
+    "label": "公交平均等待时间",
+    "comment": "乘客在公共交通出行中从起始区域到目的区域的平均候车等待时间，取决于乘客在公交网络中的路径选择及运营决策。"
+  },
+  {
+    "name": "TransitInVehicleTime",
+    "type": "Class",
+    "label": "公交平均车内出行时间",
+    "comment": "乘客乘坐公共交通从起始区域到目的区域的平均车内行程时间。"
+  },
+  {
+    "name": "AverageTrafficSpeed",
+    "type": "Class",
+    "label": "平均交通速度",
+    "comment": "某一区域内道路上的平均交通行驶速度，是反映区域交通运行状态的动态指标，随车辆密度变化而变化。"
+  },
+  {
+    "name": "InVehicleTripTime",
+    "type": "Class",
+    "label": "车内出行时间",
+    "comment": "乘客在车辆内从出发区域到目的区域的行驶时间，是衡量出行服务水平的动态交通指标。"
+  },
+  {
+    "name": "AverageShortestPathTravelDistance",
+    "type": "Class",
+    "label": "平均最短路径行驶距离",
+    "comment": "从区域i到区域j通过网约车出行的平均最短路径行驶距离，是区域间OD层级的交通空间指标。"
+  },
+  {
+    "name": "RoadDamage",
+    "type": "Class",
+    "label": "道路损坏",
+    "comment": "道路因损坏导致通行能力下降的事件，常引发非预期的交通拥堵。"
+  },
+  {
+    "name": "TrafficSignalMalfunction",
+    "type": "Class",
+    "label": "交通信号灯故障",
+    "comment": "交通信号灯发生故障的事件，可显著影响交通流运行。"
+  },
+  {
+    "name": "LaneRestriction",
+    "type": "Class",
+    "label": "车道限制",
+    "comment": "对特定车道实施通行限制的交通管制措施，可改变驾驶行为和交通模式。"
+  },
+  {
+    "name": "SpeedLimit",
+    "type": "Class",
+    "label": "限速",
+    "comment": "对道路或路段实施速度限制的交通管制措施，可改变驾驶行为和交通模式。"
+  },
+  {
+    "name": "NetworkSaturation",
+    "type": "Class",
+    "label": "饱和度",
+    "comment": "从速度或流量角度计算的路网饱和程度，用于评价路网交通状态。"
+  },
+  {
+    "name": "NetworkProduction",
+    "type": "Class",
+    "label": "路网产出",
+    "comment": "以P=NV公式描述的路网交通产出指标，用于刻画路网交通运行状况，其中N为车辆数，V为速度。"
+  },
+  {
+    "name": "NetworkExitEfficiency",
+    "type": "Class",
+    "label": "路网驶出效率",
+    "comment": "以'nv'描述的车辆驶出路网的效率指标，用于作为交通控制的参考依据，反映城市路网整体运行效率。"
+  },
+  {
+    "name": "UncongestedState",
+    "type": "Class",
+    "label": "非拥堵状态",
+    "comment": "城市路网中车辆数低于临界阈值时的运行状态，此时城市运行效率与车辆数正相关。"
+  },
+  {
+    "name": "NetworkOperationalEfficiency",
+    "type": "Class",
+    "label": "路网运行效率",
+    "comment": "衡量城市路网整体运行效率的宏观指标，其值随路网内车辆数量与拥堵状态的变化而动态变化。"
+  },
+  {
+    "name": "CriticalVehicleNumber",
+    "type": "Class",
+    "label": "临界车辆数",
+    "comment": "路网中区分拥堵与非拥堵状态的车辆数临界阈值，保持路网内车辆数低于该阈值可有效保障路网运行效率。"
+  },
+  {
+    "name": "AverageTravelTimePerUnitDistance",
+    "type": "Class",
+    "label": "单位距离平均行程时间",
+    "comment": "路网中车辆每单位距离的平均行程时间，用于量化路网交通运行性能的宏观指标。"
+  },
+  {
+    "name": "AverageStoppingTimePerUnitDistance",
+    "type": "Class",
+    "label": "单位距离平均停车时间",
+    "comment": "路网中车辆每单位距离的平均停车时间，用于反映路网交通运行中车辆停滞程度的宏观指标。"
+  },
+  {
+    "name": "NetworkHeterogeneity",
+    "type": "Class",
+    "label": "路网异质性",
+    "comment": "描述城市路网中交通流分布不均匀程度的区域级指标，反映路网内部各路段交通状态的差异性，对宏观交通流特性有显著影响。"
+  },
+  {
+    "name": "TravelTimeUncertaintyIndex",
+    "type": "Class",
+    "label": "行程时间不确定性指数",
+    "comment": "用于衡量动态路网中行程时间波动与不确定性程度的指标，可更准确地评估路网运行状态。"
+  },
+  {
+    "name": "MovingVehicleRatio",
+    "type": "Class",
+    "label": "移动车辆比例",
+    "comment": "路网中处于运动状态的车辆数量与路网内车辆总数的比值(f_r)，是两流体模型中描述路网交通状态的核心指标。"
+  },
+  {
+    "name": "StoppingVehicleFraction",
+    "type": "Class",
+    "label": "停车比例",
+    "comment": "路网中处于停驶状态的车辆占路网内车辆总数的比例(f_s)，包括因信号灯、停车标志及其他交通管制措施而暂时停止的车辆，不包括长时间停放的车辆。"
+  },
+  {
+    "name": "AverageRunningSpeed",
+    "type": "Class",
+    "label": "移动车辆平均行驶速度",
+    "comment": "路网中处于运动状态的车辆的平均行驶速度(v_r)，是两流体模型中表征路网运行效率的核心指标。"
+  },
+  {
+    "name": "AverageNetworkSpeed",
+    "type": "Class",
+    "label": "路网平均速度",
+    "comment": "路网的平均速度(V)，由移动车辆平均行驶速度与移动车辆比例的乘积得到，是表征路网整体运行水平的综合指标。"
+  },
+  {
+    "name": "DampingCoefficient",
+    "type": "Class",
+    "label": "路网阻尼系数",
+    "comment": "路网阻尼系数(a)，反映路网拓扑结构、出行分布、路径选择和交通控制策略等因素对路网运行速度的综合衰减效应。"
+  },
+  {
+    "name": "JamVehicleNumber",
+    "type": "Class",
+    "label": "阻塞车辆数",
+    "comment": "路网达到完全拥堵状态时所能容纳的最大车辆数，是路网容量的极限参数。"
+  },
+  {
+    "name": "NetworkOptimalVehicleCount",
+    "type": "Class",
+    "label": "路网最优车辆数",
+    "comment": "路网运行效率达到最大值P_max时对应的车辆数N_a，表示路网处于最优运行状态的负荷水平。"
+  },
+  {
+    "name": "MaxNetworkProductivity",
+    "type": "Class",
+    "label": "路网最大运行效率",
+    "comment": "路网交通状态指标P的最大值P_max，对应路网处于最优运行效率时的状态，是评价路网运行能力上限的关键指标。"
+  },
+  {
+    "name": "PathCapacity",
+    "type": "Class",
+    "label": "路径通行能力",
+    "comment": "表示某条路径在单位时间内能够通过的最大车辆数，是衡量道路供给能力的基础指标。"
+  },
+  {
+    "name": "PathWeight",
+    "type": "Class",
+    "label": "路径权重",
+    "comment": "通过路径权重计算（PWC）得出的指标，用于理解道路、车道和边的通行条件。"
+  },
+  {
+    "name": "RoadSmoothness",
+    "type": "Class",
+    "label": "道路通畅性",
+    "comment": "反映道路交通运行畅通程度的综合指标，可通过实时交通态势数据进行度量，用于评价城市路网的运行状态。"
+  },
+  {
+    "name": "CongestionSpreading",
+    "type": "Class",
+    "label": "拥堵扩散",
+    "comment": "拥堵从初始发生路段向相邻路段或更大范围传播的演化过程，是拥堵事件生命周期中的一种典型演化趋势。"
+  },
+  {
+    "name": "EmergencyEvent",
+    "type": "Class",
+    "label": "突发事件",
+    "comment": "突然发生的、对道路交通流产生显著影响的非常规事件，可能导致交通态势急剧变化。"
+  },
+  {
+    "name": "QueueSpillover",
+    "type": "Class",
+    "label": "排队溢出",
+    "comment": "指交通排队长度超过路段或链路容量，导致排队向上游溢出影响相邻路段交通运行的现象。"
+  },
+  {
+    "name": "WeightedTrafficDensity",
+    "type": "Class",
+    "label": "加权交通密度",
+    "comment": "通过加权平均方法对路网中各路段交通密度进行综合计算得到的密度指标，用于估计路网宏观基本图状态。"
+  },
+  {
+    "name": "CongestionSpatialEvolutionRate",
+    "type": "Class",
+    "label": "拥堵空间演变速率",
+    "comment": "描述交通拥堵从稳态到消散过程中，拥堵状态在空间上演变的速率特征指标。"
+  },
+  {
+    "name": "CongestionSpatiotemporalPropagation",
+    "type": "Class",
+    "label": "拥堵时空传播过程",
+    "comment": "描述路网中交通拥堵在时间和空间维度上传播扩散的动态演化过程。"
+  },
+  {
+    "name": "RoadCongestionMileage",
+    "type": "Class",
+    "label": "道路拥堵里程",
+    "comment": "表示道路上处于拥堵状态的路段总长度，用于评估交通拥堵的空间范围。"
+  },
+  {
+    "name": "CongestionIntensity",
+    "type": "Class",
+    "label": "拥堵强度",
+    "comment": "用于量化评价交通拥堵严重程度的综合指标，可在点、线、面不同空间层次上进行评价。"
+  },
+  {
+    "name": "NetworkCapacity",
+    "type": "Class",
+    "label": "路网通行能力",
+    "comment": "城市路网级别的通行能力，定义为网络平均加权流量的最大值，反映路网承载交通流的最大能力，与城市功能区属性、交通运行条件、路网拓扑参数相关。"
+  },
+  {
+    "name": "NetworkTrafficOperationState",
+    "type": "Class",
+    "label": "路网交通运行状态",
+    "comment": "通过对路网宏观基本图进行聚类划分得到的路网级交通运行状态类别，共分为五种状态（包括轻微拥堵、中度拥堵等），用于表征路网在不同时刻的整体运行水平。"
+  },
+  {
+    "name": "NetworkAccidentFrequency",
+    "type": "Class",
+    "label": "路网事故频次",
+    "comment": "城市路网区域内交通安全事故发生的频次，受路网运行速度标准差、路网宏观基本图所处状态、路网拓扑结构参数等因素影响。"
+  },
+  {
+    "name": "VehicleDistributionUnevenness",
+    "type": "Class",
+    "label": "车辆分布不均匀性",
+    "comment": "描述路网内车辆在空间上分布不均匀程度的变量，用于优化城市路网交通流模型，解释高峰时刻路网在相同道路占有率下对应流量存在巨大差异的原因。"
+  },
+  {
+    "name": "RunningSpeedStandardDeviation",
+    "type": "Class",
+    "label": "运行速度标准差",
+    "comment": "路网内各路段运行速度的标准差，反映路网速度分布的离散程度，对路网交通事故频次产生显著正向影响。"
+  },
+  {
+    "name": "AccidentRisk",
+    "type": "Class",
+    "label": "事故风险",
+    "comment": "城市路网中交通事故发生的风险程度，是交通安全态势的核心评价指标。"
+  },
+  {
+    "name": "MfdStateProportion",
+    "type": "Class",
+    "label": "宏观基本图状态占比",
+    "comment": "路网宏观基本图处于某一特定运行状态（如状态III、状态IV）的时间或空间占比，用于量化路网在不同运行阶段的分布特征。"
+  },
+  {
+    "name": "RoadNetworkAccidentFrequency",
+    "type": "Class",
+    "label": "路网交通事故频率",
+    "comment": "路网范围内交通事故发生的频率，是衡量路网交通安全风险水平的区域级指标。"
+  },
+  {
+    "name": "NetworkWeightedOccupancy",
+    "type": "Class",
+    "label": "路网加权时间占有率",
+    "comment": "路网中各路段占有率按一定权重聚合得到的宏观交通密度指标，用于宏观基本图中表征路网整体交通密度水平。"
+  },
+  {
+    "name": "HysteresisEffect",
+    "type": "Class",
+    "label": "滞回现象",
+    "comment": "宏观基本图中交通流加载与卸载过程呈现不同路径的滞回环现象，反映路网拥堵形成与消散过程的非对称性。"
+  },
+  {
+    "name": "DynamicNetworkCapacity",
+    "type": "Class",
+    "label": "路网动态通行能力",
+    "comment": "表征城市高密度路网在特定时空条件下的动态通行能力，受功能区路网特征、交通特征和管控方式等因素影响，是区域尺度下的交通运行指标。"
+  },
+  {
+    "name": "NetworkWeightedAverageDensity",
+    "type": "Class",
+    "label": "路网加权平均密度",
+    "comment": "路网内所有路段流量按路段长度加权平均后得到的宏观交通流量指标，单位为pcu/h，计算公式为各路段流量与路段长度乘积之和除以路段长度之和。"
+  },
+  {
+    "name": "NetworkCriticalAccumulation",
+    "type": "Class",
+    "label": "路网临界车辆数",
+    "comment": "宏观基本图中路网加权平均流量达到最大值时对应的路网运行车辆数，是路网从非饱和流状态转入饱和流状态的临界点。"
+  },
+  {
+    "name": "NetworkWeightedAverageOccupancy",
+    "type": "Class",
+    "label": "路网路段加权平均占有率",
+    "comment": "路网区域内所有路段按权重加权计算得到的平均占有率（Accumulation），是MFD的横轴指标。"
+  },
+  {
+    "name": "NetworkCriticalOccupancy",
+    "type": "Class",
+    "label": "路网临界占有率",
+    "comment": "路网区域中对应最大通行能力的占有率临界值，超过该值后路网通行能力下降，交通流状态变得不稳定。"
+  },
+  {
+    "name": "HysteresisPhenomenon",
+    "type": "Class",
+    "label": "磁滞现象",
+    "comment": "在MFD（宏观基本图）分析中，路网流量与占有率在高峰时段内按时间序列排列形成顺时针环的现象，反映路网拥堵加载与卸载过程的非对称性。"
+  },
+  {
+    "name": "CapacityBreakdown",
+    "type": "Class",
+    "label": "通行能力崩溃",
+    "comment": "路网在车辆过饱和条件下通行能力发生突降的现象，是导致宏观基本图磁滞现象的核心机制。"
+  },
+  {
+    "name": "NetworkDensitySpatialHeterogeneity",
+    "type": "Class",
+    "label": "路网密度空间分布不均匀性",
+    "comment": "城市路网中交通密度在空间上分布不均匀的状态特征，表现为部分路段密度低而部分路段密度高并存，是MFD磁滞现象的内在机理。"
+  },
+  {
+    "name": "CriticalSegmentImportanceIndex",
+    "type": "Class",
+    "label": "关键路段重要性指标",
+    "comment": "基于路网流量与密度的函数关系构建的指标，通过路网路段失效前后整体宏观基本图变化的程度来表征路段对路网整体MFD的影响，θ数值越大说明路段越重要。"
+  },
+  {
+    "name": "NetworkOperatingSpeed",
+    "type": "Class",
+    "label": "运行车速",
+    "comment": "路网尺度下的运行车速指标，反映路网整体的车辆运行速度水平。"
+  },
+  {
+    "name": "NetworkLevelOfService",
+    "type": "Class",
+    "label": "路网服务水平",
+    "comment": "路网尺度下的服务水平等级指标，综合反映路网为交通出行提供服务的质量等级。"
+  },
+  {
+    "name": "NetworkOccupancyVariance",
+    "type": "Class",
+    "label": "路网占有率均方差",
+    "comment": "单位时段内路网中所有检测器占有率数据的均方差（按路段长度加权），用于表征路网内车流空间分布的不均匀程度，解释相同占有率下流量不稳定的原因。"
+  },
+  {
+    "name": "FlowSpatialHeterogeneity",
+    "type": "Class",
+    "label": "流量空间分布不均匀性",
+    "comment": "路网内交通流量在空间上的分布不均匀程度，影响路网MFD形状及路网通行能力，是导致相同占有率下流量值不同的关键因素。"
+  },
+  {
+    "name": "MeanFlowStandardDeviation",
+    "type": "Class",
+    "label": "平均流量标准差",
+    "comment": "城市路网范围内所有检测器流量数据经路段长度加权后计算得到的标准差的时间平均值，用于表征路网交通运行条件的流量波动程度。"
+  },
+  {
+    "name": "NetworkOccupancyStdDevMean",
+    "type": "Class",
+    "label": "路网占有率标准差均值",
+    "comment": "城市路网范围内所有检测器占有率数据经路段长度加权后计算得到的标准差的时间平均值，用于表征路网交通运行条件的占有率波动程度。"
+  },
+  {
+    "name": "NetworkFlowStandardDeviationMean",
+    "type": "Class",
+    "label": "路网流量标准差均值",
+    "comment": "表示城市路网中不同时刻路网流量之间差异情况的指标，路网流量标准差均值越大，代表路网内主要道路承载交通流量和车辆的能力越强。"
+  },
+  {
+    "name": "NetworkOperatingState",
+    "type": "Class",
+    "label": "路网交通运行状态",
+    "comment": "基于路网宏观基本图通过聚类方法划分的路网交通运行状态类别，用于辨识路网在不同时刻所处的运行阶段。"
+  },
+  {
+    "name": "NetworkAccidentRisk",
+    "type": "Class",
+    "label": "路网事故风险",
+    "comment": "路网区域尺度下的交通事故发生频次风险，受路网交通运行条件和网络拓扑结构属性共同影响的安全态势指标。"
+  },
+  {
+    "name": "RoadNetworkTrafficStateClassification",
+    "type": "Class",
+    "label": "路网交通状态分类",
+    "comment": "将路网中所有路段同一时刻的交通状态数据作为路网状态的表示向量，通过聚类算法对路网整体交通状态进行分类，识别路网在不同时间下的典型交通状态模式。"
+  },
+  {
+    "name": "TrafficRelevance",
+    "type": "Class",
+    "label": "交通关联性",
+    "comment": "描述路网中路段之间在交通运行状态上的相互关联程度，包括时空相关性特征。"
+  },
+  {
+    "name": "SpatialAutoCorrelation",
+    "type": "Class",
+    "label": "空间自相关性",
+    "comment": "路网中路段交通状态在空间维度上的自相关特征，用于刻画相邻或可达路段之间交通状态的空间依赖关系。"
+  },
+  {
+    "name": "NetworkTrafficStateIndex",
+    "type": "Class",
+    "label": "路网交通状态综合指标",
+    "comment": "用于综合反映城市交通路网整体运行状态的指标，相比直接交通参数（流量、速度、密度）更能体现路网实际运行情况。"
+  },
+  {
+    "name": "NetworkTrafficStateCategory",
+    "type": "Class",
+    "label": "路网交通状态类别",
+    "comment": "通过对路网整体交通状态进行分类后得到的离散状态类别，用于直观展现路网交通运行情况，并为后续路网交通状态相关性及时空变化分析提供基础。"
+  },
+  {
+    "name": "GlobalMoranIndex",
+    "type": "Class",
+    "label": "全局莫兰指数",
+    "comment": "用于评估路网中所有位置或观测值之间空间自相关程度的指标，取值范围在(-1,1)，正值表示空间正相关（高值集聚或低值集聚），负值表示空间负相关（分散模式），接近零表示空间随机分布。"
+  },
+  {
+    "name": "SpatiotemporalSimilarity",
+    "type": "Class",
+    "label": "交通状态时空相似性",
+    "comment": "路网中不同空间单元在交通状态时间序列上的相似程度，用于衡量路网内部交通状态的聚类特征。"
+  },
+  {
+    "name": "NetworkTrafficState",
+    "type": "Class",
+    "label": "路网交通状态",
+    "comment": "以路网所有路段同一时刻的交通状态数据为样本单元，表征整个路网在某一时刻的综合交通运行状态类别。"
+  },
+  {
+    "name": "NetworkStateSpatialCorrelation",
+    "type": "Class",
+    "label": "路网交通状态关联度",
+    "comment": "基于空间自相关理论度量的路网中路段交通状态之间的时空关联程度指标，反映路网交通状态的空间聚集或离散特征。"
+  },
+  {
+    "name": "InputTrafficVolume",
+    "type": "Class",
+    "label": "输入交通量",
+    "comment": "进入某一子路网的交通流量总和，由外围源节点产生的交通流和相邻子路网流入的交通流两部分组成。"
+  },
+  {
+    "name": "OutputTrafficVolume",
+    "type": "Class",
+    "label": "输出交通量",
+    "comment": "离开某一子路网的交通流量总和，包括流向相邻子路网的交通流和在该子路网内结束行程的交通流。"
+  },
+  {
+    "name": "PeripheralSourceFlow",
+    "type": "Class",
+    "label": "外围源节点交通流",
+    "comment": "由子路网外围源节点产生并进入该子路网的交通流量，是输入交通量的组成部分之一。"
+  },
+  {
+    "name": "InterSubNetworkFlow",
+    "type": "Class",
+    "label": "相邻子路网间交通流",
+    "comment": "从相邻子路网流入或流出目标子路网的交通流量，是子路网间交通流交换的度量指标。"
+  },
+  {
+    "name": "TotalTimeSpent",
+    "type": "Class",
+    "label": "总花费时间",
+    "comment": "路网中所有车辆在评价时段内花费的总时间，是衡量城市交通网络运行效率的宏观性能指标。"
+  },
+  {
+    "name": "ClosenessCentrality",
+    "type": "Class",
+    "label": "接近中心性",
+    "comment": "表示一条道路与其他道路之间的平均最短路径距离，值越高表明该道路越位于网络的中心位置，对整体交通效率的提高具有显著影响。"
+  },
+  {
+    "name": "describesRoad",
+    "type": "ObjectProperty",
+    "label": "描述道路",
+    "comment": "[主属性] 状态指向道路，用于建立道路状态与道路实体之间的描述关系。"
+  },
+  {
+    "name": "hasRoadState",
+    "type": "ObjectProperty",
+    "label": "拥有道路状态",
+    "comment": "[互逆属性] 道路指向状态，支持逻辑层面的双向推理查询。"
+  },
+  {
+    "name": "hasRoadIndicator",
+    "type": "ObjectProperty",
+    "label": "关联道路指标",
+    "comment": "状态节点挂载具体的道路指标实体。"
+  },
+  {
+    "name": "describesZone",
+    "type": "ObjectProperty",
+    "label": "描述区域",
+    "comment": "[主属性] 状态指向宏观区域。"
+  },
+  {
+    "name": "hasZoneState",
+    "type": "ObjectProperty",
+    "label": "拥有区域状态",
+    "comment": "[互逆属性] 区域指向状态。"
+  },
+  {
+    "name": "hasZoneIndicator",
+    "type": "ObjectProperty",
+    "label": "关联区域指标",
+    "comment": "状态节点挂载具体的区域综合评价指标实体。"
+  },
+  {
+    "name": "operatingLevelDependsOnTPI",
+    "type": "ObjectProperty",
+    "label": "等级依赖于运行指数",
+    "comment": "显式表达宏观路网的运行等级（如中度拥堵）是严格依赖于城市交通运行指数(TPI)数值推导而来的。"
+  },
+  {
+    "name": "aggregatedFromSegmentIndicator",
+    "type": "ObjectProperty",
+    "label": "聚合自路段指标",
+    "comment": "[核心] 道路指标或区域指标溯源至路段指标。"
+  },
+  {
+    "name": "aggregatedFromIntersectionIndicator",
+    "type": "ObjectProperty",
+    "label": "聚合自交叉口指标",
+    "comment": "[核心] 道路指标或区域指标溯源至交叉口指标。"
+  },
+  {
+    "name": "aggregatedFromRoadIndicator",
+    "type": "ObjectProperty",
+    "label": "聚合自道路指标",
+    "comment": "[核心] 区域指标溯源至道路指标。"
+  },
+  {
+    "name": "triggeredByCrash",
+    "type": "ObjectProperty",
+    "label": "由事故触发拥堵",
+    "comment": "表示拥堵事件由交通事故触发的因果关系，事故发生后导致交通拥堵。"
+  },
+  {
+    "name": "triggersSecondaryIncident",
+    "type": "ObjectProperty",
+    "label": "引发二次事故",
+    "comment": "表示一次事故（主要事故）未及时处理而引发后续二次事故的因果关系。"
+  },
+  {
+    "name": "aggregatedFromCongestionDelay",
+    "type": "ObjectProperty",
+    "label": "聚合自拥堵延误",
+    "comment": "表示路网级拥堵延误由各元胞/路段级拥堵延误在空间上聚合而来的关系。"
+  },
+  {
+    "name": "aggregatedFromLinkDensity",
+    "type": "ObjectProperty",
+    "label": "路网平均密度聚合自路段密度",
+    "comment": "路网平均密度由各路段密度按路段长度加权聚合而来的计算关系。"
+  },
+  {
+    "name": "aggregatedFromSegmentTravelSpeed",
+    "type": "ObjectProperty",
+    "label": "由路段行程速度聚合",
+    "comment": "表示路网平均行程速度由各路段行程速度聚合计算而来的关系。"
+  },
+  {
+    "name": "propagatesToUpstream",
+    "type": "ObjectProperty",
+    "label": "传播至上游路段",
+    "comment": "表示拥堵事件从下游路段沿路网拓扑反向传播至上游路段的空间传播关系。"
+  },
+  {
+    "name": "computedFromCongestionComponents",
+    "type": "ObjectProperty",
+    "label": "由传播性与非传播性拥堵程度计算而来",
+    "comment": "路网整体拥堵程度由传播性路网拥堵程度和非传播性路段拥堵程度加权求和计算得到。"
+  },
+  {
+    "name": "aggregatedFromTreeDegree",
+    "type": "ObjectProperty",
+    "label": "由传播树拥堵程度聚合而来",
+    "comment": "传播性路网拥堵程度由路网中所有交通拥堵状态时空传播树的拥堵程度加权平均聚合得到。"
+  },
+  {
+    "name": "computedFromStateIndex",
+    "type": "ObjectProperty",
+    "label": "由状态指数计算而来",
+    "comment": "传播树拥堵程度由树中路段对的状态指数加权求和计算得到。"
+  },
+  {
+    "name": "computedFromNetworkCongestionDegree",
+    "type": "ObjectProperty",
+    "label": "由路网拥堵程度计算而来",
+    "comment": "表示路网实时拥堵近似度由路网拥堵程度指标计算得到的派生关系。"
+  },
+  {
+    "name": "affectsNeighboringArea",
+    "type": "ObjectProperty",
+    "label": "影响相邻区域",
+    "comment": "表示一个空间实体的交通状态对相邻空间实体的交通状态产生影响的关系。"
+  },
+  {
+    "name": "computedFromVehicleCountAndSpeed",
+    "type": "ObjectProperty",
+    "label": "车辆行驶总里程由路网车辆数与平均速度计算得到",
+    "comment": "表示车辆行驶总里程(P)由路网内车辆数(N)与平均行程速度(V)的乘积计算得到的关系。"
+  },
+  {
+    "name": "computedFromMovingVehicleRatio",
+    "type": "ObjectProperty",
+    "label": "由移动车辆比例计算得到",
+    "comment": "表示路网平均速度由移动车辆比例和移动车辆平均行驶速度计算得到的关系。"
+  },
+  {
+    "name": "computedFromVehicleNumber",
+    "type": "ObjectProperty",
+    "label": "由路网内车辆数计算得到",
+    "comment": "表示停车比例指标由路网内车辆数和阻塞车辆数计算得到的派生关系。"
+  },
+  {
+    "name": "computedFromNetworkVehicleCountAndSpeed",
+    "type": "ObjectProperty",
+    "label": "由路网车辆数和速度计算得到",
+    "comment": "路网交通状态指标P由路网内车辆数N与路网平均速度V的乘积计算得到，表示指标间的计算派生关系。"
+  },
+  {
+    "name": "aggregatedFromSegmentFlow",
+    "type": "ObjectProperty",
+    "label": "由路段流量聚合而来",
+    "comment": "表示路网加权平均流量由各路段流量按路段长度加权聚合计算得到的关系。"
+  },
+  {
+    "name": "aggregatedFromSegmentOccupancy",
+    "type": "ObjectProperty",
+    "label": "由路段占有率聚合而来",
+    "comment": "表示路网加权时间占有率由各路段占有率按路段长度加权聚合计算得到的关系。"
+  },
+  {
+    "name": "peakLagsAfter",
+    "type": "ObjectProperty",
+    "label": "峰值滞后关系",
+    "comment": "表示路网占有率指标的峰值时刻总是滞后于路网流量指标的峰值时刻，反映两个区域级指标之间的时序先后关系。"
+  },
+  {
+    "name": "computedFromNetworkOccupancy",
+    "type": "ObjectProperty",
+    "label": "由路网占有率计算得到",
+    "comment": "表示路网流量F_T由路网占有率O_T及其空间分布均方差Δ_T通过宏观交通流模型计算得到。"
+  },
+  {
+    "name": "computedFromCentralityIndicator",
+    "type": "ObjectProperty",
+    "label": "由指标计算得到",
+    "comment": "表示道路重要度指标由节点度、介数中心性、接近中心性和特征向量中心性等基础指标计算得到。"
+  },
+  {
+    "name": "computedFromFreeFlowSpeed",
+    "type": "ObjectProperty",
+    "label": "由自由流速度计算而来",
+    "comment": "表示速度状态指标由夜间自由流速度与高峰平均速度计算得到的关系。"
+  },
+  {
+    "name": "CongestionEvent",
+    "type": "Class",
+    "label": "交通拥堵事件",
+    "comment": "表示一次完整的拥堵事件，用于描述拥堵现象在整体层面的生命周期与总体特征。"
+  },
+  {
+    "name": "CongestionEvolution",
+    "type": "Class",
+    "label": "拥堵演化切片",
+    "comment": "表示某一拥堵事件在特定时间片上的整体演化切片，用于描述该时刻拥堵的空间范围、状态构成及演化特征。"
+  },
+  {
+    "name": "hasEvolutionState",
+    "type": "ObjectProperty",
+    "label": "包含演化切片",
+    "comment": "建立拥堵事件与其演化切片之间的从属关系，一个拥堵事件可包含多个演化切片。"
+  },
+  {
+    "name": "linkedToTrafficState",
+    "type": "ObjectProperty",
+    "label": "关联交通状态",
+    "comment": "将拥堵演化切片关联到构成该切片空间范围的微观交通状态实体，包括路段状态和交叉口状态。"
+  },
+  {
+    "name": "nextEvolutionState",
+    "type": "ObjectProperty",
+    "label": "下一个演化切片",
+    "comment": "表示当前拥堵演化切片在时间序列上的下一个演化切片，用于构建拥堵过程的显式演化链。"
+  },
+  {
+    "name": "dependsOnCongestionEvent",
+    "type": "ObjectProperty",
+    "label": "依赖拥堵事件",
+    "comment": "建立区域指标对交通拥堵事件的逻辑依赖关系，用于支撑过程性指标计算。"
+  },
+  {
+    "name": "supportsIndicator",
+    "type": "ObjectProperty",
+    "label": "支撑评价指标",
+    "comment": "[互逆属性] 拥堵事件实体指向它所参与计算的区域宏观指标（如拥堵消散速率）。"
+  },
+  {
+    "name": "triggeredByEvent",
+    "type": "ObjectProperty",
+    "label": "由事件触发",
+    "comment": "表示某一拥堵事件由一般交通事件触发。"
+  },
+  {
+    "name": "congestionStartTime",
+    "type": "DatatypeProperty",
+    "label": "拥堵开始时间",
+    "comment": "表示拥堵事件的开始时间。"
+  },
+  {
+    "name": "congestionEndTime",
+    "type": "DatatypeProperty",
+    "label": "拥堵结束时间",
+    "comment": "表示拥堵事件的结束时间。"
+  },
+  {
+    "name": "congestionDuration",
+    "type": "DatatypeProperty",
+    "label": "拥堵持续时长",
+    "comment": "表示拥堵事件的持续时长，单位为分钟。"
+  },
+  {
+    "name": "maxCongestionLength",
+    "type": "DatatypeProperty",
+    "label": "最大拥堵长度",
+    "comment": "表示拥堵事件生命周期内达到的最大拥堵空间长度，单位为米。"
+  },
+  {
+    "name": "congestionTrend",
+    "type": "DatatypeProperty",
+    "label": "拥堵演化趋势",
+    "comment": "表示拥堵演化切片的变化趋势。其取值采用受控枚举，限定为 'Spreading'（扩散）、'Maintaining'（维持）或 'Dissipating'（消散）。"
+  },
+  {
+    "name": "congestionLength",
+    "type": "DatatypeProperty",
+    "label": "拥堵长度",
+    "comment": "表示某一拥堵演化切片对应的拥堵空间长度，单位为米。"
+  },
+  {
+    "name": "congestionIntensity",
+    "type": "DatatypeProperty",
+    "label": "拥堵强度",
+    "comment": "表示某一演化切片下拥堵事件的整体强度水平。"
+  },
+  {
+    "name": "TrafficEvent",
+    "type": "Class",
+    "label": "一般交通事件",
+    "comment": "一般交通事件的抽象父类，用于统一承载对交通流造成影响的外部事件实例。"
+  },
+  {
+    "name": "Accident",
+    "type": "Class",
+    "label": "交通事故",
+    "comment": "表示交通事故类事件。"
+  },
+  {
+    "name": "Roadwork",
+    "type": "Class",
+    "label": "道路施工",
+    "comment": "表示道路施工类事件。"
+  },
+  {
+    "name": "TrafficControl",
+    "type": "Class",
+    "label": "交通管制",
+    "comment": "表示交通管制类事件。"
+  },
+  {
+    "name": "AdverseWeather",
+    "type": "Class",
+    "label": "恶劣天气",
+    "comment": "表示恶劣天气类事件。"
+  },
+  {
+    "name": "occursOnSpatialEntity",
+    "type": "ObjectProperty",
+    "label": "发生于空间实体",
+    "comment": "一般交通事件发生于某一空间实体的总父属性。"
+  },
+  {
+    "name": "hasTrafficEvent",
+    "type": "ObjectProperty",
+    "label": "发生过一般事件",
+    "comment": "[互逆属性] 空间实体指向其发生过的一般交通事件，支持从物理路段或交叉口反查历史事件。"
+  },
+  {
+    "name": "occursOnSegment",
+    "type": "ObjectProperty",
+    "label": "发生于路段",
+    "comment": "表示一般交通事件发生于某一路段。"
+  },
+  {
+    "name": "occursOnIntersection",
+    "type": "ObjectProperty",
+    "label": "发生于交叉口",
+    "comment": "表示一般交通事件发生于某一交叉口。"
+  },
+  {
+    "name": "severityLevel",
+    "type": "DatatypeProperty",
+    "label": "严重程度",
+    "comment": "表示一般交通事件的严重程度等级。"
+  },
+  {
+    "name": "eventStartTime",
+    "type": "DatatypeProperty",
+    "label": "事件开始时间",
+    "comment": "表示一般交通事件的开始时间，作为时间实体关系的辅助时间属性。"
+  },
+  {
+    "name": "eventEndTime",
+    "type": "DatatypeProperty",
+    "label": "事件结束时间",
+    "comment": "表示一般交通事件的结束时间，作为时间实体关系的辅助时间属性。"
+  },
+  {
+    "name": "eventDuration",
+    "type": "DatatypeProperty",
+    "label": "事件持续时长",
+    "comment": "表示一般交通事件的持续时长，作为时间实体关系的辅助时间属性。"
+  },
+  {
+    "name": "eventDescription",
+    "type": "DatatypeProperty",
+    "label": "事件描述",
+    "comment": "表示一般交通事件的文本描述信息。"
+  },
+  {
+    "name": "eventSource",
+    "type": "DatatypeProperty",
+    "label": "事件来源",
+    "comment": "表示一般交通事件的数据来源或信息来源。"
+  },
+  {
+    "name": "responseTime",
+    "type": "DatatypeProperty",
+    "label": "响应时间",
+    "comment": "事故发生后应急响应到达现场所需的时间。"
+  },
+  {
+    "name": "peakCongestionTime",
+    "type": "DatatypeProperty",
+    "label": "拥堵峰值时刻",
+    "comment": "拥堵事件达到最大规模或最严重程度时对应的时间点。"
+  },
+  {
+    "name": "congestionRecoveryTime",
+    "type": "DatatypeProperty",
+    "label": "拥堵恢复时刻",
+    "comment": "拥堵事件中拥堵延迟恢复至正常水平的时间点。"
+  },
+  {
+    "name": "dataCoverage",
+    "type": "DatatypeProperty",
+    "label": "数据覆盖率",
+    "comment": "浮动车数据对路网空间范围的覆盖程度，用于评价数据的空间完整性。"
+  },
+  {
+    "name": "weatherSeverityLevel",
+    "type": "DatatypeProperty",
+    "label": "天气恶劣等级",
+    "comment": "表示恶劣天气事件的天气恶劣等级分类，取值为0~3级，分别代表正常天气、轻度天气、中度天气、恶劣天气。"
+  },
+  {
+    "name": "congestionFrequency",
+    "type": "DatatypeProperty",
+    "label": "拥堵发生频次",
+    "comment": "路段拥堵状态在一定时间范围内发生的频数，用于判断拥堵是否具有常发性特征。"
+  },
+  {
+    "name": "serviceQualityParameter",
+    "type": "DatatypeProperty",
+    "label": "服务质量参数",
+    "comment": "双流体模型中反映路网服务质量的参数b，较大的b值表示在相同相对车辆数下停车率较低。"
+  },
+  {
+    "name": "eventImpactScopeType",
+    "type": "DatatypeProperty",
+    "label": "事故影响范围类型",
+    "comment": "描述偶发性事故对路网影响的空间范围类型，取值为点影响、线影响或面影响。"
+  }
+]

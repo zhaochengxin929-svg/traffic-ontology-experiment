@@ -1,0 +1,2572 @@
+@prefix : <http://kb.traffic.seu.edu.cn/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://kb.traffic.seu.edu.cn/ontology> .
+
+<http://kb.traffic.seu.edu.cn/ontology> rdf:type owl:Ontology ;
+    rdfs:comment "城市路网交通态势知识图谱本体模型"@zh .
+
+#################################################################
+#    通用属性
+#################################################################
+:entityID rdf:type owl:DatatypeProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( :TimeEntity
+								:SpatialEntity
+                                :TrafficState
+                                :TrafficIndicator
+                                :CongestionEvent
+                                :CongestionEvolution
+                                :TrafficEvent ) ] ;
+    rdfs:range xsd:string ;
+    rdfs:label "实体标识"@zh ;
+    rdfs:comment "用于时间实体、空间实体、状态实体、指标实体和事件实体的统一唯一标识。"@zh .
+
+:entityName rdf:type owl:DatatypeProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( :TimeEntity
+								:SpatialEntity
+                                :TrafficState
+                                :TrafficIndicator
+                                :CongestionEvent
+                                :CongestionEvolution
+                                :TrafficEvent ) ] ;
+    rdfs:range xsd:string ;
+    rdfs:label "实体名称"@zh ;
+    rdfs:comment "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的人可读名称。"@zh .
+
+:entityCode rdf:type owl:DatatypeProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( :TimeEntity
+								:SpatialEntity
+                                :TrafficState
+                                :TrafficIndicator
+                                :CongestionEvent
+                                :CongestionEvolution
+                                :TrafficEvent ) ] ;
+    rdfs:range xsd:string ;
+    rdfs:label "实体编码"@zh ;
+    rdfs:comment "用于表示时间实体、空间实体、状态实体、指标实体和事件实体的业务编码或外部编号。"@zh .
+
+#################################################################
+#    L1: 时间信息层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TimeEntity rdf:type owl:Class ;
+    rdfs:label "时间实体父类"@zh ;
+    rdfs:comment "所有时间相关实体的基类。"@zh .
+
+:TimeInterval rdf:type owl:Class ;
+    rdfs:subClassOf :TimeEntity ;
+    rdfs:label "时间片"@zh ;
+    rdfs:comment "最小统计粒度（15min），动态数据的挂载锚点。"@zh .
+
+:TimePeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimeEntity ;
+    rdfs:label "语义时间段"@zh ;
+    rdfs:comment "具有业务含义的时间集合（如“早高峰”）。"@zh .
+
+:PeakPeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimePeriod ;
+    rdfs:label "高峰时段"@zh ;
+    rdfs:comment "交通流量达到一天中最高水平的语义时间段，如早高峰、晚高峰。"@zh .
+
+
+:OffPeakPeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimePeriod ;
+    rdfs:label "低谷时段"@zh ;
+    rdfs:comment "交通流量处于一天中最低水平的语义时间段，如凌晨低谷期。"@zh .
+
+
+:MorningPeakPeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimePeriod ;
+    rdfs:label "早高峰"@zh ;
+    rdfs:comment "工作日早间交通出行集中的语义时间段，通常对应通勤早高峰时段。"@zh .
+
+
+:EveningPeakPeriod rdf:type owl:Class ;
+    rdfs:subClassOf :TimePeriod ;
+    rdfs:label "晚高峰"@zh ;
+    rdfs:comment "工作日晚间交通出行集中的语义时间段，通常对应通勤晚高峰时段。"@zh .
+
+:Workday rdf:type owl:Class ;
+    rdfs:subClassOf :TimeEntity ;
+    rdfs:label "工作日"@zh ;
+    rdfs:comment "一周中周一至周五的正常工作日，居民出行具有通勤特征，交通流呈现明显的早晚高峰规律。"@zh .
+
+
+:RestDay rdf:type owl:Class ;
+    rdfs:subClassOf :TimePeriod ;
+    rdfs:label "休息日"@zh ;
+    rdfs:comment "一周中周六和周日的非工作日，居民出行以休闲娱乐为主，出行时间和目的地具有不确定性和随机性，路网行程速度变化特征与工作日存在显著差异。"@zh .
+
+
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:nextInterval rdf:type owl:ObjectProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range :TimeInterval ;
+    rdfs:label "下一时间片"@zh ;
+    rdfs:comment "定义时间片的时序演化关系，支持拥堵演化的时序推理。"@zh .
+
+:belongsToPeriod rdf:type owl:ObjectProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range :TimePeriod ;
+    rdfs:label "属于时段"@zh ;
+    rdfs:comment "定义微观时间片与宏观时段的从属关系。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:coversDate rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimePeriod ;
+    rdfs:range xsd:date ;
+    rdfs:label "覆盖日期"@zh ;
+    rdfs:comment "表示语义时段的具体日期标签，支持跨日计算（如高峰速度日偏差）。"@zh .
+
+:startTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "开始时刻"@zh ;
+    rdfs:comment "表示时间片的起始时间点。"@zh .
+
+:endTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimeInterval ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "结束时刻"@zh ;
+    rdfs:comment "表示时间片的结束时间点。"@zh .
+
+:dayType rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TimeEntity ;
+    rdfs:range xsd:string ;
+    rdfs:label "日期类型"@zh ;
+    rdfs:comment "枚举值：工作日/周末/节假日。"@zh .
+
+#################################################################
+#    L2: 空间信息层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:SpatialEntity rdf:type owl:Class ;
+    rdfs:label "空间实体父类"@zh ;
+    rdfs:comment "所有空间相关实体的基类，承载静态属性与拓扑关系。"@zh .
+
+:Zone rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "区域"@zh ;
+    rdfs:comment "宏观空间单元（如交通小区），L4态势评价主体。"@zh .
+
+:RoadSegment rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "路段"@zh ;
+    rdfs:comment "微观空间单元，L3态势物理载体，交通流运行的载体。"@zh .
+
+:Intersection rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "交叉口"@zh ;
+    rdfs:comment "路网拓扑节点。"@zh .
+
+:Road rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "道路"@zh ;
+    rdfs:comment "路段的逻辑聚合（如“中山东路”）。"@zh .
+
+:TrafficBottleneck rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "交通瓶颈"@zh ;
+    rdfs:comment "过饱和条件下产生排队的交通瓶颈位置，是拥堵形成和排队演化的关键空间实体。"@zh .
+
+
+:SignalizedJunction rdf:type owl:Class ;
+    rdfs:subClassOf :Intersection ;
+    rdfs:label "信号交叉口"@zh ;
+    rdfs:comment "设置有交通信号灯进行交通控制的交叉口，是城市路网中的关键拓扑节点。"@zh .
+
+
+:CongestionCell rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "拥堵元胞"@zh ;
+    rdfs:comment "路网中用于表征拥堵空间分布的最小空间单元，其数目随时间变化可反映拥堵的形成、传播与消散过程。"@zh .
+
+
+:Lane rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "车道"@zh ;
+    rdfs:comment "道路横断面中按功能或车辆类型划分的纵向通行带，是路段的组成部分。"@zh .
+
+:SegmentTrafficBottleneck rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficBottleneck ;
+    rdfs:label "路段级交通瓶颈"@zh ;
+    rdfs:comment "路段层级上被识别的交通瓶颈现象，表示该路段成为交通流运行的制约点。"@zh .
+
+
+:Ramp rdf:type owl:Class ;
+    rdfs:subClassOf :RoadSegment ;
+    rdfs:label "匝道"@zh ;
+    rdfs:comment "连接快速路主线与地面道路的过渡路段，具有与主线不同的驾驶特征。"@zh .
+
+
+:ConflictPoint rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "冲突点"@zh ;
+    rdfs:comment "交叉口内部车道之间发生交叉、合流或分流的空间节点，是交通组织与相位划分的基本依据。"@zh .
+
+
+:StopLine rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "停车线"@zh ;
+    rdfs:comment "路段或交叉口内部车道上的边界标线，车辆在此处停车等待信号放行，是交通组织的基本空间要素。"@zh .
+
+
+:ComplexIntersection rdf:type owl:Class ;
+    rdfs:subClassOf :Intersection ;
+    rdfs:label "复杂交叉口"@zh ;
+    rdfs:comment "由内部停车线划分为多个子段的交叉口，其内部存在环形或自交叉路径，需要中间停车以保证安全通行。"@zh .
+
+
+:Overpass rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "立交桥"@zh ;
+    rdfs:comment "城市交通系统中的立体交通设施，作为现代化的三维交通系统，通过合理分流车辆、避免同一平面上的交叉冲突来实现车辆分流功能，其通行能力直接影响干道上的交通流和交通拥堵。"@zh .
+
+
+:ElevatedOverpass rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "高架桥"@zh ;
+    rdfs:comment "城市路网中的高架道路设施，作为独立的空间实体承载交通流运行，与地面道路存在交通交互关系。"@zh .
+
+
+:TrafficConflictPoint rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "交通冲突点"@zh ;
+    rdfs:comment "交叉口匝道处车辆交织、汇入或分流产生的交通冲突位置，是影响交通运行效率和安全的空间节点。"@zh .
+
+
+:CongestionPoint rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "拥堵点"@zh ;
+    rdfs:comment "路网中发生交通拥堵的空间位置，是拥堵事件在空间上的具体表现点。"@zh .
+
+
+:CongestionCorePoint rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "拥堵核心点"@zh ;
+    rdfs:comment "当某点位的车辆无法依靠自我调整疏散时所形成的拥堵起源点，是拥堵态势蔓延的起始位置，可在交通疏导过程中发生转移。"@zh .
+
+
+:RoadDiscretePoint rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "道路点"@zh ;
+    rdfs:comment "将道路网按照一定长度间隔（如50米）打断后离散化得到的点状要素，保留道路实时路况数据的时空多维数据特性及有向线状要素的拓扑关系。"@zh .
+
+
+:Interchange rdf:type owl:Class ;
+    rdfs:subClassOf :Intersection ;
+    rdfs:label "立交"@zh ;
+    rdfs:comment "城市路网中实现不同道路之间立体交叉连接的交通节点设施。"@zh .
+
+
+:CongestionSegmentSet rdf:type owl:Class ;
+    rdfs:subClassOf :SpatialEntity ;
+    rdfs:label "拥堵路段集合"@zh ;
+    rdfs:comment "路网内在特定时段中满足拥堵判定条件的所有路段的集合，由传播性路段集合与非传播性路段集合的并集构成。"@zh .
+
+
+:RemoteArea rdf:type owl:Class ;
+    rdfs:subClassOf :Zone ;
+    rdfs:label "远郊区域"@zh ;
+    rdfs:comment "城市路网中低密度、拥堵极少发生的远郊空间分区，交通流通常低于临界密度，车辆以自由流速度行驶。"@zh .
+
+
+
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:zoneContainsSegment rdf:type owl:ObjectProperty ;
+    owl:inverseOf :segmentLocatedInZone ;
+    rdfs:domain :Zone ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "区域包含路段"@zh ;
+    rdfs:comment "定义区域与路段之间的空间包含关系，用于表达路段所属的宏观空间单元。"@zh .
+
+:segmentLocatedInZone rdf:type owl:ObjectProperty ;
+    owl:inverseOf :zoneContainsSegment ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :Zone ;
+    rdfs:label "路段位于区域内"@zh ;
+    rdfs:comment "定义路段与区域之间的空间归属关系，用于表达路段所属的交通分析区域。"@zh .
+
+:roadHasSegment rdf:type owl:ObjectProperty ;
+    owl:inverseOf :segmentBelongsToRoad ;
+    rdfs:domain :Road ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "道路包含路段"@zh ;
+    rdfs:comment "定义道路与路段之间的组成关系，用于表达道路由若干路段构成。"@zh .
+
+:segmentBelongsToRoad rdf:type owl:ObjectProperty ;
+    owl:inverseOf :roadHasSegment ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :Road ;
+    rdfs:label "路段属于道路"@zh ;
+    rdfs:comment "定义路段与道路之间的从属关系，用于表达某一路段所属的逻辑道路对象。"@zh .
+
+:segmentStartsFromIntersection rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :Intersection ;
+    rdfs:label "路段起始于交叉口"@zh ;
+    rdfs:comment "定义路段的起点交叉口，用于表达路段在路网中的方向性连接结构。"@zh .
+
+:segmentEndsAtIntersection rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :Intersection ;
+    rdfs:label "路段终止于交叉口"@zh ;
+    rdfs:comment "定义路段的终点交叉口，用于表达路段在路网中的方向性连接结构。"@zh .
+
+:segmentUpstreamOf rdf:type owl:ObjectProperty ;
+    owl:inverseOf :segmentDownstreamOf ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "路段上游是"@zh ;
+    rdfs:comment "定义路段间的上游关系，用于表达交通流传播过程中的前序路段关联。"@zh .
+
+:segmentDownstreamOf rdf:type owl:ObjectProperty ;
+    owl:inverseOf :segmentUpstreamOf ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "路段下游是"@zh ;
+    rdfs:comment "定义路段间的下游关系，用于表达交通流传播过程中的后继路段关联。"@zh .
+
+:zoneAdjacentToZone rdf:type owl:ObjectProperty ,
+                             owl:SymmetricProperty ;
+    rdfs:domain :Zone ;
+    rdfs:range :Zone ;
+    rdfs:label "区域相邻于区域"@zh ;
+    rdfs:comment "定义区域之间的邻接关系，用于表达宏观空间单元之间的空间邻近性。"@zh .
+
+:segmentAdjacentToSegment rdf:type owl:ObjectProperty ,
+                                   owl:SymmetricProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "路段相邻于路段"@zh ;
+    rdfs:comment "定义路段之间的邻接关系，用于表达路段在空间或网络结构上的相邻性。"@zh .
+
+:zoneContainsIntersection rdf:type owl:ObjectProperty ;
+    owl:inverseOf :intersectionLocatedInZone ;
+    rdfs:domain :Zone ;
+    rdfs:range :Intersection ;
+    rdfs:label "区域包含交叉口"@zh ;
+    rdfs:comment "定义区域与交叉口之间的空间包含关系，用于表达交叉口所属的宏观空间单元。"@zh .
+
+:intersectionLocatedInZone rdf:type owl:ObjectProperty ;
+    owl:inverseOf :zoneContainsIntersection ;
+    rdfs:domain :Intersection ;
+    rdfs:range :Zone ;
+    rdfs:label "交叉口位于区域内"@zh ;
+    rdfs:comment "定义交叉口与区域之间的空间归属关系，用于表达交叉口所属的交通分析区域。"@zh .
+
+:triggeredByCrashIncident rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :Accident ;
+    rdfs:label "由事故触发恢复时间计算"@zh ;
+    rdfs:comment "表示交通恢复时间指标的计算依赖于某一具体碰撞事故事件的发生。"@zh .
+
+:spatialReachability rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "空间可达关系"@zh ;
+    rdfs:comment "基于拓扑关系判断路段之间是否具有空间可达性，即路段之间具有共同节点从而可以相互到达的关系。"@zh .
+
+
+	
+# --- 3. 属性定义 (DatatypeProperty) ---
+:segmentLength rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "路段长度"@zh ;
+    rdfs:comment "物理长度，计算拥堵里程比与路段权重的基础。"@zh .
+
+:freeFlowSpeed rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "自由流速度"@zh ;
+    rdfs:comment "理论畅通速度，作为交通运行状态计算与分析的基准速度。"@zh .
+
+:roadGrade rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:integer ;
+    rdfs:label "道路等级"@zh ;
+    rdfs:comment "表示路段所属道路的功能等级，如快速路、主干路、次干路和支路等。"@zh .
+
+:laneCount rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:integer ;
+    rdfs:label "车道数"@zh ;
+    rdfs:comment "表示路段的车道数量，是刻画路段通行能力的重要基础属性。"@zh .
+
+:segmentDirection rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:string ;
+    rdfs:label "路段方向"@zh ;
+    rdfs:comment "表示路段的交通行驶方向属性，如南向北、北向南、上行、下行等。"@zh .
+
+:segmentStartLongitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "路段起点经度"@zh ;
+    rdfs:comment "表示路段起点位置的经度信息。"@zh .
+
+:segmentStartLatitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "路段起点纬度"@zh ;
+    rdfs:comment "表示路段起点位置的纬度信息。"@zh .
+
+:segmentEndLongitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "路段终点经度"@zh ;
+    rdfs:comment "表示路段终点位置的经度信息。"@zh .
+
+:segmentEndLatitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "路段终点纬度"@zh ;
+    rdfs:comment "表示路段终点位置的纬度信息。"@zh .
+
+:intersectionLongitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Intersection ;
+    rdfs:range xsd:double ;
+    rdfs:label "交叉口经度"@zh ;
+    rdfs:comment "表示交叉口位置的经度信息。"@zh .
+
+:intersectionLatitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Intersection ;
+    rdfs:range xsd:double ;
+    rdfs:label "交叉口纬度"@zh ;
+    rdfs:comment "表示交叉口位置的纬度信息。"@zh .
+
+:zoneCenterLongitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Zone ;
+    rdfs:range xsd:double ;
+    rdfs:label "区域中心经度"@zh ;
+    rdfs:comment "表示区域中心位置的经度信息。"@zh .
+
+:zoneCenterLatitude rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Zone ;
+    rdfs:range xsd:double ;
+    rdfs:label "区域中心纬度"@zh ;
+    rdfs:comment "表示区域中心位置的纬度信息。"@zh .
+
+
+#################################################################
+#    交通态势总纲层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TrafficState rdf:type owl:Class ;
+    rdfs:label "交通态势状态父类"@zh ;
+    rdfs:comment "所有交通态势状态实体的总父类，用于统一组织不同空间尺度下的状态实体。"@zh .
+
+:TrafficIndicator rdf:type owl:Class ;
+    rdfs:label "交通态势指标父类"@zh ;
+    rdfs:comment "所有交通态势指标实体的总父类，用于统一组织不同层级、不同对象上的指标实体。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:describesSpatialEntity rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficState ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "描述空间实体"@zh ;
+    rdfs:comment "状态实体描述其所锚定空间实体的总父属性。"@zh .
+
+:hasTrafficState rdf:type owl:ObjectProperty ;
+    rdfs:domain :SpatialEntity ;
+    rdfs:range :TrafficState ;
+    rdfs:label "拥有交通状态"@zh ;
+    rdfs:comment "空间实体关联状态实体的总父属性。"@zh .
+
+:hasTrafficIndicator rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficState ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "关联交通指标"@zh ;
+    rdfs:comment "状态实体关联指标实体的总父属性。"@zh .
+
+:aggregatedFromIndicator rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "聚合自指标"@zh ;
+    rdfs:comment "高层指标由下层指标聚合形成的总父属性。"@zh .
+
+:validForTime rdf:type owl:ObjectProperty ;
+    rdfs:domain [ rdf:type owl:Class ;
+                  owl:unionOf ( :TrafficState
+                                :CongestionEvent
+                                :CongestionEvolution
+                                :TrafficEvent ) ] ;
+    rdfs:range :TimeEntity ;
+    rdfs:label "有效时间"@zh ;
+    rdfs:comment "关联对象所属的时间范围（时间片或语义时段）。"@zh .
+
+:computedFrom rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :TrafficIndicator ;
+    rdfs:label "计算来源于"@zh ;
+    rdfs:comment "表示某一指标由其他指标计算得到。"@zh .
+
+:dependsOnSpatialEntity rdf:type owl:ObjectProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "依赖空间实体"@zh ;
+    rdfs:comment "表示某一指标在计算过程中依赖相关空间实体所承载的信息。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:indicatorValue rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range xsd:double ;
+    rdfs:label "指标数值"@zh ;
+    rdfs:comment "存储各类指标实体的具体数学计算结果值。"@zh .
+
+:indicatorUnit rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range xsd:string ;
+    rdfs:label "指标单位"@zh ;
+    rdfs:comment "表示指标数值的计量单位。"@zh .
+
+:calculationMethod rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range xsd:string ;
+    rdfs:label "计算方法"@zh ;
+    rdfs:comment "表示指标的计算方法或来源说明。"@zh .
+
+#################################################################
+
+:capacity rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "通行能力"@zh ;
+    rdfs:comment "路段的设计通行能力，单位为每车道每小时车辆数（vphpl），是计算服务水平的基础参数。"@zh .
+
+
+:maximumPermissibleSpeed rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "最大允许速度"@zh ;
+    rdfs:comment "路段的最大允许行驶速度，是计算速度性能指数（SPI）的基础参数。"@zh .
+
+
+:freeFlowTravelTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "自由流行程时间"@zh ;
+    rdfs:comment "路段在自由流条件下的行程时间，是路段的静态基准属性。"@zh .
+
+
+:vehicleType rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:string ;
+    rdfs:label "车辆类型"@zh ;
+    rdfs:comment "描述交通流中车辆的分类属性，如小客车、大货车等，作为影响交通运行态势指标计算的因素。"@zh .
+
+
+:crossSectionType rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:string ;
+    rdfs:label "断面形式"@zh ;
+    rdfs:comment "道路横断面的组织形式，如一块板、三块板、四块板等，描述车行道的分隔方式。"@zh .
+
+
+:roadRedLineWidth rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Road ;
+    rdfs:range xsd:float ;
+    rdfs:label "道路红线宽度"@zh ;
+    rdfs:comment "道路规划红线之间的宽度，是道路的静态规划控制属性，反映道路可用空间的上限。"@zh .
+
+
+:segmentImportance rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "路段重要度"@zh ;
+    rdfs:comment "路段在路网中的重要程度，用于在区域交通状态评价中赋予不同路段差异化权重。"@zh .
+
+
+:stopLineDivisionRatio rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Intersection ;
+    rdfs:range xsd:float ;
+    rdfs:label "停止线划分比例"@zh ;
+    rdfs:comment "表示道路渠化区中停止线的划分比例参数，用于描述交叉口进口道的渠化设计特征。"@zh .
+
+
+:numberOfValidLanes rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Intersection ;
+    rdfs:range xsd:int ;
+    rdfs:label "有效车道数"@zh ;
+    rdfs:comment "交叉口进口道每小时可通行的有效车道数量，属于交叉口或进口道的静态配置属性。"@zh .
+
+
+:roadWidth rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:double ;
+    rdfs:label "道路宽度"@zh ;
+    rdfs:comment "道路在某一方向上的横断面宽度，用于信号控制中最低绿灯时间的计算。"@zh .
+
+
+:speedLimit rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "限速值"@zh ;
+    rdfs:comment "车道或路段所规定的允许最高行驶速度值。"@zh .
+
+:classificationThreshold rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficIndicator ;
+    rdfs:range xsd:float ;
+    rdfs:label "分级阈值"@zh ;
+    rdfs:comment "用于划分不同交通状态等级的相对速度临界值。"@zh .
+
+
+:laneVehicleCount rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Lane ;
+    rdfs:range xsd:int ;
+    rdfs:label "车道记录车辆数"@zh ;
+    rdfs:comment "在一个信号周期内，某车道上记录到的车辆数量。"@zh .
+
+
+:passageDirectionMatrix rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Intersection ;
+    rdfs:range xsd:string ;
+    rdfs:label "通行方向矩阵"@zh ;
+    rdfs:comment "交叉口节点处允许的通行方向矩阵，定义了连接进入道路和驶出道路的所有允许转向方向。"@zh .
+
+
+:penetrationRate rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "渗透率"@zh ;
+    rdfs:comment "混合交通流中自动驾驶车辆所占比例，是影响混合交通流运行特性的关键配置参数。"@zh .
+
+
+:expectedTimeHeadway rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "期望车头时距"@zh ;
+    rdfs:comment "车辆跟驰过程中前后车通过同一断面的期望时间间隔，是影响交通流容量和拥堵传播特性的关键参数。"@zh .
+
+
+:minimumSpacing rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "最小间距"@zh ;
+    rdfs:comment "车辆跟驰状态下允许的最小车头间距，是影响交通流效率和拥堵空间传播的关键参数。"@zh .
+
+
+:segmentMaxCapacity rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "路段最大承载流量"@zh ;
+    rdfs:comment "路段j的最大承载流量，用于机动性参数U的计算。"@zh .
+
+
+:reachabilityOrder rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:int ;
+    rdfs:label "可达阶数"@zh ;
+    rdfs:comment "表示两个路段之间空间可达关系的阶数，即从一个路段到达另一个路段至少需要经过的中间路段数加1。"@zh .
+
+
+:roadDiscretePointId rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadDiscretePoint ;
+    rdfs:range xsd:string ;
+    rdfs:label "道路点编号"@zh ;
+    rdfs:comment "道路离散点的唯一编号标识。"@zh .
+
+
+:discretizedPointCount rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:int ;
+    rdfs:label "道路点总个数"@zh ;
+    rdfs:comment "路段离散化后的道路点总个数，是路段离散化表达的静态配置属性。"@zh .
+
+
+:trafficLightDensity rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "交通信号灯密度"@zh ;
+    rdfs:comment "路段上交通信号灯的空间分布密度，是路段的静态配置属性，用于区分信号灯密集路段与非密集路段。"@zh .
+
+
+:laneWidthCorrectionFactor rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "车道宽度修正系数"@zh ;
+    rdfs:comment "用于修正路段理论通行能力的车道宽度影响系数。"@zh .
+
+
+:segmentLengthCorrectionFactor rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range xsd:float ;
+    rdfs:label "路段长度修正系数"@zh ;
+    rdfs:comment "用于修正路段行程时间中路段长度影响的系数。"@zh .
+
+
+#    L3: 微观交通态势层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:RoadSegmentState rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficState ;
+    rdfs:label "路段交通状态"@zh ;
+    rdfs:comment "微观态势状态枢纽，连接具体路段、时间片与路段指标。"@zh .
+
+:IntersectionState rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficState ;
+    rdfs:label "交叉口交通状态"@zh ;
+    rdfs:comment "微观态势状态枢纽，连接具体交叉口、时间片与交叉口指标。"@zh .
+
+:SegmentIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "路段级指标(父类)"@zh ;
+    rdfs:comment "所有路段层面的微观感知值与基础衍生指标的统称。"@zh .
+
+:SegmentFlow rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段交通流量"@zh ;
+    rdfs:comment "路段层面的交通流运行规模指标。"@zh .
+
+:SegmentSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段交通速度"@zh ;
+    rdfs:comment "路段层面的实际运行速度指标。"@zh .
+
+:SegmentDensity rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段交通密度"@zh ;
+    rdfs:comment "路段层面的交通集聚程度指标。"@zh .
+
+:SegmentWeight rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段权重"@zh ;
+    rdfs:comment "用于上层聚合计算的路段权重指标。"@zh .
+
+:SegmentTripTimeRatio rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段行程时间比"@zh ;
+    rdfs:comment "反映路段实际行程时间与基准行程时间关系的指标。"@zh .
+
+:SegmentDelayTimeRatio rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段延误时间比"@zh ;
+    rdfs:comment "反映路段延误水平的指标。"@zh .
+
+:SegmentCongestionCoeff rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段拥堵判定系数"@zh ;
+    rdfs:comment "二值化拥堵状态 (c_ij)。当路段状态触发轻度及以上拥堵等级 (即路段交通速度 <= 0.5*自由流速度) 时，该系数取值为1，否则为0。"@zh .
+
+:SegmentDailyNonSmoothCoeff rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段全天非畅通系数"@zh ;
+    rdfs:comment "反映路段全天非畅通水平的判定指标。"@zh .
+
+:TrafficOperatingLevel rdf:type owl:Class ;
+    rdfs:label "交通运行状况等级"@zh ;
+    rdfs:comment "静态受控字典类。依据 GB/T 33171 划分的定性评价等级，作为5个静态枚举实例的独立父类。"@zh .
+:Smooth rdf:type :TrafficOperatingLevel , owl:NamedIndividual ;
+    rdfs:label "畅通"@zh .
+:BasicSmooth rdf:type :TrafficOperatingLevel , owl:NamedIndividual ;
+    rdfs:label "基本畅通"@zh .
+:MildCongestion rdf:type :TrafficOperatingLevel , owl:NamedIndividual ;
+    rdfs:label "轻度拥堵"@zh .
+:ModerateCongestion rdf:type :TrafficOperatingLevel , owl:NamedIndividual ;
+    rdfs:label "中度拥堵"@zh .
+:SevereCongestion rdf:type :TrafficOperatingLevel , owl:NamedIndividual ;
+    rdfs:label "严重拥堵"@zh .
+
+:IntersectionIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "交叉口级指标(父类)"@zh ;
+    rdfs:comment "所有交叉口层面运行状态指标的统称。"@zh .
+
+:IntersectionFlow rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口交通流量"@zh ;
+    rdfs:comment "反映交叉口交通流运行规模的指标。"@zh .
+
+:IntersectionDelay rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口延误"@zh ;
+    rdfs:comment "反映交叉口通行延误程度的指标。"@zh .
+
+:IntersectionQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口排队长度"@zh ;
+    rdfs:comment "反映交叉口排队积聚程度的指标。"@zh .
+
+:IntersectionSaturation rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口饱和度"@zh ;
+    rdfs:comment "反映交叉口交通负荷与通行能力关系的指标。"@zh .
+
+:TrafficRestorationTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通恢复时间"@zh ;
+    rdfs:comment "交通事故发生后，交通状态从受影响状态恢复到正常运行状态所需的时间，是衡量事故对交通流影响持续程度的关键指标。"@zh .
+
+
+:LevelOfService rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "服务水平等级"@zh ;
+    rdfs:comment "通过交通量与通行能力之比（V/C比）计算得到的路段服务水平指标，用于反映道路的交通负荷程度。"@zh .
+
+
+:SpeedPerformanceIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "速度性能指数"@zh ;
+    rdfs:comment "通过平均行驶速度与最大允许速度之比计算得到的速度性能指标，用于反映路段实际运行速度相对于允许速度的表现水平。"@zh .
+
+
+:VolumeCapacityRatio rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "V/C比"@zh ;
+    rdfs:comment "交通量与道路通行能力之比（V/C），用于衡量路段交通负荷程度，是计算服务水平等级（LOS）的基础指标。"@zh .
+
+
+:CompositeTrafficDynamicsIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "复合交通动态指标"@zh ;
+    rdfs:comment "通过交通流量和速度的变异系数加权线性组合定义的复合交通动态指标，用于综合评估特定位置的交通行为动态特征。D = w_q*(σ_q/μ_q) + w_v*(σ_v/μ_v)。"@zh .
+
+
+:FlowCoefficientOfVariation rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "流量变异系数"@zh ;
+    rdfs:comment "交通流量时间序列数据的标准差与均值之比（σ_q/μ_q），用于衡量流量的离散程度和不确定性。"@zh .
+
+
+:SpeedCoefficientOfVariation rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "速度变异系数"@zh ;
+    rdfs:comment "交通速度时间序列数据的标准差与均值之比（σ_v/μ_v），用于衡量速度的离散程度和不确定性。"@zh .
+
+
+:TrafficFlowFluctuationRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通流波动率"@zh ;
+    rdfs:comment "衡量交通流在多个离散时间段内变化幅度的指标，其标准差随时间增量n按n^(1/μ)σ比例增长，μ由城市发展状况和信息渗透等因素决定。"@zh .
+
+
+:TrafficFlowChangeRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通流变化率"@zh ;
+    rdfs:comment "交通流在相邻时间步之间的相对变化量，定义为交通流变化量与前一时刻交通流量之比，用于区分出行时间成本的相对重要性。"@zh .
+
+
+:LinearTrafficFlowVariation rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通流线性变化量"@zh ;
+    rdfs:comment "交通流在相邻时间步之间的绝对变化量，定义为当前时刻交通流量与前一时刻交通流量之差，用于考察交通流波动。"@zh .
+
+
+:ShockwaveSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "激波速度"@zh ;
+    rdfs:comment "交通流中密度波（激波）的传播速度，是交通流基本图中描述拥堵波向上游传播特征的关键参数。"@zh .
+
+
+:QueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "排队长度"@zh ;
+    rdfs:comment "表示交通走廊或路段上因拥堵或信号控制等原因形成的车辆排队的空间长度，是一种随时间动态变化的交通运行指标。"@zh .
+
+
+:TimeDependentDelay rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "时变延误"@zh ;
+    rdfs:comment "表示交通系统中随时间变化的车辆延误，是反映交通运行效率的动态指标。"@zh .
+
+
+:ArrivalRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "到达率"@zh ;
+    rdfs:comment "表示单位时间内到达某一路段或排队系统的车辆数量，是描述交通需求的动态指标。"@zh .
+
+
+:DepartureRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "驶离率"@zh ;
+    rdfs:comment "表示单位时间内从某一路段或排队系统驶离的车辆数量，是描述交通供给能力的动态指标。"@zh .
+
+
+:TravelDelay rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "行程延误"@zh ;
+    rdfs:comment "表示车辆实际行程时间与自由流行程时间之差，是衡量交通拥堵程度的动态指标。"@zh .
+
+
+:CapacityDrop rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "通行能力下降"@zh ;
+    rdfs:comment "指在拥堵期间路段或瓶颈处的实际通行能力（放行率）相对于自由流条件下的通行能力发生下降的交通现象。"@zh .
+
+
+:CumulativeArrivalCount rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "累计到达量"@zh ;
+    rdfs:comment "表示截至某一时刻到达下游瓶颈的车辆累计数量，是排队分析中的基础动态指标。"@zh .
+
+
+:CumulativeDepartureCount rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "累计驶离量"@zh ;
+    rdfs:comment "表示截至某一时刻从下游瓶颈驶离的车辆累计数量，是排队分析中的基础动态指标。"@zh .
+
+
+:DischargeRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "放行率"@zh ;
+    rdfs:comment "单位时间内从排队中离开或通过瓶颈的车辆数，是描述通行能力供给的动态时变指标，可表示为关于时间的函数μ(t)。"@zh .
+
+
+:NetFlowRate rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "净流率"@zh ;
+    rdfs:comment "到达率与放行率之差，表示单位时间内排队车辆的净增减速率，是描述排队动态变化的时变指标，π(t)=λ(t)-μ(t)。"@zh .
+
+
+:TimeDependentTravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "时变行程时间"@zh ;
+    rdfs:comment "车辆在特定时刻进入路段上游后，经过该路段所需的总行程时间，由自由流行程时间与行程延误共同决定，随时间动态变化。"@zh .
+
+
+:BackwardWaveSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵波反向传播速度"@zh ;
+    rdfs:comment "交通流中拥堵波向上游传播的速度，是三角基本图模型中描述拥堵传播特性的关键参数。"@zh .
+
+
+:TrafficFlowGenerationRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通流生成率"@zh ;
+    rdfs:comment "在特定时空点上交通流的产生速率，反映路段入口/出口处车辆的汇入或汇出强度。"@zh .
+
+
+:TimeOccupancy rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "时间占有率"@zh ;
+    rdfs:comment "表示道路检测器在一定时间内被车辆占用的时间比例，是交通态势感知的基础指标之一。"@zh .
+
+
+:SteadyStateProbability rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "稳态概率"@zh ;
+    rdfs:comment "交叉口交通状态在马尔可夫链模型下达到平衡时各状态的稳态概率，用于表征交叉口长期运行状态分布。"@zh .
+
+
+:CongestionRate rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "拥堵率"@zh ;
+    rdfs:comment "表征交叉口层面拥堵程度的性能指标，反映交叉口车辆排队系统中处于拥堵状态的比率。"@zh .
+
+
+:AverageSojournTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "平均逗留时间"@zh ;
+    rdfs:comment "车辆在交叉口排队系统中从进入到离开的平均总耗时，包括等待时间和服务时间。"@zh .
+
+
+:AverageWaitingTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "平均等待时间"@zh ;
+    rdfs:comment "车辆在交叉口排队系统中等待被服务的平均时间，是衡量交叉口延误的关键指标。"@zh .
+
+
+:WaitingTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "等待时间"@zh ;
+    rdfs:comment "交叉口层级的交通运行指标，表示车辆在交叉口处等待通过的时间，是衡量交叉口拥堵程度的关键性能指标。"@zh .
+
+
+:SojournTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "逗留时间"@zh ;
+    rdfs:comment "交叉口层级的交通运行指标，表示车辆在交叉口区域内从进入到离开的总停留时间，包含等待时间和服务时间。"@zh .
+
+
+:TurningRatio rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "转向比"@zh ;
+    rdfs:comment "交叉口各进口道车辆选择不同转向方向（左转、直行、右转）的比例，是交叉口交通流分配的关键指标。"@zh .
+
+
+:SaturationFlow rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "饱和流率"@zh ;
+    rdfs:comment "信号交叉口绿灯期间某一车道或进口道能够通过的最大车辆流率，是交叉口通行能力评估的基础指标。"@zh .
+
+
+:AverageDelayTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "平均延误时间"@zh ;
+    rdfs:comment "表示车辆通过某一设施时实际花费时间与理想时间之差的平均值，用于评估交通运行效率的指标。"@zh .
+
+
+:SegmentSaturation rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段饱和度"@zh ;
+    rdfs:comment "路段层面的交通运行指标，表示路段实际交通量与通行能力之比，用于反映路段交通负荷程度。"@zh .
+
+
+:CongestionDegree rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥挤度"@zh ;
+    rdfs:comment "用于衡量道路交通拥堵程度的综合指标，作为交通状态判别的标准。"@zh .
+
+
+:CongestionDelayIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵延时指数"@zh ;
+    rdfs:comment "反映道路拥堵程度的运行指标，表示因拥堵导致的延迟程度，属于路段级交通运行指标。"@zh .
+
+
+:DelayTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "延误时间"@zh ;
+    rdfs:comment "车辆在路段上因拥堵等因素导致的额外出行时间，是路段级交通运行指标。"@zh .
+
+
+:TimeHeadway rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "车头时距"@zh ;
+    rdfs:comment "同一车道上先后通过停车线的两辆车的时间差，是交叉口信号配时的重要参数。"@zh .
+
+
+:AverageTravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "平均行程时间"@zh ;
+    rdfs:comment "检测时段内通过检测区域内的所有车辆的行程时间的平均值。"@zh .
+
+
+:SegmentOccupancy rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段占有率"@zh ;
+    rdfs:comment "路段上车辆占用道路空间的比率，作为路段交通态势评价的特征参数之一。"@zh .
+
+
+:AverageInstantaneousSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "平均瞬时速度"@zh ;
+    rdfs:comment "某一时刻路段或区域内所有车辆瞬时速度的平均值，用于反映交通流的实时运行状态。"@zh .
+
+
+:InstantaneousSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "瞬时速度"@zh ;
+    rdfs:comment "在某一时刻对路段或路网中车辆速度的即时度量，基于能流出车辆以最大速度转移、滞留车辆速度为零的二值速度分布特性计算得到的平均瞬时速度指标。"@zh .
+
+
+:WaveVelocity rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "波速"@zh ;
+    rdfs:comment "交通流波动沿道路移动的速度，由流量差除以密度差计算得到。"@zh .
+
+
+:LeftTurnVolume rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionFlow ;
+    rdfs:label "左转交通量"@zh ;
+    rdfs:comment "交叉口处驶向左转方向的交通流量，用于评估交叉口交通流运行状况。"@zh .
+
+
+:EquivalentTrafficVolume rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "当量交通量"@zh ;
+    rdfs:comment "将实际交叉口交通量按车型（公交车、货车）和转向（左转）进行折算后得到的等效交通量，用于统一衡量交叉口在等效时间段内的交通负荷。"@zh .
+
+
+:TrafficTurbulence rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通紊流"@zh ;
+    rdfs:comment "由于车辆速度不一致导致的低速车辆阻碍高速车辆及车辆相互超车所引起的交通流扰动现象。"@zh .
+
+
+:QueueDischargeRate rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "排队消散率"@zh ;
+    rdfs:comment "表示信号交叉口排队车辆在绿灯期间通过停车线的消散速率，是衡量交叉口通行效率的关键指标。"@zh .
+
+:SpeedVariance rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "速度方差"@zh ;
+    rdfs:comment "在给定密度区间内车辆速度的离散程度，反映交通流速度的随机波动特征；在低密度时较小，在临界密度附近达到峰值。"@zh .
+
+
+:AverageTravelSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentSpeed ;
+    rdfs:label "平均行程速度"@zh ;
+    rdfs:comment "在给定密度区间内车辆速度的均值，是速度-密度均衡关系中的核心观测量。"@zh .
+
+
+:FreeFlow rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "自由流"@zh ;
+    rdfs:comment "交通流的一种运行相态，车辆可以自由行驶，不受其他车辆显著影响，属于交通流三相理论中的基本交通相态之一。"@zh .
+
+
+:SynchronizedFlow rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "同步流"@zh ;
+    rdfs:comment "交通流的一种中间运行相态，车辆速度受邻近车辆影响而趋于同步，流量与密度之间不存在唯一确定关系，属于三相交通流理论的核心概念。"@zh .
+
+
+:QueueDischarge rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "排队消散"@zh ;
+    rdfs:comment "交通流的一种运行状态，表示排队车辆开始消散并恢复正常通行的过渡阶段，介于拥堵与非拥堵之间。"@zh .
+
+
+:FreeFlowState rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "自由流状态"@zh ;
+    rdfs:comment "道路上交通流处于自由流动状态，车辆运行基本不受其他车辆干扰，对应服务水平最优等级。"@zh .
+
+
+:RelativeSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "相对速度"@zh ;
+    rdfs:comment "以路段自由流速度为基准归一化后的速度比值，用作交通状态分级的聚类指标。"@zh .
+
+
+:StablePhase rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "稳定相"@zh ;
+    rdfs:comment "交通流运行中的稳定阶段，交通状态保持相对不变，不易受扰动影响发生状态转换。"@zh .
+
+
+:MetastablePhase rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "亚稳定相"@zh ;
+    rdfs:comment "交通流运行中的亚稳定阶段，交通状态暂时维持但在较大扰动下容易发生崩溃或状态转变。"@zh .
+
+
+:SynchronousFlow rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "同步流"@zh ;
+    rdfs:comment "交通流的一种相态，由Kerner三相交通流理论提出，表示车辆速度与上游来车速度同步、流量与密度之间不存在唯一函数关系的中间拥堵状态。"@zh .
+
+
+:NearStationaryTrafficState rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "近稳态交通状态"@zh ;
+    rdfs:comment "在真正的稳态交通状态不存在的情况下，近似稳态的交通状态，用于基础交通模型校正、运行拥堵场景识别及通行能力下降程度评估。"@zh .
+
+
+:TangentDensity rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "切线密度"@zh ;
+    rdfs:comment "在流量-密度基本图中，由阻塞密度点所作切线与曲线切点对应的密度值，是交通状态变化分析的参考点之一。"@zh .
+
+
+:StableTrafficState rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "稳定态"@zh ;
+    rdfs:comment "交通流基本图中对应于稳定运行区间的交通流状态，包括低密度端和高密度端的稳定状态（状态I和状态V）。"@zh .
+
+
+:MetastableTrafficState rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "亚稳态"@zh ;
+    rdfs:comment "交通流基本图中处于稳定态与不稳定态之间的过渡交通流状态（状态II和状态IV），交通流在此区间内可能发生状态跃迁。"@zh .
+
+
+:UnstableTrafficState rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "不稳定态"@zh ;
+    rdfs:comment "交通流基本图中对应于不稳定运行区间的交通流状态（状态III），交通流在此区间内易发生扰动传播和拥堵形成。"@zh .
+
+
+:LinkAverageCycleMaxQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段级平均周期最大排队长度"@zh ;
+    rdfs:comment "在信号控制交叉口的一个信号周期内，某车道或某进口道上车辆排队达到的最大长度，是反映交叉口运行状态的关键指标。"@zh .
+
+
+:LinkTravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段行程时间"@zh ;
+    rdfs:comment "城市路网中某一路段上车辆通过所需的短期行程时间，是衡量路段交通运行状态的核心指标。"@zh .
+
+
+:LaneBasedQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionQueueLength ;
+    rdfs:label "车道级排队长度"@zh ;
+    rdfs:comment "基于单条车道粒度估计的排队长度，用于更精细地刻画交叉口进口道各车道的排队状况。"@zh .
+
+
+:LaneQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :QueueLength ;
+    rdfs:label "车道级排队长度估计值"@zh ;
+    rdfs:comment "在单个信号周期内，针对某一车道估计得到的最大排队长度，是路段级排队长度指标的基础组成单元。"@zh .
+
+
+:TravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "行程时间"@zh ;
+    rdfs:comment "车辆通过某一路段或路径所需的时间，是反映交通运行状态的核心指标之一，可基于浮动车数据等进行实时估计。"@zh .
+
+
+:IncomingFlowIntensity rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "进口流量强度"@zh ;
+    rdfs:comment "交叉口进口道路上交通流的到达强度，表征交通需求在该入口方向上的流量水平。"@zh .
+
+
+:IntersectionThroughput rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口通行能力"@zh ;
+    rdfs:comment "交叉口的通行能力，表征在特定路线上通过一定数量车辆所需时间的客观特征，是交叉口层级的交通运行指标。"@zh .
+
+
+:StopLineCrossingTime rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "停车线通过时间"@zh ;
+    rdfs:comment "从绿灯相位开始，一定数量车辆通过停车线所需的平均时间，是交叉口通行效率的度量指标。"@zh .
+
+
+:SpaceMeanSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "空间平均速度"@zh ;
+    rdfs:comment "在给定路段或路网上的宏观平均速度，通过对空间范围内车辆速度取平均得到，是交通流基本参数之一。"@zh .
+
+
+:OccupancyLevel rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "占有率"@zh ;
+    rdfs:comment "表示道路或检测断面上车辆占用时间或空间的比例，是反映交通流密度和拥堵程度的动态运行指标。"@zh .
+
+
+:CongestionSpreadSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵蔓延速度"@zh ;
+    rdfs:comment "描述拥堵波在路网空间中传播扩散的速度，反映拥堵在空间维度上的蔓延快慢程度。"@zh .
+
+
+:SpaceHeadway rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "车头间距"@zh ;
+    rdfs:comment "同一车道上前后相邻两车车头之间的空间距离，在稳态条件下由跟驰模型推导得到。"@zh .
+
+
+:CriticalFlow rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "临界流量"@zh ;
+    rdfs:comment "交通流从自由流状态转变为拥堵状态的临界交通流量值，是判断拥堵是否发生的关键阈值指标。"@zh .
+
+
+:SteadyStateHeadwaySpacing rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "稳态车头间距"@zh ;
+    rdfs:comment "当交通流处于稳态时，车辆保持恒定速度运行，加速度和与前车的相对速度为零条件下的车头间距，是速度的函数。"@zh .
+
+
+:AverageHeadway rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "平均车头间距"@zh ;
+    rdfs:comment "交通流中相邻车辆车头之间的平均距离，是微观交通流参数，与宏观密度互为反比关系，直接影响拥堵蔓延速度。"@zh .
+
+
+:CongestionFlowSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentSpeed ;
+    rdfs:label "拥堵速度"@zh ;
+    rdfs:comment "拥堵状态下交通流的平均行驶速度，通常为由道路条件决定的较低常数值，对应车辆缓慢移动或停止—启动状态。"@zh .
+
+
+:CriticalSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "临界速度"@zh ;
+    rdfs:comment "通行能力所对应的交通流速度，是区分自由流与拥挤流的速度阈值。"@zh .
+
+
+:CongestionSpreadCriticalSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵蔓延临界速度"@zh ;
+    rdfs:comment "交通流速度的临界值，当交通流速度低于该值时拥堵开始向上游蔓延，是判定拥堵是否发生蔓延的阈值指标。"@zh .
+
+
+:AverageTrafficVolume rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentFlow ;
+    rdfs:label "平均车流量"@zh ;
+    rdfs:comment "路段在一定时间粒度内通过的车辆数的平均值，是反映交通需求与运行负荷的核心微观指标。"@zh .
+
+
+:ShortTermAverageSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentSpeed ;
+    rdfs:label "短时平均速度"@zh ;
+    rdfs:comment "短时间粒度内道路上车辆的平均行驶速度，用于反映路段交通流的即时运行状态。"@zh .
+
+
+:DelayRateIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "延误率指数"@zh ;
+    rdfs:comment "用车辆行进速率和期望行程速率差值计算的延误率指数，反映延误时间占总出行时间的比例，值越大说明拥堵程度越高，一般取值在0~10之间。参考美国Lomax评价指标体系。"@zh .
+
+
+:AverageStoppedDelay rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionDelay ;
+    rdfs:label "平均停车延误"@zh ;
+    rdfs:comment "交叉口层面的交通运行评价指标，表示车辆在交叉口的平均停车延误时间（单位：秒），用于划分交叉口交通运行态势等级。"@zh .
+
+
+:IntersectionPassingEfficiencyIndex rdf:type owl:Class ;
+    rdfs:subClassOf :IntersectionIndicator ;
+    rdfs:label "交叉口通行效率指数"@zh ;
+    rdfs:comment "交叉口层面的交通运行评价指标，表示交叉口的通行效率水平，用于划分交叉口交通运行态势等级。"@zh .
+
+
+:TimeMeanSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentSpeed ;
+    rdfs:label "时间平均速度"@zh ;
+    rdfs:comment "固定时间段内通过路段的车辆瞬时速度的算术平均值，计算公式为所有车辆瞬时速度之和除以车辆总数。"@zh .
+
+
+:SlowMovingQueueLengthRatio rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "缓行队列长度比例"@zh ;
+    rdfs:comment "路段层面的缓行队列长度指标，用于衡量路段上车辆排队缓行的空间范围。"@zh .
+
+
+:InfluenceRelationshipIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "影响关系指数"@zh ;
+    rdfs:comment "用于表征不同路段之间动态影响关系的方向及大小的指标，基于信息传递量构建。"@zh .
+
+
+:SlowQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :QueueLength ;
+    rdfs:label "慢行排队长度"@zh ;
+    rdfs:comment "路段层面的交通运行指标，表示路段上慢行排队的长度，用于评价交通运行状态。"@zh .
+
+
+:NodeImbalanceDegree rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "节点不平衡度"@zh ;
+    rdfs:comment "用于识别路网中关键路段的指标，通过分析交通状态变化与信息传递量之间的关系提出。"@zh .
+
+
+:InformationTransferQuantity rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "信息传递量"@zh ;
+    rdfs:comment "基于传递熵算法构建的指标，表征不同路段之间交通状态的信息传递量大小。"@zh .
+
+
+:SegmentSlowMovingQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :QueueLength ;
+    rdfs:label "路段缓行队长"@zh ;
+    rdfs:comment "路段层面的缓行排队长度指标，用于刻画路段交通运行状态，反映车辆在路段上的排队拥堵程度。"@zh .
+
+
+:TrafficStateTransferEntropy rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通状态转移熵"@zh ;
+    rdfs:comment "基于条件概率的转移概率定义的熵指标，用于衡量路段间或路段自身历史状态转移对当前时刻交通状态的影响程度。"@zh .
+
+
+:TrafficFlowPropagationDelay rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通流传播延迟"@zh ;
+    rdfs:comment "交通流在空间维度上从上游路段向下游路段传播时所产生的时间延迟现象，是上下游路段间状态影响关系存在时效性的物理基础。"@zh .
+
+
+:CongestionIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "交通拥堵指数"@zh ;
+    rdfs:comment "用于量化表征路段交通状态拥堵程度的离散指标，取值集合为{1,3,5,7,9}，由低到高表明路段交通状态拥堵程度越大。"@zh .
+
+
+:SegmentStateInfluenceIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段状态影响关系指数"@zh ;
+    rdfs:comment "基于双向转移熵差值定义的路段间交通状态影响关系度量指标，反映两条路段状态序列之间的影响程度与方向。单时刻定义为ρ_{[au]}^t = te_{[a,u]}^t - te_{[u,a]}^t，时间段定义为归一化的累计转移熵差值。正值表示路段a影响路段u，负值表示路段u影响路段a，零表示无影响。"@zh .
+
+
+:InformationFlowImbalance rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "信息流动不平衡度"@zh ;
+    rdfs:comment "衡量单条路段在不同时间段内影响其他路段与被其他路段影响的综合信息流动程度的指标。正值表示该路段主要影响其他路段，负值表示主要受其他路段影响，绝对值越大表示信息流动越不平衡。"@zh .
+
+
+:InboundTransferEntropySum rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "转移熵流入总和"@zh ;
+    rdfs:comment "在特定时间段内，某路段对其三阶内可达路段的转移熵总和，反映该路段对周围路段的状态传播影响能力。"@zh .
+
+
+:SegmentStateInfluenceDegree rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段状态影响程度"@zh ;
+    rdfs:comment "在路段交通状态转移过程中，相邻路段之间拥堵状态传播的影响方向与影响强度的量化度量。"@zh .
+
+
+:StateIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "状态指数"@zh ;
+    rdfs:comment "路段在某一时刻的交通运行状态量化值，用于表征路段的拥堵程度，是计算传播性和非传播性拥堵程度的基础指标。"@zh .
+
+
+:CongestionPropagationWeight rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵传播权重"@zh ;
+    rdfs:comment "拥堵传播树中路段对之间的拥堵程度权重，以下游路段对上游路段的转移熵值占所有路段对转移熵值的比重来确定，反映路段间拥堵传播的影响程度。"@zh .
+
+
+:TransferEntropy rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "转移熵"@zh ;
+    rdfs:comment "在某一时刻下游路段对上游路段的转移熵值，用于量化路段间拥堵状态的影响程度，是计算拥堵传播权重的基础指标。"@zh .
+
+
+:SegmentCongestionIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段拥堵指数"@zh ;
+    rdfs:comment "基于路段层面计算的拥堵程度量化指标，用于反映单个路段的拥堵水平，是路网拥堵分类与传播分析的基础数据。"@zh .
+
+
+:CongestionFrequency rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "拥堵发生频数"@zh ;
+    rdfs:comment "路段在一定时间范围内发生拥堵的次数，用于界定非传播性拥堵。"@zh .
+
+
+:SegmentTrafficOperationIndex rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentIndicator ;
+    rdfs:label "路段交通运行状态指数"@zh ;
+    rdfs:comment "基于不同颜色属性权重分析，对路段实时交通运行状态进行量化表征的综合指标，反映路段在某一时刻的交通运行状况。"@zh .
+
+
+:VehicleFlowRate rdf:type owl:Class ;
+    rdfs:subClassOf :SegmentFlow ;
+    rdfs:label "机动车流量"@zh ;
+    rdfs:comment "路段上单位时间内通过的机动车数量，是反映路段交通负荷的核心动态指标。"@zh .
+
+
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:describesSegment rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :describesSpatialEntity ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "描述路段"@zh ;
+    rdfs:comment "[主属性] 状态指向路段，用于建立路段状态与路段实体之间的描述关系。"@zh .
+
+:hasSegmentState rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficState ;
+    owl:inverseOf :describesSegment ;
+    rdfs:domain :RoadSegment ;
+    rdfs:range :RoadSegmentState ;
+    rdfs:label "拥有路段状态"@zh ;
+    rdfs:comment "[互逆属性] 路段指向状态，支持逻辑层面的双向推理查询。"@zh .
+
+:hasSegmentIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficIndicator ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range :SegmentIndicator ;
+    rdfs:label "关联路段指标"@zh ;
+    rdfs:comment "状态节点挂载具体的路段指标实体。"@zh .
+
+:hasOperatingLevel rdf:type owl:ObjectProperty ;
+    rdfs:domain [ rdf:type owl:Class ; 
+                  owl:unionOf ( :RoadSegmentState :RoadState :ZoneState ) ] ;
+    rdfs:range :TrafficOperatingLevel ;
+    rdfs:label "具有运行等级"@zh ;
+    rdfs:comment "将微观路段、中观道路或宏观区域的交通状态，精准锚定至国标规定的5种静态运行等级实体之一。"@zh .
+
+:derivedFromOperatingLevel rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentCongestionCoeff ;
+    rdfs:range :TrafficOperatingLevel ;
+    rdfs:label "衍生自运行等级"@zh ;
+    rdfs:comment "显式表达微观二值化的拥堵判定系数(c_ij)是由定性的运行等级实体触发的（如关联到轻度拥堵及以上实体时，c_ij=1）。"@zh .
+
+:describesIntersection rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :describesSpatialEntity ;
+    rdfs:domain :IntersectionState ;
+    rdfs:range :Intersection ;
+    rdfs:label "描述交叉口"@zh ;
+    rdfs:comment "[主属性] 状态指向交叉口，用于建立交叉口状态与交叉口实体之间的描述关系。"@zh .
+
+:hasIntersectionState rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficState ;
+    owl:inverseOf :describesIntersection ;
+    rdfs:domain :Intersection ;
+    rdfs:range :IntersectionState ;
+    rdfs:label "拥有交叉口状态"@zh ;
+    rdfs:comment "[互逆属性] 交叉口指向状态，支持逻辑层面的双向推理查询。"@zh .
+
+:hasIntersectionIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficIndicator ;
+    rdfs:domain :IntersectionState ;
+    rdfs:range :IntersectionIndicator ;
+    rdfs:label "关联交叉口指标"@zh ;
+    rdfs:comment "状态节点挂载具体的交叉口指标实体。"@zh .
+
+:computedFromVariationCoefficients rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :CompositeTrafficDynamicsIndicator ;
+    rdfs:range :SegmentIndicator ;
+    rdfs:label "由流量和速度变异系数计算而来"@zh ;
+    rdfs:comment "表示复合交通动态指标D由流量变异系数和速度变异系数加权组合计算得到的派生关系。"@zh .
+
+
+:computedFromTravelDelay rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentIndicator ;
+    rdfs:range :TravelDelay ;
+    rdfs:label "由行程延误计算而来"@zh ;
+    rdfs:comment "表示时变行程时间由自由流行程时间与行程延误共同计算得到的关系。"@zh .
+
+
+:computedFromTravelTime rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentIndicator ;
+    rdfs:range :AverageTravelTime ;
+    rdfs:label "由行程时间计算得到"@zh ;
+    rdfs:comment "表示行程速度由路段长度和行程时间计算得到的派生关系。"@zh .
+
+
+:computedFromTrafficVolume rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentSaturation ;
+    rdfs:range :SegmentFlow ;
+    rdfs:label "由交通流量计算得到"@zh ;
+    rdfs:comment "表示路段饱和度由交通流量计算得到的派生关系。"@zh .
+
+
+:computedFromFlowAndDensity rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :WaveVelocity ;
+    rdfs:range :SegmentIndicator ;
+    rdfs:label "由流量与密度计算得到"@zh ;
+    rdfs:comment "表示波速指标由交通流量差与交通密度差计算得到的派生关系。"@zh .
+
+:computedFromQueueLengthRatio rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentIndicator ;
+    rdfs:range :SlowMovingQueueLengthRatio ;
+    rdfs:label "由缓行队列长度比例计算得到"@zh ;
+    rdfs:comment "表示缓行队列长度由缓行队列长度比例与路段长度计算得到的派生关系。"@zh .
+
+
+:influencedByUpstreamStateTransition rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range :RoadSegmentState ;
+    rdfs:label "受上游历史状态转移影响"@zh ;
+    rdfs:comment "表示下游路段当前时刻的交通状态受到上游路段历史状态转移的影响关系，体现交通流传播延迟条件下的时空关联。"@zh .
+
+
+:influencesSegment rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range :RoadSegmentState ;
+    rdfs:label "影响方向"@zh ;
+    rdfs:comment "表示在特定时间段内，一条路段的交通状态对另一条路段的交通状态产生影响的方向性关系。影响方向由影响源路段指向影响目标路段，基于路段状态影响关系指数的正负判定。"@zh .
+
+
+:computedFromTransferEntropySum rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :SegmentIndicator ;
+    rdfs:range :InformationFlowImbalance ;
+    rdfs:label "由转移熵总和计算得到"@zh ;
+    rdfs:comment "表示信息流动不平衡度指标由转移熵流出总和与转移熵流入总和计算得到的关系。"@zh .
+
+
+:propagatesTo rdf:type owl:ObjectProperty ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range :RoadSegmentState ;
+    rdfs:label "传播影响关系"@zh ;
+    rdfs:comment "表示一个拥堵路段的拥堵状态沿时空维度传播到另一个路段的关系。"@zh .
+
+
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+# (本层无独立的数据属性定义)
+
+#################################################################
+
+:flowWeight rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CompositeTrafficDynamicsIndicator ;
+    rdfs:range xsd:float ;
+    rdfs:label "流量权重"@zh ;
+    rdfs:comment "复合交通动态指标中分配给流量变异系数分量的权重值w_q，反映流量在分析中的相对重要性。"@zh .
+
+
+:speedWeight rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CompositeTrafficDynamicsIndicator ;
+    rdfs:range xsd:float ;
+    rdfs:label "速度权重"@zh ;
+    rdfs:comment "复合交通动态指标中分配给速度变异系数分量的权重值w_v，反映速度在分析中的相对重要性。"@zh .
+
+
+:congestionDensityThreshold rdf:type owl:DatatypeProperty ;
+    rdfs:domain :SegmentIndicator ;
+    rdfs:range xsd:float ;
+    rdfs:label "拥堵密度阈值"@zh ;
+    rdfs:comment "用于判定元胞是否处于拥堵状态的车流密度临界值，取值为最大拥挤密度的0.9倍。"@zh .
+
+
+:reliabilityFactor rdf:type owl:DatatypeProperty ;
+    rdfs:domain :AverageWaitingTime ;
+    rdfs:range xsd:float ;
+    rdfs:label "可靠性因子"@zh ;
+    rdfs:comment "公共交通线路实际到站相对于计划时刻的平均延误值，作为修正计划等待时间的参数，单位为分钟。"@zh .
+
+:stateThreshold rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficOperatingLevel ;
+    rdfs:range xsd:float ;
+    rdfs:label "状态阈值"@zh ;
+    rdfs:comment "用于将不同交通状态等级彼此分隔的分界值（分类标准），即区分相邻交通状态级别的速度临界值。"@zh .
+
+
+:dataEffectiveness rdf:type owl:DatatypeProperty ;
+    rdfs:domain :RoadSegmentState ;
+    rdfs:range xsd:float ;
+    rdfs:label "数据有效性"@zh ;
+    rdfs:comment "浮动车数据提取后的有效数据占比，用于评价数据质量。"@zh .
+
+
+#    L4: 聚合交通态势层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:RoadState rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficState ;
+    rdfs:label "道路交通状态"@zh ;
+    rdfs:comment "聚合态势状态枢纽，连接道路对象、时间与道路级指标。"@zh .
+
+:ZoneState rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficState ;
+    rdfs:label "区域交通状态"@zh ;
+    rdfs:comment "聚合态势状态枢纽，连接宏观区域、时间与综合评价指标。"@zh .
+
+:RoadIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "道路级指标(父类)"@zh ;
+    rdfs:comment "用于表征道路尺度下连续运行状态的指标父类。"@zh .
+
+:RoadTravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "道路行程时间"@zh ;
+    rdfs:comment "反映道路尺度下连续通行时间水平的指标。"@zh .
+
+:RoadAverageSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "道路平均速度"@zh ;
+    rdfs:comment "反映道路尺度下平均运行速度水平的指标。"@zh .
+
+:RoadDelay rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "道路延误"@zh ;
+    rdfs:comment "反映道路尺度下整体延误水平的指标。"@zh .
+
+:RoadCongestionLengthRatio rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "道路拥堵长度比"@zh ;
+    rdfs:comment "反映道路范围内拥堵长度占比的指标。"@zh .
+
+:ZoneIndicator rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficIndicator ;
+    rdfs:label "区域级指标(父类)"@zh ;
+    rdfs:comment "依据 GA/T 2128-2024 标准计算得出的所有区域综合评价指标。"@zh .
+	
+:TrafficPerformanceIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "城市交通运行指数(TPI)"@zh ;
+    rdfs:comment "反映道路网交通运行状况的无量纲数值，取值范围为0~10。依据 GB/T 33171 标准计算，是判定路网宏观拥堵等级的直接定量依据。"@zh .
+
+:TravelTimeRatio_I1 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I1_区域行程时间比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段行程时间比与权重。"@zh .
+
+
+:DelayTimeRatio_I2 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I2_区域延误时间比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：运行效率。聚合路径：加权聚合 L3 的路段延误时间比。"@zh .
+
+:NetworkAverageSpeed_I3 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I3_区域平均速度"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：运行效率。反映区域尺度下的平均运行速度水平。"@zh .
+
+:CongestionMileageRatio_I4 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I4_拥堵里程比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 路段拥堵判定系数对应的路段长度。"@zh .
+
+:NonSmoothRoadRatio_I5 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I5_全天非畅通道路占比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：拥堵分布。聚合路径：聚合 L3 的路段全天非畅通系数。"@zh .
+
+:NonSmoothTimeRatio_I6 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I6_全天非畅通时间占比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：拥堵分布。聚合路径：基于全天拥堵时间片统计。"@zh .
+
+:DailyCongestionRate_I7 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I7_全天拥堵比率"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：拥堵分布。时空双重聚合特征。"@zh .
+
+:PeakHourCoeff_I8 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I8_拥堵高峰小时系数"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：时间平衡。衍生自全天拥堵比率与高峰拥堵比率的对比。"@zh .
+
+:DissipationRate_I9 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I9_拥堵消散速率"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：时间平衡。依赖 L5 层拥堵事件实体提取关键过程特征。"@zh .
+
+:PeakBalance_I10 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I10_早晚高峰平衡度"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：时间平衡。衍生自早高峰与晚高峰相关指标。"@zh .
+
+:DailySpeedDeviation_I11 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I11_高峰速度日偏差系数"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：时间平衡。跨日聚合特征。"@zh .
+
+:SpatialBalance_I12 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I12_空间均衡度"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：空间均衡。基于 L3 路段行程时间比离散度计算。"@zh .
+
+:OperationDeviation_I13 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I13_运行偏离度"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：空间均衡。分道路等级比较特征。"@zh .
+
+:CongestionLoadRatio_I14 rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "I14_全天拥堵负荷比"@zh ;
+    rdfs:comment "GA/T 2128 标准评估维度：空间均衡。依据路段等级聚合底层拥堵系数。"@zh .
+
+:SecondaryCrash rdf:type owl:Class ;
+    rdfs:subClassOf :Accident ;
+    rdfs:label "二次事故"@zh ;
+    rdfs:comment "由初始交通事故引发的后续交通事故，是交通事故管理中需要避免的连锁事件。"@zh .
+
+
+:Crash rdf:type owl:Class ;
+    rdfs:subClassOf :Accident ;
+    rdfs:label "交通碰撞事故"@zh ;
+    rdfs:comment "一种具体的交通事故类型，指车辆碰撞事件，会导致车道封闭、交通流中断，需要响应团队到场处置。"@zh .
+
+
+:TrafficOscillation rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "交通振荡"@zh ;
+    rdfs:comment "交通流中速度和密度呈现周期性波动的动态运行现象，是交通状态不稳定性的典型表征。"@zh .
+
+
+:CityTripSpeedPerformanceIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "城市出行速度性能指数"@zh ;
+    rdfs:comment "用于捕捉宏观交通运行表现的量化指标，可提供不同道路上宏观拥堵水平的定量评价。"@zh .
+
+
+:AverageFlowRate rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "平均流量"@zh ;
+    rdfs:comment "路网中路段在某一时间段内的平均交通流量，记为q(t)，是网络宏观基本图（NMFD）的核心变量之一。"@zh .
+
+
+:AverageTrafficDensity rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "平均交通密度"@zh ;
+    rdfs:comment "路网中路段在某一时间段内的平均交通密度，记为k(t)，是网络宏观基本图（NMFD）的核心变量之一。"@zh .
+
+
+:NetworkDensity rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网密度"@zh ;
+    rdfs:comment "路网宏观基本图（NMFD）中表征路网整体交通密度水平的聚合指标，反映路网尺度下的平均车辆密度。"@zh .
+
+
+:AverageOccupancy rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "平均占有率"@zh ;
+    rdfs:comment "区域内多个检测器加权平均后的占有率值，是构建网络宏观基本图（NMFD）的核心指标之一。"@zh .
+
+
+:MaximumAverageFlowRate rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "最大平均流量"@zh ;
+    rdfs:comment "在NMFD曲线上观测到的平均流量的最大值，用于定量比较不同日期的路网运行容量特征。"@zh .
+
+
+:MaximumAverageOccupancy rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "最大平均占有率"@zh ;
+    rdfs:comment "在NMFD曲线上观测到的平均占有率的最大值，用于定量比较不同日期的路网运行状态特征。"@zh .
+
+
+:ArmClosure rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficControl ;
+    rdfs:label "进口道封闭"@zh ;
+    rdfs:comment "交叉口某一进口道因交通事件等原因被封闭，导致该方向交通中断的事件。"@zh .
+
+
+:RoadClosure rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "道路封闭"@zh ;
+    rdfs:comment "因特定原因导致道路被封闭、禁止通行的交通事件，属于影响交通流的突发事件类型。"@zh .
+
+
+:CongestionSegmentCount rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵路段总数"@zh ;
+    rdfs:comment "在特定时间片内，道路网中处于拥堵状态的路段数量，用于反映路网整体拥堵程度的区域级指标。"@zh .
+
+
+:CongestionRoadRatio rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵道路占比"@zh ;
+    rdfs:comment "在特定时间片内，道路网中拥堵路段数占总路段数的比例，用于衡量路网整体拥堵覆盖范围。"@zh .
+
+
+:CumulativeCongestionDuration rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "拥堵时间累计"@zh ;
+    rdfs:comment "对某条道路在一定统计周期内（如一周）所有拥堵时间片的累加值，用于衡量道路拥堵的总体严重程度。"@zh .
+
+
+:MotorNonMotorConflict rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "机非冲突"@zh ;
+    rdfs:comment "机动车与非机动车在同一车行道上行驶时产生的交通冲突现象，是影响道路运行状态的一种交通事件。"@zh .
+
+
+:CongestionSituationIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "交通拥堵态势指数"@zh ;
+    rdfs:comment "通过时间序列分析法得到的综合指数，用于表征交通拥堵态势的程度。"@zh .
+
+
+:SmoothPercentage rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "畅通百分比"@zh ;
+    rdfs:comment "区域或路网中处于畅通状态的道路里程占总里程的百分比，是区域级交通态势评价指标。"@zh .
+
+
+:SlowMovingPercentage rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "缓行百分比"@zh ;
+    rdfs:comment "区域或路网中处于缓行状态的道路里程占总里程的百分比，是区域级交通态势评价指标。"@zh .
+
+
+:TrafficHealthIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "交通健康指数"@zh ;
+    rdfs:comment "综合反映城市路网交通运行健康程度的区域级评价指标，由道路实时运行数据和交通态势数据计算得出。"@zh .
+
+
+:RecurrentCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "常发性拥堵"@zh ;
+    rdfs:comment "路段反复出现的拥堵现象，属于拥堵事件的一种类型分类，表示拥堵具有时空规律性和常态化特征。"@zh .
+
+
+:NonRecurrentCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "偶发性拥堵"@zh ;
+    rdfs:comment "路段偶尔出现的拥堵现象，属于拥堵事件的一种类型分类，表示拥堵不具有规律性，由偶然因素引发。"@zh .
+
+
+:CongestionScale rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵规模"@zh ;
+    rdfs:comment "用于衡量拥堵事件在空间范围或影响程度上的大小的评价指标，可反映拥堵的严重程度和波及范围。"@zh .
+
+
+:CongestionDelay rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵延迟"@zh ;
+    rdfs:comment "因拥堵导致的车辆额外行程时间，是衡量拥堵对出行效率影响程度的评价指标。"@zh .
+
+
+:CongestionTime rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵时间"@zh ;
+    rdfs:comment "用于反映路网中交通拥堵在时间维度上的持续影响时长，可通过分析路网运行状态恢复到事故发生之前所用的时间得到。"@zh .
+
+
+:TotalQueueLength rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "总排队长度"@zh ;
+    rdfs:comment "路网中所有车辆在网络上排队长度之和，用于定义拥堵规模指标。"@zh .
+
+
+:CongestionCellCount rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵元胞数目"@zh ;
+    rdfs:comment "当前路网中被判定为拥堵状态的元胞数量，作为拥堵规模的评价指标。"@zh .
+
+
+:NetworkCongestionDelay rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网拥堵延误"@zh ;
+    rdfs:comment "将各元胞各路段的拥堵延误在整个交通路网范围内进行空间聚合后得到的路网级拥堵延误指标，表示某一时刻整个路网的拥堵延误总量。"@zh .
+
+
+:CumulativeCongestionDelay rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "累计拥堵延误"@zh ;
+    rdfs:comment "在整个仿真研究时间段内，对路网中所有元胞、所有路段、所有时间步的拥堵延误进行时空累计求和得到的总延误指标。"@zh .
+
+
+:NetworkAverageInstantaneousSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网平均瞬时速度"@zh ;
+    rdfs:comment "在某一时刻对整个交通路网中所有路段、所有元胞的车辆速度进行加权平均得到的路网尺度瞬时速度指标。"@zh .
+
+
+:CongestionDissipationTime rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵消散时间"@zh ;
+    rdfs:comment "表示拥堵事件从开始消散到完全恢复正常交通状态所经历的时间长度，是衡量拥堵恢复速度的动态指标。"@zh .
+
+
+:NetworkTotalFlowVolume rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网总流动量"@zh ;
+    rdfs:comment "路网范围内在一定时间内通过的总车辆流量或总行驶量，用于衡量路网整体通行效率的区域级动态指标。"@zh .
+
+
+:CongestionCellClearanceRate rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "拥堵元胞消除速率"@zh ;
+    rdfs:comment "表示拥堵消散过程中拥堵元胞数量减少的速率，反映路网拥堵消散的效率。"@zh .
+
+
+:NetworkVehicleAccumulation rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网车辆积聚量"@zh ;
+    rdfs:comment "表示某一区域或路网范围内在特定时间内的车辆总积聚数量，是宏观基本图（MFD）的核心自变量之一，用于反映区域交通负荷水平。"@zh .
+
+
+:TripCompletionFlow rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "出行完成流量"@zh ;
+    rdfs:comment "表示单位时间内在某一区域或路网中完成出行的车辆流量，是宏观基本图（MFD）的核心因变量之一，用于衡量路网的出行服务效率。"@zh .
+
+
+:SpaceMeanFlow rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "空间平均流量"@zh ;
+    rdfs:comment "表示某一区域内所有路段在空间维度上的平均交通流量，是宏观基本图中与路网车辆积聚量相关联的核心指标。"@zh .
+
+
+:TransitSupply rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "公交供给"@zh ;
+    rdfs:comment "表示某交通小区内公共交通服务的供给水平，是计算公交供需缺口的基础指标之一。"@zh .
+
+
+:TransitDemand rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "公交需求"@zh ;
+    rdfs:comment "表示某交通小区内公共交通服务的需求水平，是计算公交供需缺口的基础指标之一。"@zh .
+
+:ShockWave rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "激波"@zh ;
+    rdfs:comment "交通流中由于密度或速度突变形成的波动现象，表现为拥堵在时空上的传播边界，可向上游反向传播。"@zh .
+
+
+:TrafficCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "交通拥堵"@zh ;
+    rdfs:comment "城市路网中由于机动车增长等原因导致的交通拥堵现象，尤其在高峰时段表现严重，对社会经济发展产生负面影响。"@zh .
+
+
+:TrafficFlowBreakdown rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "交通流崩溃"@zh ;
+    rdfs:comment "交通流从自由流状态向拥堵状态急剧转变的现象，是交通状态变化过程中的关键事件。"@zh .
+
+
+:WideMovingCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "宽幅移动拥堵"@zh ;
+    rdfs:comment "交通流的一种相态，由Kerner三相交通流理论提出，表示拥堵波在路段上大范围向上游传播的严重拥堵状态。"@zh .
+
+
+:TravelTimeReliability rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "出行时间可靠性"@zh ;
+    rdfs:comment "衡量出行时间在不同条件下稳定性和可预测程度的交通运行指标，反映路网服务质量。"@zh .
+
+
+:PathTravelTime rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "路径行程时间"@zh ;
+    rdfs:comment "车辆在多个交叉口之间沿路径行驶所经历的总时间，可通过在多个交叉口追踪同一车辆获得。"@zh .
+
+
+:Queuing rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "排队"@zh ;
+    rdfs:comment "路段末端（交叉口进口道）由于信号控制或拥堵等原因导致车辆排队等待的交通动态现象，可通过激波分析进行估计。"@zh .
+
+
+:StableTrafficFlowEquilibriumState rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneState ;
+    rdfs:label "稳定交通流均衡状态"@zh ;
+    rdfs:comment "区域交通流在特定条件下达到的稳定运行均衡状态，表征区域路网交通流量与密度趋于稳定的动态平衡点。"@zh .
+
+
+:AttractionArea rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "吸引域"@zh ;
+    rdfs:comment "在区域交通流状态空间中，能够收敛到稳态均衡点的初始状态集合范围，反映系统趋向均衡的稳定性区域。"@zh .
+
+
+:MaximumPeakTrafficFlow rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "最大峰值交通流量"@zh ;
+    rdfs:comment "路网区域所能承受的最大峰值交通流量，表示该区域在极限负荷条件下的交通流量上限。"@zh .
+
+
+:TransportDemand rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "交通需求"@zh ;
+    rdfs:comment "城市路网中由社会出行需求产生的、随时间变化的交通运输需求，是车辆运动的来源，影响交通流运行状态。"@zh .
+
+
+:RoadCongestionIndex rdf:type owl:Class ;
+    rdfs:subClassOf :RoadIndicator ;
+    rdfs:label "道路拥堵指数"@zh ;
+    rdfs:comment "用于衡量道路拥堵程度的综合评价指标，可在调整前后进行对比以评估改善效果。"@zh .
+
+
+:ExternalInflow rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "外部流入量"@zh ;
+    rdfs:comment "进入交通路网的外部交通流量，表示从路网边界流入的车辆数或流率。"@zh .
+
+
+:NetworkAccessibilityIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网可达性参数"@zh ;
+    rdfs:comment "表示实际出行时间小于标准出行时间的出行频次比率，用于评价路网可达性。"@zh .
+
+
+:MobilityIndex rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "机动性参数"@zh ;
+    rdfs:comment "基于人流量、车辆平均速度与路段最大承载流量及理想速度的比值，反映城市人员出行的机动性。参数值大则说明路段拥堵影响范围小、持续时间短。"@zh .
+
+
+:NetworkUtilizationRate rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网利用率"@zh ;
+    rdfs:comment "用于衡量路网资源被利用程度的区域级指标，反映路网整体运行效率。"@zh .
+
+
+:LicensePlateRestriction rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficControl ;
+    rdfs:label "车牌号限行"@zh ;
+    rdfs:comment "城市采取的基于车牌号的交通限行管制措施，可能导致交通流量数据的周期性规律发生变化。"@zh .
+
+
+:PropagatingNetworkCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "传播性路网拥堵"@zh ;
+    rdfs:comment "具有空间传播特性的拥堵现象，拥堵从一个路段向相邻路段扩散蔓延。"@zh .
+
+
+:NonPropagatingCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "非传播性拥堵"@zh ;
+    rdfs:comment "不具有空间传播特性的拥堵现象，拥堵局限于局部路段而不向相邻路段扩散。"@zh .
+
+
+:OverallNetworkCongestionDegree rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网整体拥堵程度"@zh ;
+    rdfs:comment "对路网整体拥堵水平的量化评价指标，基于拥堵路段集合构建的路网尺度综合指标。"@zh .
+
+
+:NoncommunicableCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "不可传播拥堵"@zh ;
+    rdfs:comment "路网拥堵的一种类型，指可以在路段之间传播扩散的拥堵现象。"@zh .
+
+
+:NetworkAverageTravelSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网平均行程速度"@zh ;
+    rdfs:comment "某时间间隔内研究区域所有路段的行程速度之和的平均值，用于表征路网整体运行水平的宏观指标。"@zh .
+
+
+:NetworkMaxCongestionDegree rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网最大拥堵程度"@zh ;
+    rdfs:comment "路网交通拥堵状态程度的最大值，作为路网交通运行状态实时判别的比较基准。"@zh .
+
+
+:LinearCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "线拥堵"@zh ;
+    rdfs:comment "当路段发生拥堵时，其拥堵状态随时间推移向相邻上游路段传播，形成沿线性方向扩展的拥堵形态。"@zh .
+
+
+:AreaCongestion rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "面拥堵"@zh ;
+    rdfs:comment "相隔较远的路段发生拥堵时，随着时间推移传播路段发生重合，形成面状扩展的拥堵形态。"@zh .
+
+
+:NonPropagatingCongestionDegree rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "非传播性路段拥堵程度"@zh ;
+    rdfs:comment "在某一时刻路网中不具有传播特性的拥堵路段集合的拥堵程度，仅考虑各拥堵路段状态指数的平均值。"@zh .
+
+
+:NetworkRealtimeCongestionSimilarity rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "路网实时拥堵近似度"@zh ;
+    rdfs:comment "表示路网实时拥堵程度与最大拥堵程度之间的近似程度，综合考虑拥堵程度比值和拥堵路段数量比值，近似度越大表示实时路网拥堵程度越接近最大拥堵程度。"@zh .
+
+
+:TidalTrafficPhenomenon rdf:type owl:Class ;
+    rdfs:subClassOf :CongestionEvent ;
+    rdfs:label "潮汐现象"@zh ;
+    rdfs:comment "城市交通在时间维度上呈现的方向性不对称流量分布特征，表现为早晚高峰时段交通流在不同方向上的显著差异。"@zh .
+
+
+:TrafficConflict rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "交通冲突"@zh ;
+    rdfs:comment "在信号交叉口等场景中，多辆车辆共享同一道路空间时产生的不同程度的交通冲突现象，是一种可观测的交通安全事件。"@zh .
+
+
+:TransitWaitingTime rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "公交平均等待时间"@zh ;
+    rdfs:comment "乘客在公共交通出行中从起始区域到目的区域的平均候车等待时间，取决于乘客在公交网络中的路径选择及运营决策。"@zh .
+
+
+:TransitInVehicleTime rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "公交平均车内出行时间"@zh ;
+    rdfs:comment "乘客乘坐公共交通从起始区域到目的区域的平均车内行程时间。"@zh .
+
+
+:AverageTrafficSpeed rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "平均交通速度"@zh ;
+    rdfs:comment "某一区域内道路上的平均交通行驶速度，是反映区域交通运行状态的动态指标，随车辆密度变化而变化。"@zh .
+
+
+:InVehicleTripTime rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "车内出行时间"@zh ;
+    rdfs:comment "乘客在车辆内从出发区域到目的区域的行驶时间，是衡量出行服务水平的动态交通指标。"@zh .
+
+
+:AverageShortestPathTravelDistance rdf:type owl:Class ;
+    rdfs:subClassOf :ZoneIndicator ;
+    rdfs:label "平均最短路径行驶距离"@zh ;
+    rdfs:comment "从区域i到区域j通过网约车出行的平均最短路径行驶距离，是区域间OD层级的交通空间指标。"@zh .
+
+
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:describesRoad rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :describesSpatialEntity ;
+    rdfs:domain :RoadState ;
+    rdfs:range :Road ;
+    rdfs:label "描述道路"@zh ;
+    rdfs:comment "[主属性] 状态指向道路，用于建立道路状态与道路实体之间的描述关系。"@zh .
+
+:hasRoadState rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficState ;
+    owl:inverseOf :describesRoad ;
+    rdfs:domain :Road ;
+    rdfs:range :RoadState ;
+    rdfs:label "拥有道路状态"@zh ;
+    rdfs:comment "[互逆属性] 道路指向状态，支持逻辑层面的双向推理查询。"@zh .
+
+:hasRoadIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficIndicator ;
+    rdfs:domain :RoadState ;
+    rdfs:range :RoadIndicator ;
+    rdfs:label "关联道路指标"@zh ;
+    rdfs:comment "状态节点挂载具体的道路指标实体。"@zh .
+
+:describesZone rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :describesSpatialEntity ;
+    rdfs:domain :ZoneState ;
+    rdfs:range :Zone ;
+    rdfs:label "描述区域"@zh ;
+    rdfs:comment "[主属性] 状态指向宏观区域。"@zh .
+
+:hasZoneState rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficState ;
+    owl:inverseOf :describesZone ;
+    rdfs:domain :Zone ;
+    rdfs:range :ZoneState ;
+    rdfs:label "拥有区域状态"@zh ;
+    rdfs:comment "[互逆属性] 区域指向状态。"@zh .
+
+:hasZoneIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :hasTrafficIndicator ;
+    rdfs:domain :ZoneState ;
+    rdfs:range :ZoneIndicator ;
+    rdfs:label "关联区域指标"@zh ;
+    rdfs:comment "状态节点挂载具体的区域综合评价指标实体。"@zh .
+
+:operatingLevelDependsOnTPI rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :TrafficOperatingLevel ;
+    rdfs:range :TrafficPerformanceIndex ;
+    rdfs:label "等级依赖于运行指数"@zh ;
+    rdfs:comment "显式表达宏观路网的运行等级（如中度拥堵）是严格依赖于城市交通运行指数(TPI)数值推导而来的。"@zh .
+
+:aggregatedFromSegmentIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain [ rdf:type owl:Class ; owl:unionOf (:RoadIndicator :ZoneIndicator) ] ;
+    rdfs:range :SegmentIndicator ;
+    rdfs:label "聚合自路段指标"@zh ;
+    rdfs:comment "[核心] 道路指标或区域指标溯源至路段指标。"@zh .
+
+:aggregatedFromIntersectionIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain [ rdf:type owl:Class ; owl:unionOf (:RoadIndicator :ZoneIndicator) ] ;
+    rdfs:range :IntersectionIndicator ;
+    rdfs:label "聚合自交叉口指标"@zh ;
+    rdfs:comment "[核心] 道路指标或区域指标溯源至交叉口指标。"@zh .
+
+:aggregatedFromRoadIndicator rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain :ZoneIndicator ;
+    rdfs:range :RoadIndicator ;
+    rdfs:label "聚合自道路指标"@zh ;
+    rdfs:comment "[核心] 区域指标溯源至道路指标。"@zh .
+
+:triggeredByCrash rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :triggeredByEvent ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :Accident ;
+    rdfs:label "由事故触发拥堵"@zh ;
+    rdfs:comment "表示拥堵事件由交通事故触发的因果关系，事故发生后导致交通拥堵。"@zh .
+
+
+:triggersSecondaryIncident rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :triggeredByEvent ;
+    rdfs:domain :Accident ;
+    rdfs:range :Accident ;
+    rdfs:label "引发二次事故"@zh ;
+    rdfs:comment "表示一次事故（主要事故）未及时处理而引发后续二次事故的因果关系。"@zh .
+
+
+:aggregatedFromCongestionDelay rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain :NetworkCongestionDelay ;
+    rdfs:range :TravelDelay ;
+    rdfs:label "聚合自拥堵延误"@zh ;
+    rdfs:comment "表示路网级拥堵延误由各元胞/路段级拥堵延误在空间上聚合而来的关系。"@zh .
+
+:aggregatedFromLinkDensity rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain :NetworkDensity ;
+    rdfs:range :SegmentDensity ;
+    rdfs:label "路网平均密度聚合自路段密度"@zh ;
+    rdfs:comment "路网平均密度由各路段密度按路段长度加权聚合而来的计算关系。"@zh .
+
+
+:aggregatedFromSegmentTravelSpeed rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain :ZoneIndicator ;
+    rdfs:range :AverageTravelSpeed ;
+    rdfs:label "由路段行程速度聚合"@zh ;
+    rdfs:comment "表示路网平均行程速度由各路段行程速度聚合计算而来的关系。"@zh .
+
+
+:propagatesToUpstream rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :linkedToTrafficState ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range :RoadSegmentState ;
+    rdfs:label "传播至上游路段"@zh ;
+    rdfs:comment "表示拥堵事件从下游路段沿路网拓扑反向传播至上游路段的空间传播关系。"@zh .
+
+
+:computedFromCongestionComponents rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :ZoneIndicator ;
+    rdfs:range :OverallNetworkCongestionDegree ;
+    rdfs:label "由传播性与非传播性拥堵程度计算而来"@zh ;
+    rdfs:comment "路网整体拥堵程度由传播性路网拥堵程度和非传播性路段拥堵程度加权求和计算得到。"@zh .
+
+
+:aggregatedFromTreeDegree rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :aggregatedFromIndicator ;
+    rdfs:domain :OverallNetworkCongestionDegree ;
+    rdfs:range :OverallNetworkCongestionDegree ;
+    rdfs:label "由传播树拥堵程度聚合而来"@zh ;
+    rdfs:comment "传播性路网拥堵程度由路网中所有交通拥堵状态时空传播树的拥堵程度加权平均聚合得到。"@zh .
+
+
+:computedFromStateIndex rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :OverallNetworkCongestionDegree ;
+    rdfs:range :StateIndex ;
+    rdfs:label "由状态指数计算而来"@zh ;
+    rdfs:comment "传播树拥堵程度由树中路段对的状态指数加权求和计算得到。"@zh .
+
+
+:computedFromNetworkCongestionDegree rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :computedFrom ;
+    rdfs:domain :ZoneIndicator ;
+    rdfs:range :ZoneIndicator ;
+    rdfs:label "由路网拥堵程度计算而来"@zh ;
+    rdfs:comment "表示路网实时拥堵近似度由路网拥堵程度指标计算得到的派生关系。"@zh .
+
+
+	
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+# (本层无独立的数据属性定义)
+
+
+#################################################################
+#    L5: 交通拥堵事件层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:CongestionEvent rdf:type owl:Class ;
+    rdfs:label "交通拥堵事件"@zh ;
+    rdfs:comment "表示一次完整的拥堵事件，用于描述拥堵现象在整体层面的生命周期与总体特征。"@zh .
+
+:CongestionEvolution rdf:type owl:Class ;
+    rdfs:label "拥堵演化切片"@zh ;
+    rdfs:comment "表示某一拥堵事件在特定时间片上的整体演化切片，用于描述该时刻拥堵的空间范围、状态构成及演化特征。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:hasEvolutionState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :CongestionEvolution ;
+    rdfs:label "包含演化切片"@zh ;
+    rdfs:comment "建立拥堵事件与其演化切片之间的从属关系，一个拥堵事件可包含多个演化切片。"@zh .
+
+:linkedToTrafficState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range [ rdf:type owl:Class ;
+                 owl:unionOf ( :RoadSegmentState :IntersectionState ) ] ;
+    rdfs:label "关联交通状态"@zh ;
+    rdfs:comment "将拥堵演化切片关联到构成该切片空间范围的微观交通状态实体，包括路段状态和交叉口状态。"@zh .
+
+:nextEvolutionState rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range :CongestionEvolution ;
+    rdfs:label "下一个演化切片"@zh ;
+    rdfs:comment "表示当前拥堵演化切片在时间序列上的下一个演化切片，用于构建拥堵过程的显式演化链。"@zh .
+
+:dependsOnCongestionEvent rdf:type owl:ObjectProperty ;
+    owl:inverseOf :supportsIndicator ;
+	rdfs:domain :ZoneIndicator ;
+    rdfs:range :CongestionEvent ;
+    rdfs:label "依赖拥堵事件"@zh ;
+    rdfs:comment "建立区域指标对交通拥堵事件的逻辑依赖关系，用于支撑过程性指标计算。"@zh .
+
+:supportsIndicator rdf:type owl:ObjectProperty ;
+    owl:inverseOf :dependsOnCongestionEvent ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :ZoneIndicator ;
+    rdfs:label "支撑评价指标"@zh ;
+    rdfs:comment "[互逆属性] 拥堵事件实体指向它所参与计算的区域宏观指标（如拥堵消散速率）。"@zh .
+
+:triggeredByEvent rdf:type owl:ObjectProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range :TrafficEvent ;
+    rdfs:label "由事件触发"@zh ;
+    rdfs:comment "表示某一拥堵事件由一般交通事件触发。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:congestionStartTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "拥堵开始时间"@zh ;
+    rdfs:comment "表示拥堵事件的开始时间。"@zh .
+
+:congestionEndTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "拥堵结束时间"@zh ;
+    rdfs:comment "表示拥堵事件的结束时间。"@zh .
+
+:congestionDuration rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:double ;
+    rdfs:label "拥堵持续时长"@zh ;
+    rdfs:comment "表示拥堵事件的持续时长，单位为分钟。"@zh .
+
+:maxCongestionLength rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:double ;
+    rdfs:label "最大拥堵长度"@zh ;
+    rdfs:comment "表示拥堵事件生命周期内达到的最大拥堵空间长度，单位为米。"@zh .
+
+:congestionTrend rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range xsd:string ;
+    rdfs:label "拥堵演化趋势"@zh ;
+    rdfs:comment "表示拥堵演化切片的变化趋势。其取值采用受控枚举，限定为 'Spreading'（扩散）、'Maintaining'（维持）或 'Dissipating'（消散）。"@zh .
+
+:congestionLength rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range xsd:double ;
+    rdfs:label "拥堵长度"@zh ;
+    rdfs:comment "表示某一拥堵演化切片对应的拥堵空间长度，单位为米。"@zh .
+
+:congestionIntensity rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvolution ;
+    rdfs:range xsd:double ;
+    rdfs:label "拥堵强度"@zh ;
+    rdfs:comment "表示某一演化切片下拥堵事件的整体强度水平。"@zh .
+
+
+#################################################################
+#    L6: 一般交通事件层
+#################################################################
+
+# --- 1. 实体类定义 (Class) ---
+:TrafficEvent rdf:type owl:Class ;
+    rdfs:label "一般交通事件"@zh ;
+    rdfs:comment "一般交通事件的抽象父类，用于统一承载对交通流造成影响的外部事件实例。"@zh .
+
+:Accident rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "交通事故"@zh ;
+    rdfs:comment "表示交通事故类事件。"@zh .
+
+:Roadwork rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "道路施工"@zh ;
+    rdfs:comment "表示道路施工类事件。"@zh .
+
+:TrafficControl rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "交通管制"@zh ;
+    rdfs:comment "表示交通管制类事件。"@zh .
+
+:AdverseWeather rdf:type owl:Class ;
+    rdfs:subClassOf :TrafficEvent ;
+    rdfs:label "恶劣天气"@zh ;
+    rdfs:comment "表示恶劣天气类事件。"@zh .
+
+# --- 2. 关系定义 (ObjectProperty) ---
+:occursOnSpatialEntity rdf:type owl:ObjectProperty ;
+    owl:inverseOf :hasTrafficEvent ;
+	rdfs:domain :TrafficEvent ;
+    rdfs:range :SpatialEntity ;
+    rdfs:label "发生于空间实体"@zh ;
+    rdfs:comment "一般交通事件发生于某一空间实体的总父属性。"@zh .
+
+:hasTrafficEvent rdf:type owl:ObjectProperty ;
+    owl:inverseOf :occursOnSpatialEntity ;
+    rdfs:domain :SpatialEntity ;
+    rdfs:range :TrafficEvent ;
+    rdfs:label "发生过一般事件"@zh ;
+    rdfs:comment "[互逆属性] 空间实体指向其发生过的一般交通事件，支持从物理路段或交叉口反查历史事件。"@zh .
+
+:occursOnSegment rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :occursOnSpatialEntity ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range :RoadSegment ;
+    rdfs:label "发生于路段"@zh ;
+    rdfs:comment "表示一般交通事件发生于某一路段。"@zh .
+
+:occursOnIntersection rdf:type owl:ObjectProperty ;
+    rdfs:subPropertyOf :occursOnSpatialEntity ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range :Intersection ;
+    rdfs:label "发生于交叉口"@zh ;
+    rdfs:comment "表示一般交通事件发生于某一交叉口。"@zh .
+
+# --- 3. 属性定义 (DatatypeProperty) ---
+:severityLevel rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:integer ;
+    rdfs:label "严重程度"@zh ;
+    rdfs:comment "表示一般交通事件的严重程度等级。"@zh .
+
+:eventStartTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "事件开始时间"@zh ;
+    rdfs:comment "表示一般交通事件的开始时间，作为时间实体关系的辅助时间属性。"@zh .
+
+:eventEndTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "事件结束时间"@zh ;
+    rdfs:comment "表示一般交通事件的结束时间，作为时间实体关系的辅助时间属性。"@zh .
+
+:eventDuration rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:double ;
+    rdfs:label "事件持续时长"@zh ;
+    rdfs:comment "表示一般交通事件的持续时长，作为时间实体关系的辅助时间属性。"@zh .
+
+:eventDescription rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:string ;
+    rdfs:label "事件描述"@zh ;
+    rdfs:comment "表示一般交通事件的文本描述信息。"@zh .
+
+:eventSource rdf:type owl:DatatypeProperty ;
+    rdfs:domain :TrafficEvent ;
+    rdfs:range xsd:string ;
+    rdfs:label "事件来源"@zh ;
+    rdfs:comment "表示一般交通事件的数据来源或信息来源。"@zh .
+
+:responseTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Accident ;
+    rdfs:range xsd:double ;
+    rdfs:label "响应时间"@zh ;
+    rdfs:comment "事故发生后应急响应到达现场所需的时间。"@zh .
+
+
+:peakCongestionTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "拥堵峰值时刻"@zh ;
+    rdfs:comment "拥堵事件达到最大规模或最严重程度时对应的时间点。"@zh .
+
+
+:congestionRecoveryTime rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "拥堵恢复时刻"@zh ;
+    rdfs:comment "拥堵事件中拥堵延迟恢复至正常水平的时间点。"@zh .
+
+:dataCoverage rdf:type owl:DatatypeProperty ;
+    rdfs:domain :ZoneState ;
+    rdfs:range xsd:float ;
+    rdfs:label "数据覆盖率"@zh ;
+    rdfs:comment "浮动车数据对路网空间范围的覆盖程度，用于评价数据的空间完整性。"@zh .
+
+
+:weatherSeverityLevel rdf:type owl:DatatypeProperty ;
+    rdfs:domain :AdverseWeather ;
+    rdfs:range xsd:int ;
+    rdfs:label "天气恶劣等级"@zh ;
+    rdfs:comment "表示恶劣天气事件的天气恶劣等级分类，取值为0~3级，分别代表正常天气、轻度天气、中度天气、恶劣天气。"@zh .
+
+
+:congestionFrequency rdf:type owl:DatatypeProperty ;
+    rdfs:domain :CongestionEvent ;
+    rdfs:range xsd:int ;
+    rdfs:label "拥堵发生频次"@zh ;
+    rdfs:comment "路段拥堵状态在一定时间范围内发生的频数，用于判断拥堵是否具有常发性特征。"@zh .

@@ -1,0 +1,6 @@
+﻿target_id,标准对象A,关系,标准对象B,关系说明,常见中文表达,常见英文表达,重点排除
+OP01,拥堵事件,由…触发,交通事故,表示交通事故触发拥堵事件的因果关系。只有当文献明确表达“事故导致拥堵/事故触发拥堵”时才算。,由事故触发拥堵、事故导致拥堵、拥堵由事故引发,"triggeredByCrash, crash triggers congestion",不要把“事故与拥堵同时出现”或“事故发生后交通受影响”的泛描述算进去
+OP02,一次事故,触发,二次事故,表示一次事故诱发后续二次事故的因果关系。必须明确表达“primary incident causes secondary incident”这一层因果。,引发二次事故、一次事故导致二次事故,"triggersSecondaryIncident, primary incident causes secondary incident",不要把“一般事故关联”“多事故并发”或模糊风险描述算进去
+OP03,路网交通密度,聚合自,路段交通密度,表示路网平均/整体交通密度由各路段交通密度聚合计算得到。必须明确是“路网层 ← 路段层”的聚合关系。,路网平均密度聚合自路段密度、由路段密度加权得到路网密度,"aggregatedFromLinkDensity, average network density aggregated from link density",不要把泛泛的“密度计算”“道路密度”“节点密度”算进去
+OP04,路网平均运行速度,聚合自,路段运行速度,表示路网平均运行速度由各路段运行速度聚合计算得到。必须明确是“路网层 ← 路段层”的聚合关系。,由路段行程速度聚合、路网平均速度由路段速度求和平均得到,"aggregatedFromSegmentTravelSpeed, network average travel speed aggregated from segment travel speed",不要把单纯提到“路网速度”“平均速度”但未说明聚合来源的算进去
+OP05,路段,具有上游路段,路段,表示两个路段之间明确的上游—下游拓扑关系。只有文献明确说某路段有上游路段/某路段位于另一路段下游时才算。,上游路段关系、上游路段集合、某路段的上游路段,"hasUpstreamLink, upstream link, upstream links",不要把“交通从上游传播”“上游区域影响下游”这类泛传播描述算进去；必须是明确的路段—路段拓扑关系
